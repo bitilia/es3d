@@ -1,0 +1,79 @@
+{
+  "name": "@es3d/es3d",
+  "version": "1.0.0",
+  "description": "ES3D (Extensible Scalable 3D): a declarative, SVG-inspired 3D scene format with a WebGPU/WebGL2 reference renderer, editor and converter.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "homepage": "https://es3d.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitilia/es3d.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bitilia/es3d/issues"
+  },
+  "keywords": [
+    "3d",
+    "file-format",
+    "svg",
+    "webgpu",
+    "webgl2",
+    "procedural",
+    "instancing",
+    "converter",
+    "gltf",
+    "stl",
+    "step",
+    "obj"
+  ],
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "bin": {
+    "es3d": "scripts/es3d-cli.mjs"
+  },
+  "files": [
+    "src/",
+    "!src/ui/",
+    "!src/modeller/",
+    "!src/bench/",
+    "!src/main.js",
+    "scripts/es3d-cli.mjs",
+    "docs/SPEC.md",
+    "docs/REFERENCE.md"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test \"test/*.test.mjs\"",
+    "test:render": "node scripts/render-check.mjs",
+    "test:shaders": "node scripts/shader-check.mjs",
+    "screenshots": "node scripts/make-screenshots.mjs",
+    "sizes": "node scripts/measure-sizes.mjs",
+    "parcel": "node scripts/make-parcel.mjs",
+    "wasm": "node scripts/build-wasm.mjs",
+    "bench": "node --expose-gc scripts/bench.mjs",
+    "bench:lan": "node benchmark/server.mjs",
+    "bench:lan:10": "node benchmark/server.mjs --repeat 10",
+    "es3d": "node scripts/es3d-cli.mjs",
+    "docs:reference": "node scripts/gen-reference.mjs",
+    "samples": "node scripts/make-samples.mjs",
+    "thumbnails": "node scripts/make-thumbnails.mjs",
+    "demo": "vite --open /demo/",
+    "pack:check": "node scripts/pack-check.mjs",
+    "stage:prepare": "node scripts/stage-package.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.0",
+    "three": "^0.186.1",
+    "vite": "^8.3.4"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

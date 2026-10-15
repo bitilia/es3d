@@ -1,0 +1,153 @@
+#!/usr/bin/env node
+// Generates docs/REFERENCE.md (every element and attribute) from the schema
+// the validator uses, so the reference cannot drift from the implementation.
+//
+//   npm run docs:reference
+
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { ELEMENTS, SHAPES, CONTAINERS } from '../src/format/schema.js';
+import { formatNumber } from '../src/format/value-format.js';
+import { colorToShortHex } from '../src/format/colors.js';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const COMMON = ['id', 'name', 'transform', 'position', 'rotation', 'scale', 'visible', 'material', 'color'];
+
+const TYPES = {
+  number: 'Decimal number, e.g. `1`, `-0.25`, `.5`, `2e-3`.',
+  angle: 'Number of degrees.',
+  int: 'Whole number.',
+  bool: '`true` or `false`.',
+  string: 'Free text.',
+  text: 'Element text content.',
+  id: 'Identifier: a letter or `_` followed by letters, digits, `_ . : -`.',
+  ref: 'Id of another element of the indicated kind.',
+  idlist: 'Comma or space separated ids.',
+  vec2: 'Two numbers `x,y` (comma and/or space separated).',
+  vec3: 'Three numbers `x,y,z`.',
+  vec4: 'Four numbers.',
+  size2: 'One number (both dimensions) or two numbers.',
+  size3: 'One number (all three dimensions) or three numbers.',
+  scale3: 'One number (uniform) or three numbers.',
+  count2: 'Two positive whole numbers `nx,nz`.',
+  numbers: 'List of numbers.',
+  points2: 'Point list `x,y x,y …`.',
+  points3: 'Point list `x,y,z x,y,z …`.',
+  floats: 'Whitespace separated numbers (mesh data, stored as float32).',
+  indices: 'Whitespace separated non-negative whole numbers.',
+  color: '`#rgb`, `#rrggbb`, `#rrggbbaa`, `rgb(r,g,b)`, `rgba(r,g,b,a)` or a CSS colour name; sRGB.',
+  enum: 'One of the listed keywords.',
+  transform: 'SVG-style list: `translate(x[,y[,z]])`, `rotate(x,y,z)`, `rotate(a,ax,ay,az)`, `rotateX(a)`, `rotateY(a)`, `rotateZ(a)`, `scale(s)`, `scale(x,y,z)`, `quat(x,y,z,w)`, `matrix(16 numbers, column-major)`; composed left to right.',
+  path2d: 'SVG path data: `M L H V C S Q T A Z` (absolute and relative), in the local XY plane with y up.',
+  spine: '3D spine: `x,y,z x,y,z …`, 3D path data (`M L C S Q T Z` with 3 numbers per point) or `helix(radius,pitch,turns[,segmentsPerTurn])`.',
+  range: 'A number or a range `lo..hi`.',
+  range3: 'A range `lo..hi` used for x, y and z, or three comma separated ranges/numbers `x,y,z`.',
+  texture: 'Image URL, or a procedural texture: `checker(count,color1,color2)`, `grid(count,width,line,background)`, `stripes(count,color1,color2)`, `noise(scale,color1,color2,seed)`, `bricks(count,brick,mortar)`; trailing arguments may be omitted.',
+  normalTexture: 'Image URL, or a procedural normal map: `bumps(count,strength)`, `tiles(count,strength,gap)`, `noise(scale,strength,seed)`, `waves(count,strength)`, `bricks(count,strength)`.',
+  duration: 'Time: `4`, `4s` or `250ms`.',
+  repeatCount: "Number of repetitions or `indefinite`.",
+  animValue: 'Three numbers (one or three for scale, one for fov).',
+  keyframes: 'Key values separated by semicolons, each with as many numbers as `from`/`to`: `0,1,0; 2,1,0; 2,3,0`.',
+};
+
+function formatDefault(a) {
+  const v = a.default;
+  if (v === undefined) return '';
+  if (a.type === 'color') return `\`${colorToShortHex(v)}\``;
+  if (v === Infinity) return '`indefinite`';
+  if (Array.isArray(v)) return `\`${v.map((x) => formatNumber(x)).join(',')}\``;
+  if (typeof v === 'number') return `\`${formatNumber(v)}\``;
+  return `\`${v}\``;
+}
+
+function formatRange(a) {
+  const parts = [];
+  if (a.exclusiveMin !== undefined) parts.push(`> ${a.exclusiveMin}`);
+  if (a.min !== undefined) parts.push(`≥ ${a.min}`);
+  if (a.max !== undefined) parts.push(`≤ ${a.max}`);
+  return parts.join(', ');
+}
+
+function typeCell(a) {
+  if (a.type === 'enum') return a.values.map((v) => `\`${v}\``).join(' \\| ');
+  if (a.type === 'ref') return `ref → ${a.ref}`;
+  if (a.type === 'idlist') return `ids → ${a.ref}`;
+  return a.type;
+}
+
+const esc = (s) => String(s).replace(/\|/g, '\\|').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+function attrTable(attrs, names) {
+  const L = ['| Attribute | Alias | Type | Default | Range | Description |', '|---|---|---|---|---|---|'];
+  for (const name of names) {
+    const a = attrs[name];
+    L.push(`| \`${name}\`${a.required ? ' **(required)**' : ''} | ${a.alias ? `\`${a.alias}\`` : ''} | ${typeCell(a)} | ${formatDefault(a)} | ${formatRange(a)} | ${esc(a.desc || '')} |`);
+  }
+  return L.join('\n');
+}
+
+const GROUPS = [
+  ['Document structure', ['es3d', 'title', 'desc', 'defs', 'scene', 'environment']],
+  ['Materials', ['material']],
+  ['Containers and instancing', [...CONTAINERS, 'use']],
+  ['Shapes', SHAPES],
+  ['Lights and cameras', ['light', 'camera']],
+  ['Animation', ['animate']],
+];
+
+function build() {
+  const L = [];
+  L.push('# ES3D element reference');
+  L.push('');
+  L.push('<!-- Generated by `npm run docs:reference` from src/format/schema.js. Do not edit by hand. -->');
+  L.push('');
+  L.push('Every element and attribute of ES3D version 1 as implemented by the reference reader. Semantics are described in [SPEC.md](SPEC.md).');
+  L.push('Unknown attributes and elements are errors (with a "did you mean" suggestion); elements whose name starts with `x-` are vendor extensions and are skipped with a warning.');
+  L.push('');
+  L.push('## Common attributes');
+  L.push('');
+  L.push('Scene nodes (shapes, containers, `<use>`, `<scene>`) accept these placement and style attributes in addition to their own. The local transform is `transform · T(position) · R(rotation) · S(scale)`.');
+  L.push('');
+  L.push(attrTable(ELEMENTS.box.attrs, COMMON));
+  L.push('');
+  for (const [title, names] of GROUPS) {
+    L.push(`## ${title}`);
+    L.push('');
+    for (const name of names) {
+      const spec = ELEMENTS[name];
+      L.push(`### \`<${name}>\``);
+      L.push('');
+      L.push(esc(spec.desc));
+      L.push('');
+      const kids = spec.children === 'text' ? 'text content' : spec.children.length ? spec.children.map((c) => `\`<${c}>\``).join(', ') : 'none';
+      L.push(`Children: ${kids}.`);
+      L.push('');
+      const hasCommon = COMMON.every((k) => spec.attrs[k] === ELEMENTS.box.attrs[k]);
+      const own = Object.keys(spec.attrs).filter((k) => !(hasCommon && COMMON.includes(k)));
+      if (!own.length) L.push(hasCommon ? 'Accepts the common attributes only.' : 'No attributes.');
+      else {
+        L.push(hasCommon ? 'Accepts the common attributes, plus:' : 'Attributes:');
+        L.push('');
+        L.push(attrTable(spec.attrs, own));
+      }
+      L.push('');
+    }
+  }
+  L.push('## Value types');
+  L.push('');
+  L.push('| Type | Syntax |');
+  L.push('|---|---|');
+  const used = new Set();
+  for (const spec of Object.values(ELEMENTS)) for (const a of Object.values(spec.attrs)) used.add(a.type);
+  for (const t of [...used].sort()) L.push(`| ${t} | ${esc(TYPES[t] || '')} |`);
+  L.push('');
+  const missing = [...used].filter((t) => !TYPES[t]);
+  if (missing.length) throw new Error(`undocumented value types: ${missing.join(', ')}`);
+  return L.join('\n');
+}
+
+const out = path.join(ROOT, 'docs', 'REFERENCE.md');
+fs.mkdirSync(path.dirname(out), { recursive: true });
+fs.writeFileSync(out, build() + '\n');
+console.log(`wrote ${path.relative(process.cwd(), out)}`);

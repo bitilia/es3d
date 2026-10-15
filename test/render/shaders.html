@@ -1,0 +1,78 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>ES3D shader variants</title>
+<script type="module">
+// Compiles every generated mesh shader (each combination of material feature
+// flags, under several light setups) with WebGL2 and, where available, WebGPU.
+// Driven by scripts/shader-check.mjs; the result is window.__result.
+import { meshVertexShader, meshFragmentShader, TEXTURE_FLAGS } from '/src/render/shaders/glsl.js';
+import { meshShader } from '/src/render/shaders/wgsl.js';
+import {
+  MAT_FLAG_MAP, MAT_FLAG_NORMAL_MAP, MAT_FLAG_DOUBLE_SIDED, MAT_FLAG_UNLIT, MAT_FLAG_MR_MAP,
+  MAT_FLAG_OCCLUSION, MAT_FLAG_EMISSIVE_MAP, MAT_FLAG_ALPHA_MASK,
+} from '/src/render/lighting.js';
+
+const BITS = [MAT_FLAG_MAP, MAT_FLAG_NORMAL_MAP, MAT_FLAG_DOUBLE_SIDED, MAT_FLAG_UNLIT, MAT_FLAG_MR_MAP, MAT_FLAG_OCCLUSION, MAT_FLAG_EMISSIVE_MAP, MAT_FLAG_ALPHA_MASK];
+const LIGHTS = ['', '0', '0,0', '0,1,2', '0,1,2,3,4', '4,3'];
+const flagSets = Array.from({ length: 1 << BITS.length }, (_, m) => BITS.reduce((f, b, i) => (m & (1 << i) ? f | b : f), 0));
+const result = { glsl: 0, wgsl: 0, webgpu: false, errors: [] };
+
+const gl = document.createElement('canvas').getContext('webgl2');
+const vertex = [false, true].map((textured) => {
+  const vs = gl.createShader(gl.VERTEX_SHADER);
+  gl.shaderSource(vs, meshVertexShader(textured));
+  gl.compileShader(vs);
+  return vs;
+});
+for (const flags of flagSets) {
+  for (const lights of LIGHTS) {
+    const fs = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fs, meshFragmentShader(flags, lights));
+    gl.compileShader(fs);
+    const p = gl.createProgram();
+    gl.attachShader(p, vertex[flags & TEXTURE_FLAGS ? 1 : 0]);
+    gl.attachShader(p, fs);
+    gl.linkProgram(p);
+    if (gl.getProgramParameter(p, gl.LINK_STATUS)) result.glsl++;
+    else result.errors.push(`GLSL ${flags}|${lights}: ${gl.getShaderInfoLog(fs) || gl.getProgramInfoLog(p)}`);
+    gl.deleteProgram(p);
+    gl.deleteShader(fs);
+  }
+}
+
+const adapter = navigator.gpu ? await navigator.gpu.requestAdapter() : null;
+if (adapter) {
+  result.webgpu = true;
+  const device = await adapter.requestDevice();
+  const uniform = { type: 'uniform' };
+  const frameLayout = device.createBindGroupLayout({ entries: [{ binding: 0, visibility: 3, buffer: uniform }] });
+  const materialLayout = device.createBindGroupLayout({
+    entries: [{ binding: 0, visibility: 3, buffer: uniform }, { binding: 1, visibility: 2, sampler: { type: 'filtering' } }, ...[2, 3, 4, 5, 6].map((binding) => ({ binding, visibility: 2, texture: { sampleType: 'float' } }))],
+  });
+  const layout = device.createPipelineLayout({ bindGroupLayouts: [frameLayout, materialLayout] });
+  const buffers = [
+    { arrayStride: 32, attributes: [{ shaderLocation: 0, offset: 0, format: 'float32x3' }, { shaderLocation: 1, offset: 12, format: 'float32x3' }, { shaderLocation: 2, offset: 24, format: 'float32x2' }] },
+    { arrayStride: 64, stepMode: 'instance', attributes: [0, 1, 2, 3].map((k) => ({ shaderLocation: 3 + k, offset: k * 16, format: 'float32x4' })) },
+  ];
+  for (const flags of flagSets) {
+    for (const lights of LIGHTS) {
+      device.pushErrorScope('validation');
+      const module = device.createShaderModule({ code: meshShader(flags, lights) });
+      const messages = (await module.getCompilationInfo()).messages.filter((m) => m.type === 'error');
+      device.createRenderPipeline({
+        layout,
+        vertex: { module, entryPoint: 'vs_main', buffers },
+        fragment: { module, entryPoint: 'fs_main', targets: [{ format: 'rgba8unorm' }] },
+        primitive: { topology: 'triangle-list' },
+        depthStencil: { format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'less-equal' },
+        multisample: { count: 4 },
+      });
+      const error = await device.popErrorScope();
+      if (!messages.length && !error) result.wgsl++;
+      else result.errors.push(`WGSL ${flags}|${lights}: ${messages.map((m) => `${m.lineNum}:${m.linePos} ${m.message}`).join('; ')} ${error ? error.message : ''}`);
+    }
+  }
+}
+result.expected = flagSets.length * LIGHTS.length;
+window.__result = result;
+</script>
