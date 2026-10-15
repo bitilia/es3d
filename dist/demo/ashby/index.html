@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ashby — a village in one file</title>
+  <meta name="description" content="A fly-through of a small medieval village, written as one ES3D file. Scroll to walk in.">
+  <meta name="theme-color" content="#2b2116">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23f2e8d2' width='32' height='32'/%3E%3Cpath fill='%239f4b32' d='M5 17 L16 7 L27 17 Z'/%3E%3Crect fill='%232b2116' x='8' y='17' width='16' height='9'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://es3d.org/demo/ashby/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ES3D">
+<meta property="og:title" content="Ashby — a village in one file">
+<meta property="og:description" content="A fly-through of a small medieval village, written as one ES3D file. Scroll to walk in.">
+<meta property="og:url" content="https://es3d.org/demo/ashby/">
+<meta property="og:image" content="https://es3d.org/images/demo-ashby.jpg">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="1000">
+<meta property="og:image:alt" content="Ashby: fields, a river and a palisaded medieval village with its church and keep">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://es3d.org/images/demo-ashby.jpg">
+<meta name="twitter:image:alt" content="Ashby: fields, a river and a palisaded medieval village with its church and keep">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://es3d.org/#organization",
+      "name": "ES3D",
+      "url": "https://es3d.org/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/favicon.svg"
+      },
+      "sameAs": [
+        "https://github.com/bitilia/es3d"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://es3d.org/#website",
+      "url": "https://es3d.org/",
+      "name": "ES3D",
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://es3d.org/demo/ashby/#webpage",
+      "url": "https://es3d.org/demo/ashby/",
+      "name": "Ashby — a village in one file",
+      "description": "A fly-through of a small medieval village, written as one ES3D file. Scroll to walk in.",
+      "isPartOf": {
+        "@id": "https://es3d.org/#website"
+      },
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en",
+      "dateModified": "2026-10-15",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/images/demo-ashby.jpg",
+        "width": 1600,
+        "height": 1000
+      },
+      "breadcrumb": {
+        "@id": "https://es3d.org/demo/ashby/#breadcrumb"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://es3d.org/demo/ashby/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://es3d.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Demo Sites",
+          "item": "https://es3d.org/demo/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Ashby — a village in one file",
+          "item": "https://es3d.org/demo/ashby/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+  <script type="module" crossorigin src="../../assets/demo/ashby/index-DwLAn093.js"></script>
+  <link rel="modulepreload" crossorigin href="../../assets/modulepreload-polyfill-P2Xu9kJm.js">
+  <link rel="modulepreload" crossorigin href="../../assets/orbit-controls-BUn7A4nu.js">
+  <link rel="modulepreload" crossorigin href="../../assets/stage-C8W367jR.js">
+  <link rel="modulepreload" crossorigin href="../../assets/stage-DOB5ywP-.js">
+  <link rel="modulepreload" crossorigin href="../../assets/scene-C__i9sY6.js">
+  <link rel="modulepreload" crossorigin href="../../assets/handoff-mtZVqaF7.js">
+  <link rel="stylesheet" crossorigin href="../../assets/stage-D0OQqKG3.css">
+  <link rel="stylesheet" crossorigin href="../../assets/index-1zpSBAHk.css">
+</head>
+<body>
+  <header>
+    <a class="word" href="./">Ashby</a>
+    <nav>
+      <a href="../../">ES3D</a>
+      <a href="../">Demo Sites</a>
+      <a href="../parcel/">Parcel</a>
+      <a href="../spoke/">Spoke</a>
+      <a href="../helio/">Helio</a>
+    </nav>
+  </header>
+
+  <main class="tour" id="tour">
+    <div class="stage">
+      <canvas id="view" aria-label="A medieval village seen from the air. The view moves through the village as you scroll."></canvas>
+      <p class="stage-status">Starting the renderer…</p>
+      <pre class="stage-error" hidden></pre>
+      <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+    </div>
+
+    <div class="copy">
+      <article class="intro" data-es3d-stop="0">
+        <p class="numeral">I.</p>
+        <h1>Ashby</h1>
+        <p>Sixteen buildings, a mill, a keep and eight hundred trees, all in one ES3D file of <b>11.9 kB</b>, 2.9 kB gzipped.</p>
+        <p class="hint">Scroll to walk in.</p>
+      </article>
+      <article data-es3d-stop="0.16">
+        <p class="numeral">II.</p>
+        <h2>The crossing</h2>
+        <p>Wheat and barley in strips, and a stone bridge over the river. The road and the river are each a single line given a width.</p>
+      </article>
+      <article data-es3d-stop="0.33">
+        <p class="numeral">III.</p>
+        <h2>The gate</h2>
+        <p>Sixty-six logs make the palisade. The file holds one log and a rule: repeat it every five degrees around the square.</p>
+      </article>
+      <article data-es3d-stop="0.5">
+        <p class="numeral">IV.</p>
+        <h2>The square</h2>
+        <p>A well, three stalls and eight houses facing in. There are only three kinds of house. Each is defined once and placed again with a different roof.</p>
+      </article>
+      <article data-es3d-stop="0.66">
+        <p class="numeral">V.</p>
+        <h2>The church</h2>
+        <p>A nave, a tower, and a four-sided cone for a spire. The path you are flying is written in the same file as the stones.</p>
+      </article>
+      <article data-es3d-stop="0.83">
+        <p class="numeral">VI.</p>
+        <h2>The keep</h2>
+        <p>On the hill, a keep with four towers. The woods are seeded scatters, so every browser grows exactly the same trees.</p>
+      </article>
+      <article class="outro" data-es3d-stop="1">
+        <p class="numeral">VII.</p>
+        <h2>All of Ashby</h2>
+        <dl class="stats">
+          <div><dt>The ES3D file</dt><dd>11.9 kB</dd></div>
+          <div><dt>Gzipped</dt><dd>2.9 kB</dd></div>
+          <div><dt>Objects placed</dt><dd data-stat="instances">–</dd></div>
+          <div><dt>Triangles drawn now</dt><dd data-stat="triangles">–</dd></div>
+        </dl>
+        <p><button type="button" id="open-studio">Open the file in ES3D Studio</button></p>
+      </article>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,2 @@
+import{t as e}from"./stage-C8W367jR.js";async function t(t,n={}){let r=t.parentElement,i=r&&r.querySelector(`.stage-status`),a=r&&r.querySelector(`.stage-error`),o;try{o=await e(t,{...n,onError(e){console.error(e),a&&(a.hidden=!1,a.textContent=e)}})}catch(e){throw i&&(i.textContent=e.message||String(e)),e}let s=o.show.bind(o);return o.show=(e,t)=>{let n=s(e,t);return n.ok&&(a&&(a.hidden=!0),i&&(i.hidden=!0)),n},o}export{t};
+//# sourceMappingURL=stage-DOB5ywP-.js.map

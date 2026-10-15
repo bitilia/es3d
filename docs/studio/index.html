@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ES3D Studio</title>
+    <meta name="description" content="ES3D Studio: edit an ES3D scene and see it render in the browser, with WebGPU or WebGL2. No plugin." />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../site/app.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1 class="visually-hidden">ES3D Studio</h1>
+      <a class="brand" href="../" title="ES3D home page"><img class="wordmark" src="../favicon.svg" alt="ES3D" width="72" height="22"><span class="tag">Studio</span></a>
+      <div class="file"><span id="file-name">untitled.es3d</span><span id="syntax-label" class="pill"></span></div>
+      <nav class="toolbar">
+        <select id="examples" title="Load an example scene" aria-label="Example scene"></select>
+        <button id="btn-open" title="Open .es3d, .svg, .obj, .stl, .step, .gltf or .glb (or drop a file anywhere)">Open…</button>
+        <input type="file" id="file-input" accept=".es3d,.svg,.svgz,.obj,.stl,.step,.stp,.p21,.gltf,.glb,.json,.gz" hidden />
+        <button id="btn-format" title="Pretty-print the document">Format</button>
+        <button id="btn-convert" title="Convert between markup and compact syntax">To compact</button>
+        <button id="btn-optimize" title="Deduplicate, extract repeated parts, detect patterns">Optimise</button>
+        <div class="menu-wrap">
+          <button id="btn-export" title="Export">Export ▾</button>
+          <div id="export-menu" class="menu">
+            <button data-export="source">Save source (.es3d)</button>
+            <button data-export="xml-pretty">ES3D markup, formatted</button>
+            <button data-export="xml-min">ES3D markup, minified</button>
+            <button data-export="compact-pretty">ES3D compact syntax</button>
+            <button data-export="compact-min">ES3D compact, minified</button>
+            <button data-export="json">ES3D JSON</button>
+            <hr />
+            <button data-export="obj">OBJ + MTL (flattened)</button>
+            <button data-export="step">STEP, tessellated (.step)</button>
+            <button data-export="glb">glTF binary (GLB)</button>
+            <button data-export="glb-inst">GLB with GPU instancing</button>
+            <button data-export="glb-q">GLB, instanced + quantized (KHR_mesh_quantization)</button>
+            <hr />
+            <button data-export="png">PNG screenshot</button>
+          </div>
+        </div>
+        <a class="button" href="../convert/" title="Convert SVG, OBJ, STL, STEP and glTF files to ES3D">Converter</a>
+        <a class="button" href="../modeller/" title="Build a low-poly model from points and planes">Modeller</a>
+      </nav>
+      <div id="backend-label" class="backend">…</div>
+    </header>
+    <main id="layout" class="layout">
+      <section class="pane editor-pane">
+        <div id="editor" class="editor-host"></div>
+        <div id="diagnostics" class="diagnostics">
+          <div id="diag-head" class="diag-head"><span>Problems</span><span id="diag-count">No problems</span></div>
+          <div id="diag-list" class="diag-list"></div>
+        </div>
+      </section>
+      <div class="splitter" data-side="left" title="Drag to resize"></div>
+      <section class="pane viewport-pane">
+        <div class="viewport-wrap">
+          <canvas id="viewport"></canvas>
+          <div class="viewport-toolbar">
+            <label title="W"><input type="checkbox" id="tg-wireframe" /> Wireframe</label>
+            <label title="N"><input type="checkbox" id="tg-normals" /> Normals</label>
+            <label title="B"><input type="checkbox" id="tg-bbox" /> Bounds</label>
+            <label title="L: automatic level of detail"><input type="checkbox" id="tg-lod" checked /> Auto LOD</label>
+            <label title="Space"><input type="checkbox" id="tg-play" checked /> Animate</label>
+            <label id="scroll-wrap" title="Scroll timeline: what a visitor sees at this point of the page" hidden>Scroll <input type="range" id="scroll-progress" min="0" max="1" step="0.001" value="0" /></label>
+            <label title="Apply the document's &lt;controls&gt; limits and collision to the free camera"><input type="checkbox" id="tg-limits" checked /> Limits</label>
+            <select id="quality" title="Tessellation quality" aria-label="Tessellation quality">
+              <option value="0.5">Low detail</option>
+              <option value="1" selected>Normal detail</option>
+              <option value="2">High detail</option>
+            </select>
+            <select id="camera-select" title="Camera" aria-label="Camera"><option value="free">Free camera</option></select>
+            <button id="btn-frame" class="small" title="F: frame the whole scene">Frame</button>
+          </div>
+          <div id="hud" class="hud">–</div>
+          <div id="stale" class="stale">The source has errors. This is the last scene that compiled.</div>
+          <div class="hint">Drag to orbit. Right drag or Shift to pan. Wheel to zoom. Click to select. Double click to focus.</div>
+        </div>
+      </section>
+      <div class="splitter" data-side="right" title="Drag to resize"></div>
+      <aside class="pane side-pane">
+        <section class="panel"><h2>Scene</h2><div id="tree" class="panel-body tree-host"></div></section>
+        <section class="panel"><h2>Inspector</h2><div id="inspector" class="panel-body"></div></section>
+        <section class="panel">
+          <h2>Statistics <button id="btn-compare" class="small">Compare formats</button></h2>
+          <div id="stats" class="panel-body" tabindex="0" role="region" aria-label="Statistics"></div>
+        </section>
+      </aside>
+    </main>
+    <div id="drop-overlay" class="drop-overlay"><div>Drop an .es3d, .svg, .obj, .stl, .step, .gltf or .glb file</div></div>
+    <div id="toasts" class="toasts"></div>
+    <script type="module" src="../site/studio.js"></script>
+  </body>
+</html>

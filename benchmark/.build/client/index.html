@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ES3D benchmark</title>
+    <script type="module" crossorigin src="./assets/index-vsuIkIET.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-COPyEvOO.css">
+  </head>
+  <body>
+    <header>
+      <h1>ES3D benchmark</h1>
+      <p id="status" class="status">Starting…</p>
+      <div class="progress"><div id="bar"></div></div>
+      <p id="detail" class="muted"></p>
+    </header>
+    <main>
+      <section class="card">
+        <h2>This device</h2>
+        <dl id="device"></dl>
+        <p class="muted" id="advice">Keep this tab in front and the screen on until the benchmark says it is done. Results go to the computer that serves this page.</p>
+      </section>
+      <section class="view"><canvas id="canvas" width="960" height="540"></canvas></section>
+      <section class="card">
+        <h2>Results</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Measurement</th><th>Backend</th><th class="num">Ready ms</th><th class="num">Frame ms</th><th class="num">Triangles</th></tr></thead>
+            <tbody id="results"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hierarchical transforms and animation: each orbit is a group rotating about
+  its parent, so moons inherit their planet's motion exactly like nested SVG
+  groups. The starfield is a single <scatter> of one tiny sphere placed at a
+  fixed distance and randomly rotated: points on a sphere from a 2D scatter.
+-->
+<es3d version="1">
+  <title>Solar system (animation)</title>
+  <environment background="#03050a" sky="#1a2333" ground="#05070c" intensity="0.25"/>
+  <camera position="0,34,60" target="0,-2,0" fov="40"/>
+  <light type="point" position="0,0,0" color="#fff3e0" intensity="300"/>
+
+  <defs>
+    <material id="sun" color="#ffb300" emissive="#ff8f00" emissiveIntensity="2.2"/>
+    <material id="rock" color="#9e9e9e" roughness="0.9"/>
+    <material id="venus" color="#e0c27c" roughness="0.8"/>
+    <material id="earth" color="#3f7fd4" roughness="0.55" map="noise(5,#3f7fd4,#3b8a3f,21)"/>
+    <material id="moon" color="#bdbdbd" roughness="0.95"/>
+    <material id="mars" color="#c1440e" roughness="0.85"/>
+    <material id="jupiter" color="#d8b48a" roughness="0.7" map="stripes(9,#e3c39e,#b58658)"/>
+    <material id="saturn" color="#e6d29a" roughness="0.7"/>
+    <material id="ring" color="#cbb98d" roughness="0.8" opacity="0.8" doubleSided="true"/>
+    <material id="orbit" color="#2c3a52" unlit="true"/>
+    <material id="star" color="#ffffff" unlit="true"/>
+  </defs>
+
+  <sphere radius="3" material="sun">
+    <animate attr="rotation" to="0,360,0" dur="30s"/>
+  </sphere>
+
+  <!-- orbit guides -->
+  <torus radius="6" tube="0.02" material="orbit" segments="128"/>
+  <torus radius="9" tube="0.02" material="orbit" segments="128"/>
+  <torus radius="13" tube="0.02" material="orbit" segments="128"/>
+  <torus radius="17" tube="0.02" material="orbit" segments="128"/>
+  <torus radius="23" tube="0.02" material="orbit" segments="128"/>
+  <torus radius="30" tube="0.02" material="orbit" segments="128"/>
+
+  <group><animate attr="rotation" to="0,360,0" dur="6s"/>
+    <sphere radius="0.35" position="6,0,0" material="rock"/>
+  </group>
+  <group rotation="0,120,0"><animate attr="rotation" from="0,120,0" to="0,480,0" dur="11s"/>
+    <sphere radius="0.6" position="9,0,0" material="venus"/>
+  </group>
+  <group rotation="0,40,0"><animate attr="rotation" from="0,40,0" to="0,400,0" dur="16s"/>
+    <group position="13,0,0">
+      <sphere radius="0.65" material="earth"><animate attr="rotation" to="0,360,0" dur="3s"/></sphere>
+      <group><animate attr="rotation" to="0,360,0" dur="2.5s"/>
+        <sphere radius="0.18" position="1.3,0,0" material="moon"/>
+      </group>
+    </group>
+  </group>
+  <group rotation="0,250,0"><animate attr="rotation" from="0,250,0" to="0,610,0" dur="24s"/>
+    <sphere radius="0.45" position="17,0,0" material="mars"/>
+  </group>
+  <group rotation="0,300,0"><animate attr="rotation" from="0,300,0" to="0,660,0" dur="40s"/>
+    <sphere radius="1.6" position="23,0,0" material="jupiter"><animate attr="rotation" to="0,360,0" dur="4s"/></sphere>
+  </group>
+  <group rotation="0,190,0"><animate attr="rotation" from="0,190,0" to="0,550,0" dur="60s"/>
+    <group position="30,0,0" rotation="20,0,10">
+      <sphere radius="1.3" material="saturn"/>
+      <torus radius="2.3" tube="0.55" scale="1,0.06,1" material="ring"/>
+    </group>
+  </group>
+
+  <scatter count="900" area="0,0" seed="3" randomRotation="0..360,0..360,0">
+    <sphere radius="0.35" position="0,0,180" segments="6" material="star"/>
+  </scatter>
+</es3d>

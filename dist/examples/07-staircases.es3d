@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Staircases are parametric: a step definition plus a cumulative transform.
+  The straight flight is <repeat step="translate(0,rise,run)">, the spiral one
+  adds a rotation to the same step. The spiral handrail is a circle swept
+  along a helix whose pitch matches the 20 x 0.19 m rise per turn.
+-->
+<es3d version="1">
+  <title>Parametric staircases</title>
+  <environment background="#171b22" sky="#e1ecf8" ground="#3b342c" intensity="0.6"/>
+  <camera position="7.5,5.2,8.5" target="0.2,1.6,0" fov="42"/>
+  <light type="directional" direction="-0.4,-1,-0.55" intensity="1.25"/>
+  <light type="point" position="0,4.6,0" color="#ffe0b2" intensity="6" range="9"/>
+
+  <defs>
+    <material id="oak" color="#b7834e" roughness="0.55" map="stripes(18,#c08c55,#a87442)"/>
+    <material id="stone" color="#9ea4ab" roughness="0.8"/>
+    <material id="metal" color="#c5cdd5" metallic="1" roughness="0.3"/>
+    <material id="floor" color="#5b6470" roughness="0.85" map="checker(6,#66707c,#58616c)" uvScale="2,2"/>
+  </defs>
+
+  <plane size="16,12" material="floor"/>
+
+  <!-- straight flight: 14 steps of 0.18 m rise and 0.28 m run -->
+  <group position="-3.5,0,-1.9">
+    <repeat count="14" step="translate(0,0.18,0.28)">
+      <box size="1.2,0.18,0.28" position="0,0.09,0" material="stone"/>
+    </repeat>
+    <repeat count="8" step="translate(0,0.36,0.56)">
+      <cylinder radius="0.02" height="0.9" position="0.55,0.62,0" material="metal"/>
+    </repeat>
+    <line from="0.55,1.07,0" to="0.55,3.59,3.92" radius="0.03" material="metal"/>
+  </group>
+
+  <!-- spiral flight: 20 steps per turn, each rotated by 18 degrees -->
+  <group position="2,0,0">
+    <cylinder radius="0.16" height="4.2" position="0,2.1,0" material="metal"/>
+    <repeat count="20" step="translate(0,0.19,0) rotate(0,18,0)">
+      <box size="1.05,0.06,0.42" position="0.66,0.16,0" material="oak"/>
+      <cylinder radius="0.018" height="0.95" position="1.12,0.66,0" material="metal"/>
+    </repeat>
+    <sweep radius="0.03" along="helix(1.12,3.8,1)" position="0,1.13,0" material="metal"/>
+  </group>
+</es3d>

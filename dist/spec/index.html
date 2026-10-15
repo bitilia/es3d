@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+
+<title>Specification - ES3D</title>
+<meta name="description" content="The ES3D 1 specification: syntaxes, values, transforms, shapes, path data, materials, reuse, scatter, lights, animation, diagnostics and media types.">
+<link rel="canonical" href="https://es3d.org/spec/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ES3D">
+<meta property="og:title" content="Specification">
+<meta property="og:description" content="The ES3D 1 specification: syntaxes, values, transforms, shapes, path data, materials, reuse, scatter, lights, animation, diagnostics and media types.">
+<meta property="og:url" content="https://es3d.org/spec/">
+<meta property="og:image" content="https://es3d.org/images/studio-errors.jpg">
+<meta property="og:image:width" content="2000">
+<meta property="og:image:height" content="1125">
+<meta property="og:image:alt" content="ES3D Studio showing located errors with did-you-mean suggestions, underlined in the editor">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://es3d.org/images/studio-errors.jpg">
+<meta name="twitter:image:alt" content="ES3D Studio showing located errors with did-you-mean suggestions, underlined in the editor">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://es3d.org/#organization",
+      "name": "ES3D",
+      "url": "https://es3d.org/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/favicon.svg"
+      },
+      "sameAs": [
+        "https://github.com/bitilia/es3d"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://es3d.org/#website",
+      "url": "https://es3d.org/",
+      "name": "ES3D",
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://es3d.org/spec/#webpage",
+      "url": "https://es3d.org/spec/",
+      "name": "Specification",
+      "description": "The ES3D 1 specification: syntaxes, values, transforms, shapes, path data, materials, reuse, scatter, lights, animation, diagnostics and media types.",
+      "isPartOf": {
+        "@id": "https://es3d.org/#website"
+      },
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en",
+      "dateModified": "2026-10-15",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/images/studio-errors.jpg",
+        "width": 2000,
+        "height": 1125
+      },
+      "breadcrumb": {
+        "@id": "https://es3d.org/spec/#breadcrumb"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://es3d.org/spec/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://es3d.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Specification",
+          "item": "https://es3d.org/spec/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+  <script type="module" crossorigin src="../assets/modulepreload-polyfill-P2Xu9kJm.js"></script>
+  <script type="module" crossorigin src="../assets/site-NDrmVV8F.js"></script>
+  <link rel="stylesheet" crossorigin href="../assets/site-Dj63CpNW.css">
+</head>
+<body>
+
+
+<div class="site">
+<a class="skip" href="#content">Skip to content</a>
+<header class="masthead">
+  <a class="brand" href="../"><img src="../favicon.svg" alt="ES3D" width="114" height="36"></a>
+  <p class="tagline">Extensible Scalable 3D. Scenes you can write by hand, the way people write SVG.</p>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Site">
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links"><span class="nav-toggle-icon" aria-hidden="true"></span>Menu<span class="nav-toggle-current"></span></button>
+  <div class="nav-links" id="nav-links">
+  <ul>
+    <li><a href="../" data-nav="home">Home</a></li>
+    <li><a href="../examples/" data-nav="examples">Examples</a></li>
+    <li><a href="../demo/" data-nav="demos">Demo Sites</a></li>
+  </ul>
+  <div class="nav-head">Read</div>
+  <ul>
+    <li><a href="../spec/" aria-current="page">Specification</a></li>
+    <li><a href="../reference/" data-nav="reference">Element reference</a></li>
+    <li><a href="../media/" data-nav="media">Media</a></li>
+  </ul>
+  <div class="nav-head">Get it</div>
+  <ul>
+    <li><a href="../download/" data-nav="download">Download</a></li>
+    <li><a href="../faq/" data-nav="faq">FAQ and links</a></li>
+    <li><a href="https://github.com/bitilia/es3d">Source code</a></li>
+  </ul>
+  <div class="nav-head">Tools</div>
+  <ul>
+    <li><a href="../convert/" data-nav="convert">File converter</a></li>
+    <li><a href="../studio/">ES3D Studio</a></li>
+    <li><a href="../modeller/">ES3D Modeller</a></li>
+  </ul>
+  </div>
+</nav>
+<main id="content">
+
+<div class="doc">
+<h1 id="es3d-extensible-scalable-3d">ES3D: Extensible Scalable 3D</h1>
+<p class="source-note">Taken from <a href="https://github.com/bitilia/es3d/blob/HEAD/docs/SPEC.md">docs/SPEC.md</a>. This page and that file say the same thing.</p>
+<div class="toc"><b>Contents</b>
+<ul>
+<li class="toc-2"><a href="#1-design-goals-and-non-goals">1. Design goals and non-goals</a></li>
+<li class="toc-2"><a href="#2-conformance">2. Conformance</a></li>
+<li class="toc-2"><a href="#3-coordinate-system-units-and-conventions">3. Coordinate system, units and conventions</a></li>
+<li class="toc-2"><a href="#4-surface-syntaxes">4. Surface syntaxes</a></li>
+<li class="toc-2"><a href="#5-document-structure">5. Document structure</a></li>
+<li class="toc-2"><a href="#6-values">6. Values</a></li>
+<li class="toc-2"><a href="#7-transforms-and-the-scene-hierarchy">7. Transforms and the scene hierarchy</a></li>
+<li class="toc-2"><a href="#8-shapes">8. Shapes</a></li>
+<li class="toc-2"><a href="#9-path-data">9. Path data</a></li>
+<li class="toc-2"><a href="#10-meshes-escape-hatch">10. Meshes (escape hatch)</a></li>
+<li class="toc-2"><a href="#11-materials">11. Materials</a></li>
+<li class="toc-2"><a href="#12-reuse-and-procedural-placement">12. Reuse and procedural placement</a></li>
+<li class="toc-2"><a href="#13-lights-cameras-and-environment">13. Lights, cameras and environment</a></li>
+<li class="toc-2"><a href="#14-animation">14. Animation</a></li>
+<li class="toc-2"><a href="#15-diagnostics">15. Diagnostics</a></li>
+<li class="toc-2"><a href="#16-extensibility-and-versioning">16. Extensibility and versioning</a></li>
+<li class="toc-2"><a href="#17-file-names-and-media-types">17. File names and media types</a></li>
+</ul>
+</div>
+
+<p><strong>Format specification, version 1</strong> · file extension <code>.es3d</code> · namespace <code>https://es3d.org/ns/1</code></p>
+<p>ES3D is a declarative scene format in the spirit of SVG. A document says what a scene contains: boxes, spheres, extruded outlines, instanced groups, lights, cameras. It does not store the triangles a modelling tool happened to emit. A reader turns that description into GPU geometry, at whatever tessellation the view needs.</p>
+<p>This document defines the semantics. The complete list of elements, attributes, value types, defaults and ranges is generated from the reference implementation's schema in <a href="../reference/">REFERENCE.md</a>. Where this text and the reference implementation disagree, that is a bug in one of them; please report it.</p>
+<p>Key words: <strong>must</strong>, <strong>must not</strong>, <strong>should</strong> and <strong>may</strong> are used as in RFC 2119.</p>
+<hr>
+<h2 id="1-design-goals-and-non-goals">1. Design goals and non-goals</h2>
+<p>Goals:</p>
+<ol>
+<li><strong>Human-readable and writable.</strong> A useful scene fits on a screen and can be written by hand, generated by a template, or diffed in version control.</li>
+<li><strong>Primitive- and transform-based.</strong> Geometry is described by parameters (a sphere is a radius), so size does not depend on tessellation and the reader can choose detail per view.</li>
+<li><strong>Reuse is first class.</strong> Definitions (<code>&lt;defs&gt;</code>, <code>&lt;use&gt;</code>), linear patterns (<code>&lt;repeat&gt;</code>) and deterministic procedural placement (<code>&lt;scatter&gt;</code>) keep repetitive scenes small, and map directly to GPU instancing.</li>
+<li><strong>Strict.</strong> Malformed input is reported with a location and, where possible, a suggestion. A reader must not silently drop or "repair" geometry.</li>
+<li><strong>Lossless round trips.</strong> Reading and writing a document must not change its meaning; the reference implementation preserves attribute spelling and comments as well.</li>
+</ol>
+<p>Non-goals, by design: version 1 describes scenes built from shapes, paths and repetition. It does not describe skinning, morph targets or physics, and it is not a CAD format. There is no boundary representation and no exact Boolean.</p>
+<p>Version 1 also refuses a few things that stalled SVG:</p>
+<ul>
+<li><strong>One document, not a family of profiles.</strong> Compact syntax and JSON are encodings of the same tree. They are not subsets that omit elements. SVG Tiny, Basic and Full left authors guessing which half of the spec a viewer had, and SVG 1.2 Full never shipped.</li>
+<li><strong>No script, no event handlers, no style sheets.</strong> A file is a scene. Opening it does not run a program. SVG's mix of picture and script is why "using it as an image" later needed a separate security mode.</li>
+<li><strong>No required namespace.</strong> An <code>xmlns</code> attribute may appear and is ignored. Leaving it out is not an error. A missing namespace was a common reason early SVG files rendered as an XML error page.</li>
+<li><strong>No custom entities.</strong> Only <code>&amp;lt;</code>, <code>&amp;gt;</code>, <code>&amp;amp;</code>, <code>&amp;quot;</code>, <code>&amp;apos;</code> and numeric character references are expanded. A DOCTYPE is ignored and cannot declare entities, so a document cannot expand itself the way a billion-laughs payload does.</li>
+<li><strong>No special compressed extension.</strong> Gzip is <code>.es3d.gz</code>. SVG's <code>.svgz</code> was often gzipped a second time, or served with the wrong media type. Until <code>model/vnd.es3d</code> is registered, servers may send the text as <code>text/plain; charset=utf-8</code>.</li>
+</ul>
+<h2 id="2-conformance">2. Conformance</h2>
+<p>A <strong>conforming document</strong> is a document that parses in one of the surface syntaxes of section 4, has an <code>es3d</code> root element with <code>version=&quot;1&quot;</code> (or <code>1.x</code>), and produces no errors under the rules of this specification and the schema in REFERENCE.md.</p>
+<p>A <strong>conforming reader</strong>:</p>
+<ul>
+<li>must reject documents with errors, reporting each error with a stable code (section 15), a message, and a location (line and column for text input, an element path otherwise);</li>
+<li>must report all errors it can find, not only the first (syntax errors that make the rest of the document unreadable are the exception);</li>
+<li>must not render a document with errors as if it were valid (the reference viewer keeps showing the last valid state and marks it stale);</li>
+<li>must produce, for every <code>&lt;scatter&gt;</code>, the instances defined in section 12.3 (procedural placement is part of the format, not a rendering hint);</li>
+<li>may choose tessellation freely, within the accuracy rules of section 8.1.</li>
+</ul>
+<p>The legacy root name <code>&lt;v3d&gt;</code> is accepted with a warning (<code>W_LEGACY_ROOT</code>).</p>
+<h2 id="3-coordinate-system-units-and-conventions">3. Coordinate system, units and conventions</h2>
+<ul>
+<li>Right-handed coordinates, <strong>+Y up</strong>. Cameras look down their local <strong>−Z</strong> axis.</li>
+<li>Lengths are plain numbers. The root attribute <code>unit</code> (<code>m</code> by default) is informative only; readers must not rescale.</li>
+<li>Angles are in <strong>degrees</strong> everywhere (rotations, field of view, arcs, sweeps).</li>
+<li>Colours are <strong>sRGB</strong>; readers convert to linear space for lighting.</li>
+<li>2D outline data (path data, polygons) lives in the local <strong>XY plane with y up</strong>. SVG's y axis points down. A path drawn in SVG coordinates can be used with <code>scale=&quot;1,-1,1&quot;</code>.</li>
+<li>Every primitive's default size fits the unit cube centred at the origin, so <code>&lt;box/&gt;</code>, <code>&lt;sphere/&gt;</code>, <code>&lt;cylinder/&gt;</code> … are all visible and directly comparable.</li>
+</ul>
+<h2 id="4-surface-syntaxes">4. Surface syntaxes</h2>
+<p>All syntaxes produce the same abstract tree of elements, attributes, text and comments. Attribute values are strings in the tree; their typed interpretation (section 6) is defined by the schema. A reader detects the syntax from the first significant character: <code>&lt;</code> markup, <code>[</code> or <code>{</code> JSON, anything else compact. There is no binary encoding of the document.</p>
+<h3 id="41-markup-canonical">4.1 Markup (canonical)</h3>
+<p>An XML subset:</p>
+<pre class="lang-xml"><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;es3d version=&quot;1&quot;&gt;
+  &lt;material id=&quot;brass&quot; color=&quot;#c9a227&quot; metallic=&quot;1&quot; roughness=&quot;0.35&quot;/&gt;
+  &lt;group position=&quot;0,1,0&quot; rotation=&quot;0,30,0&quot;&gt;
+    &lt;box size=&quot;2,0.2,1&quot; material=&quot;brass&quot;/&gt;
+    &lt;sphere radius=&quot;0.4&quot; position=&quot;0,0.5,0&quot; color=&quot;tomato&quot;/&gt;
+  &lt;/group&gt;
+&lt;/es3d&gt;</code></pre>
+<p>Supported: elements, single- or double-quoted attributes, comments, the five predefined entities and numeric character references, CDATA sections (treated as text), an optional XML declaration, and a DOCTYPE that is ignored. The DOCTYPE is not read for entity declarations. Not supported (errors): unquoted attribute values, duplicate attributes, text in elements that do not accept text, more than one root element, and any entity other than the five predefined ones. Element and attribute names are case-sensitive. Namespace prefixes are not interpreted. <code>xmlns</code> attributes are allowed and ignored, and a document does not need one.</p>
+<h3 id="42-compact-syntax-es3d-c">4.2 Compact syntax (ES3D-C)</h3>
+<p>A brace-structured syntax for hand writing. On the example scenes it is 15–23 % smaller than minified markup and about half the size of indented markup (after gzip the difference shrinks to 5–12 %):</p>
+<pre><code>es3d version=1
+// comments: // line and /* block */
+material#brass c=#c9a227 metallic=1 roughness=0.35
+group p=0,1,0 rot=0,30,0 {
+  box s=2,0.2,1 m=brass
+  sphere r=0.4 p=0,0.5,0 c=tomato
+}
+use @tree p=10,0,5
+title &quot;A \&quot;quoted\&quot; title&quot;</code></pre>
+<p>Grammar (newlines are ordinary whitespace):</p>
+<pre><code>document  := comment* root
+root      := ('es3d' | 'v3d') header ( '{' statement* '}' | statement* )
+statement := element | comment | ';'
+element   := NAME header ( '{' statement* '}' )?
+header    := ( '#' ID )? ( '@' REF )? STRING? ( NAME '=' VALUE )*
+VALUE     := bare-value | '&quot;' escaped-string '&quot;'</code></pre>
+<p><code>#x</code> is shorthand for <code>id=&quot;x&quot;</code>, <code>@x</code> for <code>ref=&quot;x&quot;</code>, and a quoted string in header position is the element's text content. A bare value runs until whitespace, <code>{</code>, <code>}</code>, <code>;</code> or <code>&quot;</code>; values containing those characters (transforms with spaces, path data) must be quoted. An element header ends at the first token that is not <code>NAME=</code>, so the grammar is LL(2) and needs no schema knowledge.</p>
+<h3 id="43-json-jsonml">4.3 JSON (JsonML)</h3>
+<p><code>[&quot;es3d&quot;, {&quot;version&quot;: &quot;1&quot;}, [&quot;box&quot;, {&quot;size&quot;: &quot;2&quot;}], [&quot;title&quot;, {}, &quot;text&quot;]]</code>. An element is an array of name, attribute object (every value a string) and children. Strings are text. Comments are <code>[&quot;#comment&quot;, &quot;text&quot;]</code>. This form exists for tooling that prefers JSON. It is larger than the markup, and errors inside values have no line or column. It is an encoding of the same tree, not a reduced profile.</p>
+<h3 id="44-document-encoding">4.4 Document encoding</h3>
+<p>A document is UTF-8 text in one of the three syntaxes above. Gzip (<code>.es3d.gz</code>) is ordinary HTTP compression of that text. Meshes that have no procedural description stay inline as <code>&lt;mesh&gt;</code> (section 10). The format does not reference glTF, OBJ or any other container for its geometry.</p>
+<h3 id="45-attribute-aliases">4.5 Attribute aliases</h3>
+<p>Frequently used attributes have short aliases that are equivalent everywhere (an element must not give both forms): <code>p</code> position, <code>rot</code> rotation, <code>sc</code> scale, <code>t</code> transform, <code>m</code> material, <code>c</code> color, <code>s</code> size, <code>r</code> radius, <code>h</code> height, <code>n</code> count, <code>dir</code> direction, <code>href</code> ref. Writers producing minified output use the aliases; pretty output uses the full names.</p>
+<h2 id="5-document-structure">5. Document structure</h2>
+<pre><code>&lt;es3d version=&quot;1&quot; [unit] [name]&gt;
+  &lt;title&gt;, &lt;desc&gt;            optional metadata (text)
+  &lt;environment&gt;              background and ambient light (first one wins)
+  &lt;controls&gt;                 how viewers let people move the camera (first one wins)
+  &lt;material id&gt;              materials may appear anywhere; they are document-wide
+  &lt;defs&gt;                     definitions referenced by id; not rendered directly
+  &lt;scene&gt;                    optional wrapper; behaves like &lt;group&gt;
+  scene nodes …              shapes, containers, &lt;use&gt;, lights, cameras
+&lt;/es3d&gt;</code></pre>
+<p>Each element's allowed children are listed in REFERENCE.md. Placing an element where it is not allowed is an error (<code>E_MISPLACED_ELEMENT</code>). Ids are unique per document (<code>E_DUPLICATE_ID</code>) and are referenced by <code>material</code>, <code>ref</code>, <code>path</code> and <code>randomMaterial</code> attributes; references are checked for existence (<code>E_UNKNOWN_REFERENCE</code>, with a suggestion), kind (<code>E_REFERENCE_KIND</code>) and cycles (<code>E_CIRCULAR_REFERENCE</code>).</p>
+<h2 id="6-values">6. Values</h2>
+<p>The exact syntax of every value type is listed at the end of REFERENCE.md. General rules:</p>
+<ul>
+<li>Numbers follow the SVG/CSS number grammar: optional sign, digits with an optional fraction or a leading <code>.</code>, optional exponent (<code>-0.5</code>, <code>.5</code>, <code>2e-3</code>). <code>NaN</code>, <code>Infinity</code> and hexadecimal are not numbers.</li>
+<li>Lists accept commas, whitespace or both as separators (<code>1,2,3</code>, <code>1 2 3</code>, <code>1, 2, 3</code>), but not empty items.</li>
+<li>Vectors have fixed arity; <code>size</code> and <code>scale</code> also accept one number for all components.</li>
+<li>Booleans are <code>true</code> or <code>false</code>.</li>
+<li>An attribute that fails to parse is an error (<code>E_INVALID_VALUE</code>) located inside the value where possible; a value outside its range is <code>E_RANGE</code>.</li>
+<li>Cross-attribute rules (for example "<code>bevel</code> must not exceed half the <code>depth</code>", "give <code>count</code> or <code>grid</code>, not both") are errors, never silent clamping.</li>
+</ul>
+<h2 id="7-transforms-and-the-scene-hierarchy">7. Transforms and the scene hierarchy</h2>
+<p>Every scene node has a <strong>local matrix</strong></p>
+<pre><code>local = transform · T(position) · R(rotation) · S(scale)</code></pre>
+<p>and its world matrix is <code>parentWorld · local</code>. Consequently <code>position</code>, <code>rotation</code> and <code>scale</code> are applied <em>inside</em> the <code>transform</code> attribute, like <code>x</code>/<code>y</code> inside the transform of an SVG <code>&lt;use&gt;</code>.</p>
+<ul>
+<li><code>rotation=&quot;x,y,z&quot;</code> is in degrees and applied about X first, then Y, then Z: <code>R = Rz · Ry · Rx</code>. Sine and cosine of rotation angles are the functions in section 12.3, not the platform <code>sin</code> and <code>cos</code>.</li>
+<li><code>scale</code> may be negative (mirroring); readers must keep faces outward-facing by flipping the winding of mirrored instances.</li>
+<li><code>transform</code> is an SVG-style list of functions composed <strong>left to right</strong>: <code>translate(1,0,0) rotateY(90) scale(2)</code> means <code>T · Ry · S</code>; the rightmost function acts on the object first. Functions: <code>translate(x[,y[,z]])</code>, <code>rotate(x,y,z)</code> (Euler degrees), <code>rotate(a,ax,ay,az)</code> (axis-angle; zero axis is an error), <code>rotateX(a)</code>, <code>rotateY(a)</code>, <code>rotateZ(a)</code>, <code>scale(s)</code> or <code>scale(x,y,z)</code> (two arguments are an error), <code>quat(x,y,z,w)</code>, <code>matrix(m0 … m15)</code> (column-major, like CSS <code>matrix3d</code>). <code>rotate(45)</code> is an error, with a hint to use <code>rotateY(45)</code>. The 2D SVG meaning of a single angle is ambiguous in 3D.</li>
+<li><code>visible=&quot;false&quot;</code> hides a node and its subtree (they still exist and can be referenced).</li>
+</ul>
+<h2 id="8-shapes">8. Shapes</h2>
+<p>Each shape element produces one renderable geometry in its local frame, centred at the origin unless stated otherwise. Dimensions, defaults and ranges are listed in REFERENCE.md.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Element</th><th>Local definition</th></tr></thead>
+<tbody>
+<tr><td><code>box</code></td><td>axis-aligned box, <code>size</code> = edge lengths; <code>radius</code> rounds all edges</td></tr>
+<tr><td><code>sphere</code></td><td>radius <code>radius</code></td></tr>
+<tr><td><code>cylinder</code></td><td>along Y from −h/2 to +h/2; <code>radiusTop</code> makes a truncated cone; <code>caps=&quot;false&quot;</code> leaves it open</td></tr>
+<tr><td><code>cone</code></td><td>base at −h/2, apex at +h/2</td></tr>
+<tr><td><code>capsule</code></td><td>along Y, total height <code>height</code> including the hemispherical caps</td></tr>
+<tr><td><code>plane</code></td><td>rectangle in XZ facing +Y, double-sided</td></tr>
+<tr><td><code>torus</code></td><td>around Y; <code>radius</code> to the tube centre, <code>tube</code> tube radius, <code>arc</code> partial sweep from +X towards −Z</td></tr>
+<tr><td><code>line</code></td><td>from <code>from</code> to <code>to</code>; a hairline, or a tube of <code>radius</code></td></tr>
+<tr><td><code>polyline</code></td><td>3D <code>points</code> or the outline of 2D path data <code>d</code>; <code>smooth</code> = Catmull-Rom; hairline or tube</td></tr>
+<tr><td><code>polygon</code></td><td>filled flat polygon in XY, double-sided</td></tr>
+<tr><td><code>path</code></td><td>filled flat 2D path in XY, double-sided; inside <code>&lt;defs&gt;</code> a reusable outline</td></tr>
+<tr><td><code>extrude</code></td><td>2D path extruded from z = 0 to z = <code>depth</code> (or centred with <code>center=&quot;true&quot;</code>), optional rounded <code>bevel</code></td></tr>
+<tr><td><code>revolve</code></td><td>2D profile revolved around Y; profile x = distance from the axis, y = height</td></tr>
+<tr><td><code>sweep</code></td><td>circle (<code>radius</code>) or 2D profile swept along a 3D spine (<code>along</code>) with rotation-minimising frames, optional <code>twist</code> and <code>taper</code></td></tr>
+<tr><td><code>gear</code></td><td>involute spur gear with <code>teeth</code>, <code>module</code>, <code>pressureAngle</code>, extruded by <code>depth</code>, optional <code>bore</code> and <code>bevel</code></td></tr>
+<tr><td><code>mesh</code></td><td>explicit triangles (section 10)</td></tr>
+</tbody></table></div>
+<h3 id="81-tessellation">8.1 Tessellation</h3>
+<p>Shapes are exact mathematical surfaces. A reader may choose the triangles, and every generated mesh must stay within that level's chordal-error bound: the maximum distance from the mesh to the true surface, measured in the generator's canonical units. The bound is part of the geometry. Identical triangles are not required. Platform <code>sin</code> and <code>cos</code> may be used while tessellating; placement (section 12.3) may not.</p>
+<p>The reference reader keeps up to four levels. At quality 1 the segment count is <code>max(minimum, round(base / 2^level))</code>:</p>
+<div class="table-wrap"><table class="timings">
+<thead><tr><th>Shape</th><th style="text-align:right">Base</th><th style="text-align:right">Minimum</th><th>Levels</th></tr></thead>
+<tbody>
+<tr><td>Sphere, cylinder, cone</td><td style="text-align:right">48</td><td style="text-align:right">8</td><td>48, 24, 12, 8</td></tr>
+<tr><td>Capsule</td><td style="text-align:right">32</td><td style="text-align:right">8</td><td>32, 16, 8, 8</td></tr>
+<tr><td>Torus sweep / tube</td><td class="pair" style="text-align:right">64<span class="sep"> / </span>24</td><td class="pair best" style="text-align:right"><span class="fast" title="Fastest ready time in this row">8</span><span class="sep"> / </span><span class="fast" title="Fastest frame time in this row">6</span></td><td>64, 32, 16, 8 and 24, 12, 6, 6</td></tr>
+<tr><td>Rounded box</td><td style="text-align:right">4</td><td style="text-align:right">1</td><td>4, 2, 1, 1</td></tr>
+</tbody></table></div>
+<p>A <code>segments</code> attribute (or both torus segment counts) requests one fixed tessellation, which is part of the shape. A <code>segments=&quot;6&quot;</code> cylinder is a hexagonal prism at every distance. Exact shapes (box, plane, polygon, hairline, authored mesh) have one level and a bound of 0.</p>
+<p>Each level stores its bound. A frame may draw a level only while <code>bound × scale × pixelsPerUnit</code> is at most 1. <code>scale</code> is the longest column of the instance matrix. <code>pixelsPerUnit</code> is the projected size of one canonical unit. The reference reader picks the coarsest level that satisfies that test. A renderer <code>lodBias</code> above 1 (default 1) divides the one-pixel budget; it is not a document attribute. While a level is still being generated, a renderer may draw a coarser one in its place for a few frames (progressive refinement), as long as it keeps drawing until every level passes the test. For a unit sphere the switches fall near 59, 15 and 7 pixels of the sphere's own radius.</p>
+<p>Closed shapes must produce closed, outward-facing surfaces. Open or flat shapes (planes, polygons, paths, open revolves, <code>caps=&quot;false&quot;</code>) are rendered double-sided.</p>
+<h2 id="9-path-data">9. Path data</h2>
+<p><code>d</code> attributes use SVG path syntax with all commands, absolute and relative: <code>M L H V C S Q T A Z</code> (plus implicit repetition, <code>m</code> followed by implicit <code>l</code>, and the SVG separator rules). Arcs follow the SVG implementation notes (radii scaled up when too small). Coordinates are in the local XY plane, <strong>y up</strong>.</p>
+<ul>
+<li><strong>Subpaths and fill rules.</strong> A path can contain several closed subpaths. <code>fillRule</code> (<code>nonzero</code>, default, or <code>evenodd</code>) decides which nested contours become holes, exactly as SVG's <code>fill-rule</code>. Surfaces are generated where the fill changes, so same-direction nested contours under <code>nonzero</code> produce internal walls only where the filled region actually changes.</li>
+<li><strong>Open subpaths</strong> are closed implicitly for filling (SVG behaviour); <code>revolve</code> uses open profiles as-is.</li>
+<li><strong>Degenerate input</strong> is reported, never repaired: subpaths without area produce <code>W_DEGENERATE_CONTOUR</code>, a fill that leaves nothing to fill <code>W_EMPTY_FILL</code>, and a self-intersecting contour <code>W_SELF_INTERSECTION</code> stating how much of the expected area the triangulation covers. Readers must not invent geometry for invalid outlines.</li>
+<li><code>path=&quot;id&quot;</code> references a <code>&lt;path&gt;</code> in <code>&lt;defs&gt;</code> instead of inline data; a shape gives either <code>d</code> or <code>path</code>.</li>
+<li>3D path data (sweep spines) uses <code>M L C S Q T Z</code> with three numbers per point; <code>H</code>, <code>V</code> and <code>A</code> are errors in 3D.</li>
+</ul>
+<p><code>extrude</code> caps the front and back with the filled region, builds walls from every contour, and offsets the caps inwards by the bevel radius with a quarter-round profile. <code>revolve</code> profiles must stay at x ≥ 0 (<code>E_REVOLVE_AXIS</code>); closed profiles produce closed solids, open profiles open surfaces, and faces are oriented outwards automatically. <code>sweep</code> frames are rotation-minimising (double reflection); closed spines are corrected so the frames meet without a seam.</p>
+<h2 id="10-meshes-escape-hatch">10. Meshes (escape hatch)</h2>
+<p><code>&lt;mesh positions=&quot;x y z …&quot; indices=&quot;i j k …&quot;/&gt;</code> stores triangles explicitly, for content that has no procedural description (scans, sculpted shapes). <code>normals</code> and <code>uvs</code> are optional; without normals the reader computes them with the crease angle <code>smooth</code> (degrees; 0 = flat, 180 = fully smooth). Mesh arrays are float32 data. Index and array-length errors are reported (<code>E_MESH</code>), never truncated. A <code>&lt;mesh&gt;</code> in <code>&lt;defs&gt;</code> can be instanced with <code>&lt;use&gt;</code> like anything else.</p>
+<p>A writer that emits <code>&lt;mesh&gt;</code> from floating-point data rounds positions so the error is at most 10⁻⁵ of the scene extent, and rounds normals to two decimal places. Authored documents may use more digits; readers still store the values as float32.</p>
+<h2 id="11-materials">11. Materials</h2>
+<p><code>&lt;material&gt;</code> defines a metallic/roughness material in the glTF channel layout, stored on the element itself:</p>
+<ul>
+<li><code>color</code> is the base colour (sRGB). Its alpha multiplies <code>opacity</code>.</li>
+<li><code>metallic</code> and <code>roughness</code> are factors in 0…1.</li>
+<li><code>metallicRoughnessMap</code> is a linear texture: green multiplies roughness, blue multiplies metallic.</li>
+<li><code>occlusionMap</code> is a linear texture. Red darkens indirect light (hemisphere and environment), mixed by <code>occlusionStrength</code> (default 1). It does not scale direct lights.</li>
+<li><code>emissive</code> × <code>emissiveIntensity</code>, multiplied by <code>emissiveMap</code> (sRGB).</li>
+<li><code>map</code> (base colour, sRGB) and <code>normalMap</code> (linear, scaled by <code>normalScale</code>). A texture is an image URL or a procedural texture such as <code>checker(8)</code> or <code>bumps(12,0.6)</code>. <code>uvScale</code> repeats the coordinates.</li>
+<li><code>alphaMode</code> is <code>auto</code> (default), <code>opaque</code>, <code>mask</code> or <code>blend</code>. <code>auto</code> is <code>blend</code> when <code>opacity</code> × colour alpha is below 0.999 and <code>opaque</code> otherwise. <code>opaque</code> ignores alpha. <code>mask</code> discards fragments below <code>alphaCutoff</code> (default 0.5). <code>blend</code> uses opacity as coverage. Texture alpha is visible only with <code>alphaMode=&quot;blend&quot;</code> and an opacity below 1.</li>
+<li><code>doubleSided</code> and <code>unlit</code>.</li>
+</ul>
+<p>Texture coordinates, before <code>uvScale</code>:</p>
+<ul>
+<li>Sphere: <code>u</code> is longitude, 0 at +X, increasing through −Z; <code>v</code> is 1 at the north pole and 0 at the south pole. The seam is the +X meridian.</li>
+<li>Cylinder and cone: <code>u</code> runs around the axis, 0 at +X; <code>v</code> is 0 at the bottom and 1 at the top. Caps use a planar projection in XZ, centred at (0.5, 0.5).</li>
+<li>Plane: the unit square in XZ, <code>u</code> along +X and <code>v</code> along −Z.</li>
+<li>Box: each face is 0…1, with the face's normal as the projection axis.</li>
+<li>Torus: <code>u</code> along the sweep from the +X side, <code>v</code> around the tube.</li>
+</ul>
+<p>Inheritance follows SVG's <code>fill</code>:</p>
+<ul>
+<li><code>material=&quot;id&quot;</code> on any node sets the material for the node and its descendants, and <strong>clears</strong> an inherited colour override.</li>
+<li><code>color=&quot;…&quot;</code> on any node overrides the base colour (of the inherited or own material) for the node and its descendants.</li>
+<li>A <code>&lt;use&gt;</code> passes its material and colour down into the referenced content as <em>inherited</em> values; values set inside the definition win.</li>
+<li>Without any material, shapes use the default material (light grey, roughness 0.5).</li>
+</ul>
+<p>Identical parameter sets are the same material; readers should deduplicate them (the reference reader binds each distinct material once per frame).</p>
+<h2 id="12-reuse-and-procedural-placement">12. Reuse and procedural placement</h2>
+<h3 id="121-defs-and-use">12.1 <code>&lt;defs&gt;</code> and <code>&lt;use&gt;</code></h3>
+<p>Children of <code>&lt;defs&gt;</code> are not rendered. <code>&lt;use ref=&quot;id&quot;&gt;</code> renders the referenced element (from <code>&lt;defs&gt;</code> or anywhere else in the document) as if it were a child of the <code>&lt;use&gt;</code>, under the use's transform and style. A definition referenced N times exists once; readers should render repeated geometry with instancing. Reference cycles are errors.</p>
+<h3 id="122-repeat">12.2 <code>&lt;repeat&gt;</code></h3>
+<p><code>&lt;repeat count=&quot;n&quot; step=&quot;transform&quot;&gt;</code> renders its children n times. Copy i (0-based) is placed with <code>step</code> applied i times:</p>
+<pre><code>world(copy i) = world(repeat) · stepⁱ · local(child)</code></pre>
+<p>so <code>step=&quot;translate(0,0.2,0.3) rotateY(15)&quot;</code> builds a spiral staircase. <code>count=&quot;0&quot;</code> renders nothing.</p>
+<h3 id="123-scatter-normative-algorithm">12.3 <code>&lt;scatter&gt;</code> (normative algorithm)</h3>
+<p><code>&lt;scatter&gt;</code> places <code>count</code> copies of its children (or <code>grid=&quot;nx,nz&quot;</code> copies) in its local XZ plane. Every reader must implement this algorithm exactly, in IEEE 754 binary64 with round-to-nearest. The random sequence is integer arithmetic. <code>sqrt</code> is <code>Math.sqrt</code> (correctly rounded). Disc positions and every rotation matrix use <code>es3dSin</code> and <code>es3dCos</code> below, in the order written, so two readers produce the same bits.</p>
+<ol>
+<li>The random generator is <strong>mulberry32</strong> seeded with the unsigned 32-bit <code>seed</code> (default 1):
+<pre class="lang-js"><code>function mulberry32(seed) {
+  let a = seed &gt;&gt;&gt; 0;
+  return () =&gt; {
+    a = (a + 0x6d2b79f5) &gt;&gt;&gt; 0;
+    let t = a;
+    t = Math.imul(t ^ (t &gt;&gt;&gt; 15), t | 1);
+    t ^= t + Math.imul(t ^ (t &gt;&gt;&gt; 7), t | 61);
+    return ((t ^ (t &gt;&gt;&gt; 14)) &gt;&gt;&gt; 0) / 4294967296;
+  };
+}</code></pre></li>
+<li>For copy i = 0 … n−1, draw exactly nine values u0 … u8 in order (all nine are drawn even when unused, so adding an attribute never changes the positions of other attributes' effects).</li>
+<li>Position (y = 0):
+<ul>
+<li>grid: ix = i mod nx, iz = ⌊i / nx⌋; x = (ix − (nx−1)/2)·spacingₓ + (u0 − ½)·jitter·spacingₓ, z = (iz − (nz−1)/2)·spacing_z + (u1 − ½)·jitter·spacing_z;</li>
+<li>disc (<code>radius</code> R): r = R·√u0, a = u1·2π, x = r·es3dCos(a), z = r·es3dSin(a);</li>
+<li>rectangle (<code>area</code> w,d): x = (u0 − ½)·w, z = (u1 − ½)·d.</li>
+</ul></li>
+<li>Rotation (degrees, Euler as in section 7): component k = lo_k + (hi_k − lo_k)·u(2+k) for the ranges of <code>randomRotation</code>.</li>
+<li>Scale: uniform <code>randomScale</code> range → s = lo + (hi − lo)·u5 for all axes; per-axis ranges use u5, u6, u7.</li>
+<li>Material: with <code>randomMaterial=&quot;a,b,c&quot;</code>, copy i uses entry ⌊u8 · count⌋ (clamped to the last entry) and the inherited colour override is cleared.</li>
+<li>world(copy i) = world(scatter) · T(position) · R(rotation) · S(scale) · local(child).</li>
+</ol>
+<p><code>grid</code> and <code>count</code> are mutually exclusive, as are <code>area</code> and <code>radius</code>; a random layout needs one of them.</p>
+<p><code>es3dSin</code> and <code>es3dCos</code> take radians. π, 2π, π/2 and π/4 are <code>Math.PI</code>, <code>Math.PI * 2</code>, <code>Math.PI * 0.5</code> and <code>Math.PI * 0.25</code>. A non-finite input is returned unchanged. Otherwise:</p>
+<pre><code>y = x - 2π · round(x / 2π)
+sign = 1
+if y &lt; 0: sign = -1; y = -y
+if y &gt; π/2: y = π - y
+if y &lt; 0: y = 0
+s = y &gt; π/4 ? kernelCos(π/2 - y) : kernelSin(y)
+es3dSin(x) = sign &lt; 0 ? -s : s
+es3dCos(x) = es3dSin(x + π/2)</code></pre>
+<p><code>kernelSin</code> and <code>kernelCos</code> are Horner polynomials. <code>z = x*x</code>. Coefficients, as binary64 literals:</p>
+<pre><code>S1 = -1.66666666666666324348e-1
+S2 =  8.33333333332248946124e-3
+S3 = -1.98412698298579493134e-4
+S4 =  2.75573137070700676789e-6
+S5 = -2.50507602534068634195e-8
+S6 =  1.58969099521155010221e-10
+kernelSin(x) = x + (z*x) * (S1 + z * (S2 + z * (S3 + z * (S4 + z * (S5 + z * S6)))))
+
+C1 =  4.16666666666666019037e-2
+C2 = -1.38888888888741095749e-3
+C3 =  2.48015872894767294178e-5
+C4 = -2.75573143513906633035e-7
+C5 =  2.0875723212981748279e-9
+C6 = -1.13596475577881948265e-11
+r = z * (C1 + z * (C2 + z * (C3 + z * (C4 + z * (C5 + z * C6)))))
+kernelCos(x) = 1 - 0.5*z + z*r</code></pre>
+<p>Every add, subtract and multiply is one binary64 operation, in that order. <code>round</code> is <code>Math.round</code> (a tie at n+0.5 rounds towards +∞).</p>
+<h3 id="124-lod">12.4 <code>&lt;lod&gt;</code></h3>
+<p><code>&lt;lod distances=&quot;d1,d2,…&quot;&gt;</code> has exactly one more child than distances (<code>E_LOD_CHILDREN</code>). Child i is rendered while the distance from the camera to the lod's world origin is below dᵢ (and at least dᵢ₋₁); the last child beyond the last distance. Distances are in the lod's local units (scaled by the cube root of the world scale's determinant). Exporters to static formats write child 0. Automatic per-primitive tessellation LOD (section 8.1) is independent of <code>&lt;lod&gt;</code>.</p>
+<h3 id="125-resource-limits">12.5 Resource limits</h3>
+<p>Exceeding a limit is an error. The document is not rendered as valid.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Limit</th><th style="text-align:right">Value</th><th>Code</th></tr></thead>
+<tbody>
+<tr><td>Expanded instances (<code>repeat</code>, <code>scatter</code>, <code>use</code>)</td><td style="text-align:right">2,000,000</td><td><code>E_TOO_MANY_INSTANCES</code></td></tr>
+<tr><td>Nesting, counting each element and each use-to-target step</td><td style="text-align:right">64</td><td><code>E_TOO_DEEP</code></td></tr>
+<tr><td>Commands in one path, after implicit repetition</td><td style="text-align:right">100,000</td><td><code>E_PATH_LIMIT</code></td></tr>
+<tr><td>Copies in one <code>repeat</code> or <code>scatter</code></td><td style="text-align:right">1,000,000</td><td><code>E_RANGE</code></td></tr>
+</tbody></table></div>
+<h2 id="13-lights-cameras-and-environment">13. Lights, cameras and environment</h2>
+<ul>
+<li><p><code>&lt;light type=&quot;directional|point|spot|ambient|hemisphere&quot;&gt;</code> with <code>color</code>, <code>intensity</code>; directional and spot lights take <code>direction</code> or <code>target</code>; point and spot lights <code>position</code> and an optional cut-off <code>range</code>; spot lights <code>angle</code> (full cone, degrees) and <code>penumbra</code> (0–1); hemisphere lights <code>color</code> (sky) and <code>groundColor</code>. Lights are placed by their ancestors' transforms like any node. Without any light, readers use a default key light so content is visible.</p></li>
+<li><p><code>&lt;camera&gt;</code> is perspective (<code>fov</code>, vertical, degrees) or orthographic (<code>height</code> of the visible area). Orientation comes from <code>target</code> (and <code>up</code>) or from <code>rotation</code> (looking down −Z); giving both is an error. <code>near</code>/<code>far</code> are optional. The first camera is the initial view.</p></li>
+<li><p><strong>Framing on other screens.</strong> <code>fov</code> (or <code>height</code>) is the vertical extent of a view <code>aspect</code> wide and 1 high (default <code>aspect=&quot;1&quot;</code>). <code>fit</code> says how a viewport of another aspect ratio a is filled, like SVG's <code>preserveAspectRatio</code>. With s = aspect / a, the vertical extent is scaled by:</p>
+<ul>
+<li><code>contain</code> (default): max(1, s). The whole framed view stays visible ("meet").</li>
+<li><code>cover</code>: min(1, s). The viewport is filled and the framed view is cropped ("slice").</li>
+<li><code>width</code>: s. The framed width is kept.</li>
+<li><code>height</code>: 1. The framed height is kept.</li>
+</ul>
+<p>The defaults reproduce the usual rule of applying <code>fov</code> to the shorter viewport side. An author who framed a scene for a 16:9 page writes <code>aspect=&quot;1.778&quot;</code>, and a portrait phone then shows the same width instead of cropping the sides.</p></li>
+<li><p><code>&lt;environment&gt;</code> sets the clear colour (<code>background</code>), hemisphere ambient colours (<code>sky</code>, <code>ground</code>), their <code>intensity</code>, and tone-mapping <code>exposure</code>. Only the first <code>&lt;environment&gt;</code> is used (<code>W_MULTIPLE_ENVIRONMENTS</code>).</p></li>
+<li><p><code>&lt;controls&gt;</code> describes how an interactive reader lets people move the camera. Only the first one is used (<code>W_MULTIPLE_CONTROLS</code>), and a document without one gets the reader's defaults (usually free orbiting).</p>
+<ul>
+<li><code>mode=&quot;orbit&quot;</code> (default): drag to orbit the target, pan and zoom; <code>zoom=&quot;false&quot;</code> and <code>pan=&quot;false&quot;</code> turn those off.</li>
+<li><code>mode=&quot;none&quot;</code>: a fixed view from the first camera.</li>
+<li><code>mode=&quot;scroll&quot;</code>: the first camera is the view, moved only by its scroll-timeline animations (section 14). Dragging is off and the canvas must not capture touch scrolling.</li>
+<li>Limits keep the camera between <code>minDistance</code> and <code>maxDistance</code> from its target and between <code>minPolar</code> and <code>maxPolar</code> degrees from straight up (<code>maxPolar=&quot;90&quot;</code> keeps it above the target). <code>targetMin</code> and <code>targetMax</code> bound the orbit target, and so panning.</li>
+<li><code>collide=&quot;true&quot;</code> stops the camera in front of surfaces. A move from the last camera position to the next is blocked by the first surface whose front faces the camera (double-sided surfaces always block). The camera stays far enough from the surface that its near plane does not cut into it, and a move that hits a surface at an angle slides along it. A camera that starts inside an object can leave it, and an orbit target inside an object does not trap the camera. Elements with <code>collide=&quot;false&quot;</code> (inherited by their children, available on every node) are ignored.</li>
+</ul></li>
+</ul>
+<h2 id="14-animation">14. Animation</h2>
+<p><code>&lt;animate attr=&quot;…&quot; dur=&quot;4s&quot; …&gt;</code> inside a node animates an attribute of its parent: <code>position</code>, <code>rotation</code> or <code>scale</code> of any node, and also <code>target</code> and <code>fov</code> of a <code>&lt;camera&gt;</code> (<code>E_INVALID_VALUE</code> elsewhere; animating the target of a camera oriented by <code>rotation</code> is <code>E_CONFLICTING_ATTRIBUTES</code>). Animation replaces the attribute value, so <code>transform</code> still applies outside it.</p>
+<p><strong>Values.</strong> Exactly one source is given (<code>E_MISSING_ATTRIBUTE</code> without one, <code>E_CONFLICTING_ATTRIBUTES</code> with several):</p>
+<ul>
+<li><code>to</code> (with optional <code>from</code>, default: the parent's value): a straight interpolation.</li>
+<li><code>values=&quot;v0; v1; …&quot;</code>: two or more key values separated by semicolons. With <code>keyTimes=&quot;0, t1, …, 1&quot;</code> (one per value, starting at 0, ending at 1, not decreasing), value i is reached at fraction tᵢ. Without it the keys are evenly spaced. Between keys the value is linear, or with <code>smooth=&quot;true&quot;</code> on a centripetal Catmull-Rom curve through the keys. The end keys are extended by reflecting their neighbour, as for sweep spines.</li>
+<li><code>along</code> (position and target only): a path in the same syntax as a sweep's spine (points, 3D path data or <code>helix()</code>; <code>smooth</code> interpolates points). The fraction is measured along the path's length, so the value moves at constant speed.</li>
+</ul>
+<p>Each value has 3 numbers (1 or 3 for <code>scale</code>, 1 for <code>fov</code>).</p>
+<p><strong>Timeline.</strong> The animation turns a fraction f in 0..1 into a value, after <code>easing</code> (<code>linear</code>, <code>ease-in</code>, <code>ease-out</code>, <code>ease-in-out</code>) is applied to f.</p>
+<ul>
+<li><code>timeline=&quot;time&quot;</code> (default): <code>dur</code> is required. Before <code>begin</code> the animation has no effect. Then it plays <code>repeat</code> cycles (default <code>indefinite</code>), with <code>alternate=&quot;true&quot;</code> playing every second cycle backwards, and after the last cycle it holds the end value.</li>
+<li><code>timeline=&quot;scroll&quot;</code>: f is the reader's scroll progress, clamped to 0..1, and <code>dur</code>, <code>begin</code>, <code>repeat</code> and <code>alternate</code> are not used. How progress relates to a page is up to the reader. The reference viewer maps a page section's scroll position to it, with optional stops pinned to page elements. A reader without a page holds progress at 0.</li>
+</ul>
+<h2 id="15-diagnostics">15. Diagnostics</h2>
+<p>Readers report problems in this canonical form:</p>
+<pre><code>ES3D Parse Error
+line 2, column 11
+
+Unknown attribute: raduis
+
+Did you mean: radius?</code></pre>
+<p>The title names the phase (<code>Parse</code>, <code>Reference</code>, <code>Geometry</code>, <code>Render</code>, <code>File</code>) and severity (<code>Error</code>, <code>Warning</code>). Codes used by the reference reader:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Group</th><th>Codes</th></tr></thead>
+<tbody>
+<tr><td>Syntax</td><td><code>E_SYNTAX</code>, <code>E_UNEXPECTED_EOF</code>, <code>E_MISMATCHED_TAG</code>, <code>E_UNEXPECTED_CLOSE</code>, <code>E_UNCLOSED_ELEMENT</code>, <code>E_UNQUOTED_ATTRIBUTE</code>, <code>E_UNTERMINATED_ATTRIBUTE</code>, <code>E_UNTERMINATED_COMMENT</code>, <code>E_UNTERMINATED_CDATA</code>, <code>E_UNTERMINATED_PI</code>, <code>E_UNTERMINATED_DOCTYPE</code>, <code>E_UNTERMINATED_STRING</code>, <code>E_BAD_ENTITY</code>, <code>E_BAD_ESCAPE</code>, <code>E_MULTIPLE_ROOTS</code>, <code>E_TEXT_OUTSIDE_ROOT</code>, <code>E_EMPTY_DOCUMENT</code>, <code>E_COMPACT_ROOT</code>, <code>E_JSON</code>, <code>E_JSON_STRUCTURE</code></td></tr>
+<tr><td>Structure</td><td><code>E_ROOT</code>, <code>E_VERSION</code>, <code>E_UNKNOWN_ELEMENT</code>, <code>E_MISPLACED_ELEMENT</code>, <code>E_TEXT_NOT_ALLOWED</code>, <code>E_MULTIPLE_SCENES</code></td></tr>
+<tr><td>Attributes</td><td><code>E_UNKNOWN_ATTRIBUTE</code>, <code>E_DUPLICATE_ATTRIBUTE</code>, <code>E_MISSING_ATTRIBUTE</code>, <code>E_MISSING_VALUE</code>, <code>E_INVALID_VALUE</code>, <code>E_TYPE</code>, <code>E_RANGE</code>, <code>E_CONFLICTING_ATTRIBUTES</code></td></tr>
+<tr><td>References</td><td><code>E_DUPLICATE_ID</code>, <code>E_UNKNOWN_REFERENCE</code>, <code>E_REFERENCE_KIND</code>, <code>E_CIRCULAR_REFERENCE</code></td></tr>
+<tr><td>Geometry</td><td><code>E_GEOMETRY</code>, <code>E_MESH</code>, <code>E_DEGENERATE</code>, <code>E_DEGENERATE_SPINE</code>, <code>E_REVOLVE_AXIS</code>, <code>E_LOD_CHILDREN</code>, <code>E_TOO_MANY_INSTANCES</code>, <code>E_TOO_DEEP</code>, <code>E_PATH_LIMIT</code></td></tr>
+<tr><td>Warnings</td><td><code>W_LEGACY_ROOT</code>, <code>W_EXTENSION</code>, <code>W_DEF_WITHOUT_ID</code>, <code>W_MATERIAL_WITHOUT_ID</code>, <code>W_MULTIPLE_ENVIRONMENTS</code>, <code>W_MULTIPLE_CONTROLS</code>, <code>W_DEGENERATE_CONTOUR</code>, <code>W_SELF_INTERSECTION</code>, <code>W_EMPTY_FILL</code>, <code>W_TEXTURE</code></td></tr>
+</tbody></table></div>
+<p>Unknown names get a suggestion when a known name is within a small edit distance or shares a prefix (<code>raduis</code> → <code>radius</code>, <code>spotlight</code> → <code>spot</code>, <code>sphear</code> → <code>sphere</code>).</p>
+<h2 id="16-extensibility-and-versioning">16. Extensibility and versioning</h2>
+<ul>
+<li>Elements whose names start with <code>x-</code> (and their subtrees) are vendor extensions: readers that do not understand them skip them with <code>W_EXTENSION</code>. Unknown elements without the prefix are errors, so typos are never mistaken for extensions.</li>
+<li>Unknown attributes are always errors. (A future version may reserve an <code>x-</code> attribute prefix as well.)</li>
+<li><code>version=&quot;1.x&quot;</code> documents must remain readable by version-1 readers; incompatible changes require version 2, which version-1 readers reject with <code>E_VERSION</code>.</li>
+</ul>
+<h2 id="17-file-names-and-media-types">17. File names and media types</h2>
+<div class="table-wrap"><table>
+<tbody>
+<tr><th scope="row">Text (any syntax)</th><td><code>.es3d</code>, UTF-8, optionally gzip-compressed (<code>.es3d.gz</code>)</td></tr>
+<tr><th scope="row">Media type (proposed, unregistered)</th><td><code>model/vnd.es3d</code></td></tr>
+</tbody></table></div>
+</div>
+</main>
+</div>
+<footer class="footer">
+  <p class="footer-mark"><img src="../favicon.svg" alt="ES3D" width="96" height="30"></p>
+  <ul class="facts">
+    <li><a href="../download/">Get ES3D</a></li>
+    <li>WebGPU and WebGL2</li>
+    <li>No plugin</li>
+    <li><a href="https://github.com/bitilia/es3d/blob/HEAD/LICENSE">Apache 2.0</a></li>
+  </ul>
+  <p><b>es3d.org</b>. Opens in a normal browser. No plugin, no cookies, no trackers.</p>
+  <p>Last updated 2026-10-15. ES3D 1.0.0 is free software under the Apache License 2.0.<br>
+  Questions, bugs, ideas: <a href="https://github.com/bitilia/es3d/issues">open an issue on GitHub</a>.</p>
+</footer>
+</div>
+
+</body>
+</html>

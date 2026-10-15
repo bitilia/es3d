@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 440 160" width="440" height="160">
+  <title>ES3D badge</title>
+  <style>
+    .letter { fill: #1e88e5; stroke: #0d47a1; stroke-width: 3; }
+    .accent { fill: #ffb300; }
+    #frame { fill: none; stroke: #263238; stroke-width: 6; }
+  </style>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eceff1"/>
+      <stop offset="1" stop-color="#cfd8dc"/>
+    </linearGradient>
+    <symbol id="star" viewBox="-10 -10 20 20">
+      <polygon points="0,-10 2.94,-4.05 9.51,-3.09 4.76,1.55 5.88,8.09 0,5 -5.88,8.09 -4.76,1.55 -9.51,-3.09 -2.94,-4.05"/>
+    </symbol>
+  </defs>
+
+  <!-- the card -->
+  <rect x="8" y="8" width="424" height="144" rx="24" fill="url(#paper)"/>
+  <rect id="frame" x="8" y="8" width="424" height="144" rx="24"/>
+
+  <!-- the logo mark: a hexagon nut (two subpaths, even-odd fill) -->
+  <path class="accent" transform="translate(75,30)" fill-rule="evenodd"
+        d="M0,100 L-43.3,75 L-43.3,25 L0,0 L43.3,25 L43.3,75 Z M0,82 L-27.71,66 L-27.71,34 L0,18 L27.71,34 L27.71,66 Z"/>
+
+  <!-- the letters are drawn y-up in a 100 unit em square, so this group flips them -->
+  <g transform="translate(140,122) scale(0.85,-0.85)">
+    <path class="letter" d="M0,0 H60 V16 H18 V42 H52 V58 H18 V84 H60 V100 H0 Z"/>
+    <path class="letter" transform="translate(70,0)" d="M56.31,81.58 A28,28 0 1,1 30,44 A16,16 0 1,0 14.96,22.53 L3.69,18.42 A28,28 0 1,1 30,56 A16,16 0 1,0 45.04,77.47 Z"/>
+    <path class="letter" transform="translate(136,0)" d="M3.69,81.58 A28,28 0 1,0 47.32,50 A28,28 0 1,0 3.69,18.42 L14.96,22.53 A16,16 0 1,1 30,44 H16 V56 H30 A16,16 0 1,1 14.96,77.47 Z"/>
+    <path class="letter" transform="translate(206,0)" fill-rule="evenodd" d="M0,0 H30 A40,50 0 0,1 30,100 H0 Z M16,16 H30 A24,34 0 0,1 30,84 H16 Z"/>
+  </g>
+
+  <!-- a symbol drawn through <use>, and a dot -->
+  <use xlink:href="#star" x="389" y="67" width="28" height="28" fill="#e53935"/>
+  <circle cx="403" cy="40" r="7" fill="#43a047"/>
+</svg>

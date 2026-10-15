@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Helio — lamps</title>
+  <meta name="description" content="Helio: a lamp room drawn live from one small ES3D file, where each shade has a real light inside it.">
+  <meta name="theme-color" content="#110f0d">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23110f0d' width='32' height='32'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23ffb15a'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://es3d.org/demo/helio/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ES3D">
+<meta property="og:title" content="Helio — lamps">
+<meta property="og:description" content="Helio: a lamp room drawn live from one small ES3D file, where each shade has a real light inside it.">
+<meta property="og:url" content="https://es3d.org/demo/helio/">
+<meta property="og:image" content="https://es3d.org/images/demo-helio.jpg">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="1000">
+<meta property="og:image:alt" content="Helio: a dark room with three lamps lighting a table">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://es3d.org/images/demo-helio.jpg">
+<meta name="twitter:image:alt" content="Helio: a dark room with three lamps lighting a table">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://es3d.org/#organization",
+      "name": "ES3D",
+      "url": "https://es3d.org/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/favicon.svg"
+      },
+      "sameAs": [
+        "https://github.com/bitilia/es3d"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://es3d.org/#website",
+      "url": "https://es3d.org/",
+      "name": "ES3D",
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://es3d.org/demo/helio/#webpage",
+      "url": "https://es3d.org/demo/helio/",
+      "name": "Helio — lamps",
+      "description": "Helio: a lamp room drawn live from one small ES3D file, where each shade has a real light inside it.",
+      "isPartOf": {
+        "@id": "https://es3d.org/#website"
+      },
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en",
+      "dateModified": "2026-10-15",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/images/demo-helio.jpg",
+        "width": 1600,
+        "height": 1000
+      },
+      "breadcrumb": {
+        "@id": "https://es3d.org/demo/helio/#breadcrumb"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://es3d.org/demo/helio/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://es3d.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Demo Sites",
+          "item": "https://es3d.org/demo/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Helio — lamps",
+          "item": "https://es3d.org/demo/helio/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+  <script type="module" crossorigin src="../../assets/demo/helio/index-DXGREfNy.js"></script>
+  <link rel="modulepreload" crossorigin href="../../assets/modulepreload-polyfill-P2Xu9kJm.js">
+  <link rel="modulepreload" crossorigin href="../../assets/orbit-controls-BUn7A4nu.js">
+  <link rel="modulepreload" crossorigin href="../../assets/stage-C8W367jR.js">
+  <link rel="modulepreload" crossorigin href="../../assets/stage-DOB5ywP-.js">
+  <link rel="modulepreload" crossorigin href="../../assets/scene-CKKD5cBA.js">
+  <link rel="stylesheet" crossorigin href="../../assets/stage-D0OQqKG3.css">
+  <link rel="stylesheet" crossorigin href="../../assets/index-BbHLM_FI.css">
+</head>
+<body>
+  <header>
+    <a class="word" href="./">Helio</a>
+    <nav>
+      <a href="../../">ES3D</a>
+      <a href="../">Demo Sites</a>
+      <a href="../ashby/">Ashby</a>
+      <a href="../parcel/">Parcel</a>
+      <a href="../spoke/">Spoke</a>
+    </nav>
+  </header>
+  <main>
+    <aside>
+      <p class="kicker">Lamp room</p>
+      <h1>Three bulbs, actually lit.</h1>
+      <p id="blurb">Mira, a pendant, and Keel. Each shade has a light inside it.</p>
+      <div class="lamps" id="lamps" role="group" aria-label="Lamps"></div>
+      <p class="finish-label">Metal</p>
+      <div class="finishes" id="finishes" role="group" aria-label="Metal"></div>
+      <p class="filesize-line"><span class="filesize"><b>2.3 kB</b> ES3D file <span class="filesize-gzip">· 782 bytes gzipped</span></span></p>
+      <p class="hint" id="hint"></p>
+    </aside>
+    <div class="view">
+      <canvas id="view" aria-label="Three lamps in a dark room. Drag to look around. Click a lamp to move closer."></canvas>
+      <p class="stage-status">Starting the renderer…</p>
+      <pre class="stage-error" hidden></pre>
+    </div>
+  </main>
+</body>
+</html>

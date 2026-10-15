@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The minimal physically based material model: base color, metallic,
+  roughness, opacity, emissive, an optional texture and an optional normal map.
+  Top row: dielectric, bottom row: metal; roughness grows from left to right.
+  Textures are procedural functions (checker, bricks, noise ...) or image URLs.
+-->
+<es3d version="1">
+  <title>Materials and textures</title>
+  <environment background="#12151b" sky="#dbe7f7" ground="#2e2a26" intensity="0.7"/>
+  <camera position="0,4.2,10.5" target="0,1.1,0" fov="42" aspect="1.6"/>
+  <light type="directional" direction="-0.5,-0.8,-0.6" intensity="1.1"/>
+  <light type="point" position="4,4,4" intensity="18" color="#fff2d6"/>
+
+  <defs>
+    <material id="d0" color="#d84315" roughness="0.05"/>
+    <material id="d1" color="#d84315" roughness="0.2"/>
+    <material id="d2" color="#d84315" roughness="0.4"/>
+    <material id="d3" color="#d84315" roughness="0.6"/>
+    <material id="d4" color="#d84315" roughness="0.8"/>
+    <material id="d5" color="#d84315" roughness="1"/>
+    <material id="m0" color="#f0c060" metallic="1" roughness="0.05"/>
+    <material id="m1" color="#f0c060" metallic="1" roughness="0.2"/>
+    <material id="m2" color="#f0c060" metallic="1" roughness="0.4"/>
+    <material id="m3" color="#f0c060" metallic="1" roughness="0.6"/>
+    <material id="m4" color="#f0c060" metallic="1" roughness="0.8"/>
+    <material id="m5" color="#f0c060" metallic="1" roughness="1"/>
+
+    <material id="checker" map="checker(10,#eeeeee,#333a44)" uvScale="3,3" roughness="0.6"/>
+    <material id="bricks" map="bricks(8,#a8553c,#cfc6b8)" normalMap="bricks(8,1.5)" uvScale="2,1" roughness="0.85"/>
+    <material id="bumpy" color="#4fc3f7" normalMap="bumps(10,1.2)" uvScale="2,1" roughness="0.3" metallic="0.2"/>
+    <material id="marble" map="noise(6,#f5f5f5,#90a4ae,4)" normalMap="noise(12,0.4,9)" roughness="0.25"/>
+    <material id="tiles" color="#80cbc4" normalMap="tiles(6,1,0.08)" roughness="0.4"/>
+    <material id="glass" color="#b3e5fc" opacity="0.35" roughness="0.05" doubleSided="true"/>
+    <material id="lamp" color="#fff8e1" emissive="#ffd54f" emissiveIntensity="2"/>
+    <material id="neon" color="#ff4081" unlit="true"/>
+  </defs>
+
+  <plane size="16,10" position="0,0,1" material="checker"/>
+
+  <group position="-3.75,2.3,-1">
+    <sphere radius="0.6" material="d0"/>
+    <sphere radius="0.6" position="1.5,0,0" material="d1"/>
+    <sphere radius="0.6" position="3,0,0" material="d2"/>
+    <sphere radius="0.6" position="4.5,0,0" material="d3"/>
+    <sphere radius="0.6" position="6,0,0" material="d4"/>
+    <sphere radius="0.6" position="7.5,0,0" material="d5"/>
+  </group>
+  <group position="-3.75,0.8,-1">
+    <sphere radius="0.6" material="m0"/>
+    <sphere radius="0.6" position="1.5,0,0" material="m1"/>
+    <sphere radius="0.6" position="3,0,0" material="m2"/>
+    <sphere radius="0.6" position="4.5,0,0" material="m3"/>
+    <sphere radius="0.6" position="6,0,0" material="m4"/>
+    <sphere radius="0.6" position="7.5,0,0" material="m5"/>
+  </group>
+
+  <box size="3,1.6,0.3" position="-4.6,0.8,2.2" rotation="0,25,0" material="bricks"/>
+  <sphere radius="0.65" position="-1.8,0.65,2.6" material="bumpy"/>
+  <box size="1.2" radius="0.1" position="0,0.6,3" rotation="0,20,0" material="marble"/>
+  <cylinder radius="0.6" height="1.2" position="1.9,0.6,2.6" material="tiles"/>
+  <sphere radius="0.7" position="3.7,0.7,2.4" material="glass"/>
+  <sphere radius="0.25" position="3.7,0.7,2.4" material="lamp"/>
+  <torus radius="0.5" tube="0.06" position="5.4,0.6,2.2" rotation="90,0,0" material="neon"/>
+</es3d>

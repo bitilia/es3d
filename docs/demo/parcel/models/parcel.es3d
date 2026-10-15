@@ -1,0 +1,222 @@
+<!-- The Parcel gift box: the box (box), the lid (box_top), the ribbon round the sides (side_ties), the ribbon and bow on the lid (top_bowtie). Converted from the STEP files in this folder by scripts/make-parcel.mjs (npm run parcel); do not edit by hand. -->
+<es3d version="1" unit="mm">
+  <title>Parcel: the gift box from Shapr3D</title>
+  <defs>
+    <group id="box" rotation="-90,0,0">
+      <path
+          position="0,10,9"
+          rotation="0,0,180"
+          d="M10,20L-10,20L-10,0L10,0L10,20Z M-9,1L-9,19L9,19L9,1L-9,1Z"
+          fillRule="evenodd"/>
+      <path position="10,10,0" rotation="0,-90,180" d="M9,20L-10,20L-10,0L9,0L9,20Z"/>
+      <path position="-10,10,0" rotation="0,90,180" d="M10,20L-9,20L-9,0L10,0L10,20Z"/>
+      <path position="0,10,-10" rotation="180,0,0" d="M10,20L-10,20L-10,0L10,0L10,20Z"/>
+      <path position="0,10,0" rotation="-90,0,0" d="M10,-9L10,10L-10,10L-10,-9L10,-9Z"/>
+      <path position="0,-10,0" rotation="90,0,0" d="M10,-10L10,9L-10,9L-10,-10L10,-10Z"/>
+      <path position="9,10,0" rotation="0,-90,0" d="M-9,-19L9,-19L9,-1L-9,-1L-9,-19Z"/>
+      <path position="-9,10,0" rotation="0,90,0" d="M-9,-19L9,-19L9,-1L-9,-1L-9,-19Z"/>
+      <path position="0,10,-9" d="M-9,-19L9,-19L9,-1L-9,-1L-9,-19Z"/>
+      <path position="0,9,0" rotation="90,0,0" d="M9,-9L9,9L-9,9L-9,-9L9,-9Z"/>
+      <path position="0,-9,0" rotation="-90,0,0" d="M9,-9L9,9L-9,9L-9,-9L9,-9Z"/>
+    </group>
+    <group id="box_top" rotation="-90,0,0">
+      <extrude
+          position="0,0,9"
+          d="M11,11L11,1L10,1L10,-1L11,-1L11,-11L1,-11L1,-10L-1,-10L-1,-11L-11,-11L-11,-1L-10,-1L-10,1L-11,1L-11,11L-1,11L-1,10L1,10L1,11L11,11Z"
+          depth="0.9"/>
+    </group>
+    <group id="side_ties" rotation="-90,0,0">
+      <path
+          position="11,-10,0"
+          rotation="0,90,0"
+          d="M-9,11L-9,9L-1,9L-1,-1L1,-1L1,9L10,9L10,11L1,11L1,21L-1,21L-1,11L-9,11Z"/>
+      <path
+          position="10,0,0"
+          rotation="90,0,-90"
+          d="M1,9L-1,9L-1,1L-10,1L-10,-1L-1,-1L-1,-10L1,-10L1,-1L10,-1L10,1L1,1L1,9Z"/>
+      <path position="10,-1,5" rotation="0,-90,90" d="M4,-1L4,0L-4,0L-4,-1L4,-1Z"/>
+      <path position="10,1,5" rotation="0,90,90" d="M-4,0L-4,-1L4,-1L4,0L-4,0Z"/>
+      <path
+          position="0,11,0"
+          rotation="90,0,180"
+          d="M1,1L1,9L-1,9L-1,1L-11,1L-11,-1L-1,-1L-1,-10L1,-10L1,-1L11,-1L11,1L1,1Z"/>
+      <path
+          position="-11,-10,0"
+          rotation="0,-90,0"
+          d="M9,9L9,11L1,11L1,21L-1,21L-1,11L-10,11L-10,9L-1,9L-1,-1L1,-1L1,9L9,9Z"/>
+      <path
+          position="-10,0,0"
+          rotation="-90,0,-90"
+          d="M-1,-9L1,-9L1,-1L10,-1L10,1L1,1L1,10L-1,10L-1,1L-10,1L-10,-1L-1,-1L-1,-9Z"/>
+      <path position="-10,-1,5" rotation="0,-90,90" d="M4,0L4,1L-4,1L-4,0L4,0Z"/>
+      <path position="-10,1,5" rotation="0,90,90" d="M-4,1L-4,0L4,0L4,1L-4,1Z"/>
+      <path
+          position="0,-10,0"
+          rotation="90,0,180"
+          d="M1,9L-1,9L-1,1L-10,1L-10,-1L-1,-1L-1,-10L1,-10L1,-1L10,-1L10,1L1,1L1,9Z"/>
+      <path position="-1,-10,5" rotation="0,-90,0" d="M4,-1L4,0L-4,0L-4,-1L4,-1Z"/>
+      <path position="1,-10,5" rotation="0,90,0" d="M-4,0L-4,-1L4,-1L4,0L-4,0Z"/>
+      <path position="6,-10,-1" rotation="180,0,90" d="M9,5L-1,5L-1,-5L0,-5L0,4L9,4L9,5Z"/>
+      <path position="1,-10,-6" rotation="0,90,0" d="M-5,-1L4,-1L4,0L-5,0L-5,-1Z"/>
+      <path position="-1,-10,-6" rotation="0,-90,0" d="M5,0L-4,0L-4,-1L5,-1L5,0Z"/>
+      <path position="-6,-10,-1" rotation="180,0,90" d="M-1,-5L9,-5L9,-4L0,-4L0,5L-1,5L-1,-5Z"/>
+      <path position="-6,-10,1" rotation="0,0,-90" d="M-9,-5L1,-5L1,5L0,5L0,-4L-9,-4L-9,-5Z"/>
+      <path position="6,-10,1" rotation="0,0,-90" d="M1,5L-9,5L-9,4L0,4L0,-5L1,-5L1,5Z"/>
+      <path
+          position="0,-11,0"
+          rotation="-90,0,180"
+          d="M-1,-9L1,-9L1,-1L11,-1L11,1L1,1L1,10L-1,10L-1,1L-11,1L-11,-1L-1,-1L-1,-9Z"/>
+      <path
+          position="0.5,-31.7,-10"
+          rotation="180,0,0"
+          d="M0.5,-21.7L0.5,-20.7L-1.5,-20.7L-1.5,-21.7L0.5,-21.7Z"/>
+      <path
+          position="0,10,0"
+          rotation="-90,0,180"
+          d="M-1,-1L-1,-9L1,-9L1,-1L10,-1L10,1L1,1L1,10L-1,10L-1,1L-10,1L-10,-1L-1,-1Z"/>
+      <path position="1,10,-6" rotation="0,90,0" d="M4,0L4,1L-5,1L-5,0L4,0Z"/>
+      <path position="-1,10,-6" rotation="0,-90,0" d="M-4,1L-4,0L5,0L5,1L-4,1Z"/>
+      <path position="6,10,-1" rotation="180,0,-90" d="M-1,-5L9,-5L9,-4L0,-4L0,5L-1,5L-1,-5Z"/>
+      <path position="-6,10,-1" rotation="180,0,-90" d="M-1,5L-1,-5L0,-5L0,4L9,4L9,5L-1,5Z"/>
+      <path position="-6,10,1" rotation="0,0,90" d="M1,5L-9,5L-9,4L0,4L0,-5L1,-5L1,5Z"/>
+      <path position="-1,10,5" rotation="0,-90,0" d="M-4,0L4,0L4,1L-4,1L-4,0Z"/>
+      <path position="1,10,5" rotation="0,90,0" d="M4,1L-4,1L-4,0L4,0L4,1Z"/>
+      <path position="6,10,1" rotation="0,0,90" d="M1,-5L1,5L0,5L0,-4L-9,-4L-9,-5L1,-5Z"/>
+      <path
+          position="0.5,18.7,-10"
+          rotation="180,0,180"
+          d="M-0.5,-8.7L1.5,-8.7L1.5,-7.7L-0.5,-7.7L-0.5,-8.7Z"/>
+      <path position="-10,1,-6" rotation="0,90,90" d="M4,0L4,1L-5,1L-5,0L4,0Z"/>
+      <path position="-10,-1,-6" rotation="0,-90,90" d="M5,1L-4,1L-4,0L5,0L5,1Z"/>
+      <path
+          position="0.5,18.7,-10"
+          rotation="180,0,180"
+          d="M10.5,-17.7L10.5,-19.7L11.5,-19.7L11.5,-17.7L10.5,-17.7Z"/>
+      <path position="10,1,-6" rotation="0,90,90" d="M4,-1L4,0L-5,0L-5,-1L4,-1Z"/>
+      <path position="10,-1,-6" rotation="0,-90,90" d="M5,0L-4,0L-4,-1L5,-1L5,0Z"/>
+      <path
+          position="0.5,18.7,-10"
+          rotation="180,0,180"
+          d="M-9.5,-19.7L-9.5,-17.7L-10.5,-17.7L-10.5,-19.7L-9.5,-19.7Z"/>
+      <path position="0,0,9" rotation="0,0,180" d="M-1,10L1,10L1,11L-1,11L-1,10Z"/>
+      <path position="0,0,9" rotation="0,0,180" d="M10,-1L11,-1L11,1L10,1L10,-1Z"/>
+      <path position="0,0,9" rotation="0,0,180" d="M1,-10L-1,-10L-1,-11L1,-11L1,-10Z"/>
+      <path position="0,0,9" rotation="0,0,180" d="M-10,-1L-10,1L-11,1L-11,-1L-10,-1Z"/>
+    </group>
+    <group id="top_bowtie" rotation="-90,0,0">
+      <path
+          position="0,0,10.9"
+          rotation="0,0,180"
+          d="M-0.5,-5.673623L-0.5,-3.404409L0.5,-3.404409L0.5,-5.673623L-0.5,-5.673623Z M1,-11L1,-1L11,-1L11,1L1,1L1,11L-1,11L-1,1L-11,1L-11,-1L-1,-1L-1,-11L1,-11Z M0.5,3.404409L-0.5,3.404409L-0.5,5.673623L0.5,5.673623L0.5,3.404409Z"
+          fillRule="evenodd"/>
+      <path position="0,10,9" rotation="0,-90,90" d="M0,-1L0.9,-1L0.9,1L0,1L0,-1Z"/>
+      <path
+          position="-1,10.5,9"
+          rotation="0,90,180"
+          d="M-1.9,9.5L-1.9,-0.5L0,-0.5L0,0.5L-0.9,0.5L-0.9,9.5L-1.9,9.5Z"/>
+      <path position="0,11,9" rotation="0,90,90" d="M-1.9,1L-1.9,-1L0,-1L0,1L-1.9,1Z"/>
+      <path
+          position="1,10.5,9"
+          rotation="0,-90,180"
+          d="M1.9,-0.5L1.9,9.5L0.9,9.5L0.9,0.5L0,0.5L0,-0.5L1.9,-0.5Z"/>
+      <path position="0,0,9" rotation="180,0,180" d="M-1,10L1,10L1,11L-1,11L-1,10Z"/>
+      <path position="6,1,10.9" rotation="0,90,90" d="M0,5L0,-5L1.9,-5L1.9,-4L1,-4L1,5L0,5Z"/>
+      <path
+          position="0,0,9.9"
+          rotation="180,0,0"
+          d="M1,-1L10,-1L10,1L1,1L1,10L-1,10L-1,1L-10,1L-10,-1L-1,-1L-1,-10L1,-10L1,-1Z"/>
+      <path position="-6,-1,10.9" rotation="0,-90,90" d="M0,-5L0,5L-1.9,5L-1.9,4L-1,4L-1,-5L0,-5Z"/>
+      <path
+          position="-1,-6,10.9"
+          rotation="0,-90,0"
+          d="M-1,5L-1,-4L-1.9,-4L-1.9,-5L0,-5L0,5L-1,5Z"/>
+      <path position="-6,1,10.9" rotation="0,90,90" d="M1,-5L1,4L1.9,4L1.9,5L0,5L0,-5L1,-5Z"/>
+      <path position="1,-6,10.9" rotation="0,90,0" d="M0,5L0,-5L1.9,-5L1.9,-4L1,-4L1,5L0,5Z"/>
+      <path
+          position="6,-1,10.9"
+          rotation="0,-90,90"
+          d="M-1,5L-1,-4L-1.9,-4L-1.9,-5L0,-5L0,5L-1,5Z"/>
+      <path position="10,0,9" rotation="0,-90,0" d="M0.9,-1L0.9,1L0,1L0,-1L0.9,-1Z"/>
+      <path position="11,0,9" rotation="0,90,0" d="M-1.9,1L-1.9,-1L0,-1L0,1L-1.9,1Z"/>
+      <path position="0,0,9" rotation="180,0,180" d="M-10,-1L-10,1L-11,1L-11,-1L-10,-1Z"/>
+      <path position="-10,0,9" rotation="0,90,0" d="M-0.9,1L-0.9,-1L0,-1L0,1L-0.9,1Z"/>
+      <path position="-11,0,9" rotation="0,-90,0" d="M1.9,-1L1.9,1L0,1L0,-1L1.9,-1Z"/>
+      <path position="0,0,9" rotation="180,0,180" d="M11,1L10,1L10,-1L11,-1L11,1Z"/>
+      <path position="0,-10,9" rotation="0,-90,-90" d="M0.9,-1L0.9,1L0,1L0,-1L0.9,-1Z"/>
+      <path position="0,-11,9" rotation="0,90,-90" d="M-1.9,1L-1.9,-1L0,-1L0,1L-1.9,1Z"/>
+      <path position="0,0,9" rotation="180,0,180" d="M1,-10L-1,-10L-1,-11L1,-11L1,-10Z"/>
+      <revolve position="-0.5,0,15" rotation="180,31.668243,90" d="M6,0L6,1" angle="31.668243"/>
+      <revolve
+          position="-0.5,3.678571,15"
+          rotation="180,0,90"
+          d="M2.321429,0L2.321429,1"
+          angle="120.510237"/>
+      <revolve
+          position="-0.5,7.285534,11.482233"
+          rotation="0,-49.065051,-90"
+          d="M7.303909,0L7.303909,1"
+          angle="20.817173"/>
+      <revolve
+          position="-0.5,-7.535534,10.87868"
+          rotation="180,-31.697582,90"
+          d="M7.618506,0L7.618506,1"
+          angle="21.766174"/>
+      <revolve
+          position="-0.5,-4.085786,15.37868"
+          rotation="180,-56.190068,90"
+          d="M1.95131,0L1.95131,1"
+          angle="135"/>
+      <revolve position="-0.5,0,15" rotation="0,0,-90" d="M6,0L6,1" angle="31.668243"/>
+      <revolve position="-0.5,0,15" rotation="0,-11.339379,-90" d="M7,0L7,1" angle="47.192846"/>
+      <revolve
+          position="-0.5,-4.085786,15.37868"
+          rotation="180,-55.694647,90"
+          d="M2.95131,0L2.95131,1"
+          angle="104.547851"/>
+      <revolve
+          position="-0.5,-7.535534,10.87868"
+          rotation="180,-33.853902,90"
+          d="M8.618506,0L8.618506,1"
+          angle="19.756575"/>
+      <revolve
+          position="-0.5,7.285534,11.482233"
+          rotation="0,-49.657844,-90"
+          d="M8.303909,0L8.303909,1"
+          angle="19.173853"/>
+      <revolve
+          position="-0.5,3.678571,15"
+          rotation="180,0,90"
+          d="M3.321429,0L3.321429,1"
+          angle="122.172865"/>
+      <revolve position="-0.5,0,15" rotation="180,35.853467,90" d="M7,0L7,1" angle="35.853467"/>
+      <path
+          position="-0.5,0,0"
+          rotation="90,0,-90"
+          d="M-2.5,17A7.303909,7.303909 0 0,0 -0.85146,14.939079A1.1,1.1 0 0,1 1.053456,14.881715A7.618506,7.618506 0 0,0 3,17A1.95131,1.95131 0 0,0 6,15A6,6 0 0,0 5.106613,11.85A2,2 0 0,0 3.404409,10.9L5.673623,10.9A7,7 0 0,1 6.863358,16.37634A2.95131,2.95131 0 0,1 2.422418,17.816597A8.618506,8.618506 0 0,1 0.378203,15.679852A0.3,0.3 0 0,0 -0.129466,15.694786A8.303909,8.303909 0 0,1 -1.909992,17.811408A3.321429,3.321429 0 0,1 -7,15A7,7 0 0,1 -5.673623,10.9L-3.404409,10.9A2,2 0 0,0 -5.106613,11.85A6,6 0 0,0 -6,15A2.321429,2.321429 0 0,0 -2.5,17Z"/>
+      <path
+          position="0.5,0,0"
+          rotation="-90,0,-90"
+          d="M3,-17A7.618506,7.618506 0 0,0 1.053456,-14.881715A1.1,1.1 0 0,1 -0.85146,-14.939079A7.303909,7.303909 0 0,0 -2.5,-17A2.321429,2.321429 0 0,0 -6,-15A6,6 0 0,0 -5.106613,-11.85A2,2 0 0,0 -3.404409,-10.9L-5.673623,-10.9A7,7 0 0,1 -7,-15A3.321429,3.321429 0 0,1 -1.909992,-17.811408A8.303909,8.303909 0 0,1 -0.129466,-15.694786A0.3,0.3 0 0,0 0.378203,-15.679852A8.618506,8.618506 0 0,1 2.422418,-17.816597A2.95131,2.95131 0 0,1 6.863358,-16.37634A7,7 0 0,1 5.673623,-10.9L3.404409,-10.9A2,2 0 0,0 5.106613,-11.85A6,6 0 0,0 6,-15A1.95131,1.95131 0 0,0 3,-17Z"/>
+      <revolve
+          position="-0.5,-0.117539,15.459694"
+          rotation="0,28.247878,90"
+          d="M1.1,-1L1.1,0"
+          angle="120.054539"/>
+      <revolve
+          position="-0.5,-0.129065,15.846975"
+          rotation="0,30.483991,90"
+          d="M0.3,-1L0.3,0"
+          angle="115.662107"/>
+      <revolve
+          position="-0.5,-3.404409,12.9"
+          rotation="0,31.668243,-90"
+          d="M2,0L2,1"
+          angle="58.331757"/>
+      <revolve position="-0.5,3.404409,12.9" rotation="0,90,-90" d="M2,0L2,1" angle="58.331757"/>
+    </group>
+  </defs>
+  <use ref="box"/>
+  <use ref="box_top"/>
+  <use ref="side_ties"/>
+  <use ref="top_bowtie"/>
+</es3d>

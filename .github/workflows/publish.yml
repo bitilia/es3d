@@ -1,0 +1,32 @@
+# Publishes the npm package when a GitHub release is published.
+# Trusted publishing (OpenID Connect): no npm token is stored in GitHub.
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    # Provenance records the repository that runs this job. The private
+    # repository is not that repository.
+    if: github.repository == 'bitilia/es3d'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      # trusted publishing needs npm 11.5.1 or newer; pinned to that major
+      # so a new npm major cannot change a release without a review
+      - run: npm install -g npm@^11.5.1
+      - run: npm ci
+      - run: npm test
+      - run: npm run stage:prepare
+      - run: npm publish --access public
+        working-directory: staging/package

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!--#include virtual="head.html" -->
+<title>File converter - ES3D</title>
+<meta name="description" content="Convert SVG, OBJ, STL, STEP and glTF files to ES3D, and ES3D to glTF, OBJ, STL and STEP, in your browser. Files stay on your computer.">
+</head>
+<body>
+<!--#set var="page" value="convert" -->
+<!--#set var="title" value="File converter" -->
+<!--#include virtual="top.html" -->
+<h1>File converter</h1>
+<p class="disclaimer">Not all file conversions are seamless: some flaws still exist in the converter, and not all files get smaller when converted. This is an early version and will be updated in the future.</p>
+<p>Turn <b>SVG</b> drawings and <b>OBJ</b>, <b>STL</b>, <b>STEP</b> and <b>glTF</b> models into ES3D, or turn ES3D into glTF, OBJ, STL and STEP. It all runs in this page. <b>Your files are not uploaded.</b></p>
+
+<form id="converter" onsubmit="return false">
+<fieldset>
+  <legend>Step 1: Choose a file</legend>
+  <div class="dropzone" id="drop">
+    <p><b>Drop a file here</b> or <label class="button" for="file">Browse&hellip;</label></p>
+    <input type="file" id="file" multiple hidden accept=".svg,.svgz,.obj,.mtl,.stl,.step,.stp,.p21,.gltf,.glb,.bin,.es3d,.gz">
+    <p class="small muted">SVG, OBJ (select the .mtl too), STL, STEP (.step, .stp), glTF (.glb, or .gltf with its .bin), ES3D (.es3d). Gzip is fine.</p>
+  </div>
+  <div class="samples">
+    <span>No file at hand? Try a sample:</span>
+    <button type="button" class="button" data-sample="svg">SVG badge</button>
+    <button type="button" class="button" data-sample="obj">OBJ rock</button>
+    <button type="button" class="button" data-sample="stl">STL gem</button>
+    <button type="button" class="button" data-sample="glb">glTF stairs</button>
+    <button type="button" class="button" data-sample="es3d">ES3D logo</button>
+  </div>
+  <p id="file-info" class="small"></p>
+</fieldset>
+
+<fieldset>
+  <legend>Step 2: Choose the options</legend>
+  <p>
+    <label for="format"><b>Convert to:</b></label>
+    <select id="format"></select>
+    <span id="lod-box"><label for="lod">Detail:</label>
+    <select id="lod">
+      <option value="0">finest</option>
+      <option value="1">fine</option>
+      <option value="2">coarse</option>
+      <option value="3">coarsest</option>
+    </select></span>
+  </p>
+  <div class="options-grid">
+    <div class="option-group" data-for="svg" hidden>
+      <b>SVG drawings</b><br>
+      <label>Size of the longer side: <input type="number" id="svg-size" value="10" min="0.001" step="any"> units</label><br>
+      <label>Thickness: <input type="number" id="svg-depth" value="4" min="0" max="100" step="any"> % of the size (0 = flat)</label><br>
+      <label>Rounded edges: <input type="number" id="svg-bevel" value="0" min="0" max="50" step="any"> % of the size</label><br>
+      <label><input type="checkbox" id="svg-strokes" checked> Turn strokes into tubes</label><br>
+      <label><input type="checkbox" id="svg-base"> Add a backing plate</label>
+    </div>
+    <div class="option-group" data-for="mesh" hidden>
+      <b>Meshes (OBJ, STL, STEP, glTF)</b><br>
+      <label>Precision: <select id="mesh-precision">
+        <option value="auto">1/100,000 of the model size</option>
+        <option value="exact">exact (float32)</option>
+        <option value="2">2 decimals</option>
+        <option value="3">3 decimals</option>
+        <option value="4">4 decimals</option>
+      </select></label><br>
+      <label>Normals: <select id="mesh-normals">
+        <option value="auto">keep them if the file has them</option>
+        <option value="false">recompute in the viewer (smaller)</option>
+        <option value="true">always store them</option>
+      </select></label><br>
+      <label>Crease angle: <input type="number" id="mesh-smooth" value="30" min="0" max="180" step="any"> degrees</label><br>
+      <label><input type="checkbox" id="mesh-uvs" checked> Keep texture coordinates</label>
+    </div>
+    <div class="option-group radio-list" data-for="stl" hidden>
+      <b>Up axis</b>
+      <label><input type="radio" name="stl-up" value="z" checked> Z is up (3D printing, CAD)</label>
+      <label><input type="radio" name="stl-up" value="y"> Y is up</label>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Step 3: Convert</legend>
+  <button type="button" class="button big" id="convert" disabled>Convert</button>
+  <p id="status" class="status" role="status" aria-live="polite">Choose a file first.</p>
+  <ul id="messages" class="warnings"></ul>
+  <div id="result" hidden>
+    <div class="preview-box" id="preview"><span class="overlay">Preview</span></div>
+    <p class="small muted">Preview of the ES3D document. Drag to turn. Scroll or pinch to zoom.</p>
+    <div class="table-wrap"><table id="stats"><tbody></tbody></table></div>
+    <div class="actions">
+      <button type="button" class="button big" id="download">Download</button>
+      <button type="button" class="button" id="copy">Copy text</button>
+      <button type="button" class="button" id="studio">Open in ES3D Studio</button>
+    </div>
+    <p id="output-label" class="small"></p>
+    <textarea class="code" id="output" readonly spellcheck="false" aria-label="Converted file"></textarea>
+  </div>
+</fieldset>
+</form>
+
+<h2>How the conversion works</h2>
+<ul>
+  <li><b>SVG</b> drawings become real ES3D shapes. Path data is kept as path data, so curves stay curves. Filled shapes are extruded. Strokes become round tubes. Colours become materials. Later shapes sit on top of earlier ones. Text, images, filters, masks and scripts are skipped (convert text to paths in your drawing program first). Gradients become their average colour. Script in the SVG is not run.</li>
+  <li><b>OBJ, STL and glTF</b> models become ES3D <code>&lt;mesh&gt;</code> elements, with their materials and, for glTF, their reuse of meshes and their transforms. That is the escape hatch for content that has no procedural description. The file is about as large as the original. Textures, skins and animations are not converted.</li>
+  <li><b>STEP</b> solids from CAD software become real ES3D shapes. A part that is one shape is written as one: a box, an extrusion of its exact outline (with arcs, ellipses, splines and holes), a cylinder, a sphere, a torus, or a revolve of its profile for a turned part. Any other part is written face by face: flat faces become paths with exact arcs and holes, and fillets, hole walls and rounded corners become revolves through the angle they cover. ES3D has no free-form (NURBS) surfaces, so a free-form face, or a curved face cut along a curve that is not one of its circles (the rim of a cross hole), is tessellated from its exact surface into a mesh, and the note says how many. Coordinates stay in the file's unit, and a Z-up file is turned Y-up by a rotation on its outer group. Tessellated STEP stays a mesh.</li>
+  <li><b>ES3D</b> documents convert to glTF (with instancing), OBJ, STL and tessellated STEP at the level of detail you choose, so you can take them into a 3D program, a game engine or a slicer. They also convert between the ES3D encodings (minified and compact). Those encodings are the same document, not a reduced profile.</li>
+</ul>
+<p>The same converter is in the command-line tool: <code>npx @es3d/es3d import drawing.svg -o drawing.es3d</code>. See the <a href="../download/">download page</a>.</p>
+<!--#include virtual="bottom.html" -->
+<script type="module" src="../site/convert-page.js"></script>
+</body>
+</html>

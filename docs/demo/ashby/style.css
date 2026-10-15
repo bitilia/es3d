@@ -1,0 +1,112 @@
+:root {
+  --parchment: #f2e8d2;
+  --ink: #2b2116;
+  --muted: #6b5a45;
+  --rust: #9f4b32;
+}
+* { box-sizing: border-box; }
+html { background: #b8d3e6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: Outfit, "Segoe UI", sans-serif;
+}
+
+header {
+  position: fixed;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.9rem 1.4rem 1.6rem;
+  background: linear-gradient(to bottom, rgba(43, 33, 22, 0.55), rgba(43, 33, 22, 0));
+  color: var(--parchment);
+}
+.word {
+  font-family: "IM Fell English SC", Georgia, serif;
+  font-size: 1.6rem;
+  color: inherit;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+nav { display: flex; gap: 1.1rem; flex-wrap: wrap; justify-content: flex-end; }
+nav a { color: rgba(242, 232, 210, 0.85); text-decoration: none; font-size: 0.92rem; }
+nav a:hover { color: #fff; }
+
+/* the canvas stays in view while the paragraphs scroll over it; each
+   paragraph is a stop: the camera reaches its view when it is centred */
+.tour { position: relative; }
+.stage { position: sticky; top: 0; height: 100vh; height: 100svh; background: #b8d3e6; }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.stage-status {
+  position: absolute; left: 1.4rem; bottom: 1.4rem; margin: 0;
+  color: var(--ink); font-size: 0.9rem;
+}
+.stage-status[hidden], .stage-error[hidden] { display: none; }
+.stage-error {
+  position: absolute; inset: 4rem 1rem 1rem; margin: 0; padding: 1rem; overflow: auto; z-index: 2;
+  background: #fff; color: #111; font: 12px/1.45 ui-monospace, monospace; white-space: pre-wrap;
+}
+.progress { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(43, 33, 22, 0.18); }
+.progress span { display: block; height: 100%; background: var(--rust); transform-origin: left; transform: scaleX(0); }
+
+.copy { position: relative; margin-top: -100vh; margin-top: -100svh; padding: 0 5vw; pointer-events: none; }
+.copy article {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+.copy article:nth-child(even) { align-items: flex-end; }
+.copy article > * {
+  max-width: 30rem;
+  margin: 0;
+  padding: 0 1.4rem;
+  background: rgba(242, 232, 210, 0.93);
+  pointer-events: auto;
+}
+.copy article > :first-child { padding-top: 1.1rem; border-radius: 4px 4px 0 0; }
+.copy article > :last-child { padding-bottom: 1.3rem; border-radius: 0 0 4px 4px; }
+.numeral {
+  font-family: "IM Fell English SC", Georgia, serif;
+  color: var(--rust);
+  letter-spacing: 0.1em;
+}
+h1, h2 { font-family: "IM Fell English", Georgia, serif; font-weight: 400; line-height: 1; }
+h1 { font-size: clamp(4rem, 11vw, 8.5rem); padding-top: 0.2rem !important; }
+h2 { font-size: clamp(2.2rem, 4.4vw, 3.4rem); padding-top: 0.15rem !important; }
+.copy p { line-height: 1.55; padding-top: 0.6rem !important; }
+.copy p b { font-weight: 500; }
+.hint { color: var(--muted); font-style: italic; font-family: "IM Fell English", Georgia, serif; font-size: 1.15rem; }
+
+.intro { justify-content: flex-end !important; padding-bottom: 14vh; }
+.intro h1 { padding-top: 0 !important; }
+
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem 1.6rem; padding-top: 1rem !important; }
+.stats div { display: flex; flex-direction: column-reverse; }
+.stats dt { color: var(--muted); font-size: 0.85rem; }
+.stats dd { margin: 0; font-family: "IM Fell English", Georgia, serif; font-size: 1.9rem; }
+button {
+  font: inherit;
+  color: var(--parchment);
+  background: var(--ink);
+  border: 0;
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+  cursor: pointer;
+}
+button:hover { background: var(--rust); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+
+@media (max-width: 800px) {
+  header { padding-bottom: 1.2rem; }
+  nav a:not(:first-child):not(:nth-child(2)) { display: none; }
+  .copy { padding: 0 1rem; }
+  .copy article, .copy article:nth-child(even) { justify-content: flex-end; align-items: stretch; padding-bottom: 8vh; }
+  .intro { padding-bottom: 10vh; }
+}

@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ES3D Modeller</title>
+    <meta name="description" content="ES3D Modeller: type points in 3D, join them into flat planes, add any ES3D element from the points, paint and edit everything, and save an ES3D file." />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+<link rel="canonical" href="https://es3d.org/modeller/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ES3D">
+<meta property="og:title" content="ES3D Modeller">
+<meta property="og:description" content="ES3D Modeller: type points in 3D, join them into flat planes, add any ES3D element from the points, paint and edit everything, and save an ES3D file.">
+<meta property="og:url" content="https://es3d.org/modeller/">
+<meta property="og:image" content="https://es3d.org/images/studio-primitives.jpg">
+<meta property="og:image:width" content="2000">
+<meta property="og:image:height" content="1125">
+<meta property="og:image:alt" content="ES3D Studio: the source of a scene on the left, the live 3D preview, scene tree and statistics on the right">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://es3d.org/images/studio-primitives.jpg">
+<meta name="twitter:image:alt" content="ES3D Studio: the source of a scene on the left, the live 3D preview, scene tree and statistics on the right">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://es3d.org/#organization",
+      "name": "ES3D",
+      "url": "https://es3d.org/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/favicon.svg"
+      },
+      "sameAs": [
+        "https://github.com/bitilia/es3d"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://es3d.org/#website",
+      "url": "https://es3d.org/",
+      "name": "ES3D",
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://es3d.org/modeller/#webpage",
+      "url": "https://es3d.org/modeller/",
+      "name": "ES3D Modeller",
+      "description": "ES3D Modeller: type points in 3D, join them into flat planes, add any ES3D element from the points, paint and edit everything, and save an ES3D file.",
+      "isPartOf": {
+        "@id": "https://es3d.org/#website"
+      },
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en",
+      "dateModified": "2026-10-15",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/images/studio-primitives.jpg",
+        "width": 2000,
+        "height": 1125
+      },
+      "breadcrumb": {
+        "@id": "https://es3d.org/modeller/#breadcrumb"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://es3d.org/modeller/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://es3d.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "ES3D Modeller",
+          "item": "https://es3d.org/modeller/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+    <script type="module" crossorigin src="../assets/modeller/index-DoUIehkt.js"></script>
+    <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-P2Xu9kJm.js">
+    <link rel="modulepreload" crossorigin href="../assets/orbit-controls-BUn7A4nu.js">
+    <link rel="modulepreload" crossorigin href="../assets/stage-C8W367jR.js">
+    <link rel="modulepreload" crossorigin href="../assets/handoff-mtZVqaF7.js">
+    <link rel="modulepreload" crossorigin href="../assets/download-BqnNH0Un.js">
+    <link rel="modulepreload" crossorigin href="../assets/scene-tree-BX-8QTon.js">
+    <link rel="stylesheet" crossorigin href="../assets/scene-tree-CKpxE_JE.css">
+    <link rel="stylesheet" crossorigin href="../assets/index-DvxeLL0W.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <h1 class="visually-hidden">ES3D Modeller</h1>
+      <a class="brand" href="../" title="ES3D home page"><img class="wordmark" src="../favicon.svg" alt="ES3D" width="72" height="22"><span class="tag">Modeller</span></a>
+      <div class="file"><input type="text" id="title" class="title-input" aria-label="Model title" placeholder="Untitled model" spellcheck="false" /></div>
+      <nav class="toolbar">
+        <button id="btn-undo" title="Undo (Ctrl+Z)" disabled>Undo</button>
+        <button id="btn-redo" title="Redo (Ctrl+Shift+Z)" disabled>Redo</button>
+        <div class="menu-wrap">
+          <button id="btn-new" title="Start a new model">New ▾</button>
+          <div id="new-menu" class="menu">
+            <button data-new="empty">Empty model</button>
+            <button data-new="house">Example: a little house</button>
+          </div>
+        </div>
+        <button id="btn-open" title="Open an .es3d file: its polygons become planes (or drop a file anywhere)">Open…</button>
+        <input type="file" id="file-input" accept=".es3d,.json,.txt" hidden />
+        <div class="menu-wrap">
+          <button id="btn-save" title="Save the model as ES3D">Save ▾</button>
+          <div id="save-menu" class="menu">
+            <button data-save="xml">ES3D markup (.es3d)</button>
+            <button data-save="compact">ES3D compact syntax (.es3d)</button>
+            <hr />
+            <button data-save="copy">Copy the source</button>
+          </div>
+        </div>
+        <button id="btn-studio" title="Open this model in ES3D Studio">Open in Studio</button>
+      </nav>
+      <div id="backend-label" class="backend">…</div>
+    </header>
+    <main class="layout modeller">
+      <section class="pane points-pane">
+        <section class="panel points-panel">
+          <h2><span>Points <span id="point-count" class="count"></span></span><button id="btn-delete-points" class="small danger" title="Delete every point, and the planes made of them" disabled>Delete all</button></h2>
+          <form id="add-point" class="add-point" autocomplete="off">
+            <label>X <input type="number" step="any" id="in-x" value="0" required /></label>
+            <label>Y <input type="number" step="any" id="in-y" value="0" required /></label>
+            <label>Z <input type="number" step="any" id="in-z" value="0" required /></label>
+            <button type="submit" class="primary" title="Enter">Add point</button>
+          </form>
+          <details class="paste">
+            <summary>Paste a list of points</summary>
+            <textarea id="paste-text" rows="4" spellcheck="false" placeholder="One point per line: x, y, z&#10;1, 0, 2&#10;1 0 -2&#10;P3: 0, 1.5, 0"></textarea>
+            <div class="row"><button id="btn-paste" class="small">Add these points</button><span id="paste-note" class="note"></span></div>
+          </details>
+          <div class="panel-body">
+            <table class="points-table">
+              <thead><tr><th><span class="visually-hidden">Pick</span></th><th>Point</th><th>X</th><th>Y</th><th>Z</th><th><span class="visually-hidden">Delete</span></th></tr></thead>
+              <tbody id="points"></tbody>
+            </table>
+            <p id="points-empty" class="empty">No points yet.</p>
+          </div>
+        </section>
+        <section class="panel planes-panel">
+          <h2>Planes <span id="plane-count" class="count"></span></h2>
+          <div class="make-plane">
+            <button id="btn-plane" class="primary" title="Enter or P" disabled>Make plane</button>
+            <button id="btn-clear" class="small" title="Esc" disabled>Clear picks</button>
+            <span id="pick-note" class="note">Pick 3 or more points in order around the outline.</span>
+          </div>
+          <div class="panel-body">
+            <ol id="planes" class="planes-list"></ol>
+            <p id="planes-empty" class="empty">No planes yet.</p>
+          </div>
+        </section>
+      </section>
+      <section class="pane viewport-pane">
+        <div class="viewport-wrap" id="viewport-wrap">
+          <canvas id="viewport"></canvas>
+          <div id="labels" class="labels" aria-hidden="true"></div>
+          <div class="viewport-toolbar">
+            <div class="segmented" role="group" aria-label="Tool">
+              <button id="tool-select" class="on" title="V: pick points and planes, drag points to move them">Select</button>
+              <button id="tool-paint" title="B: click planes to paint them with the current paint">Paint</button>
+            </div>
+            <label title="Dragged points land on this grid">Snap <select id="snap"><option value="0">off</option><option value="0.1">0.1</option><option value="0.25">0.25</option><option value="0.5" selected>0.5</option><option value="1">1</option></select></label>
+            <label><input type="checkbox" id="tg-edges" checked /> Edges</label>
+            <label><input type="checkbox" id="tg-labels" checked /> Labels</label>
+            <label><input type="checkbox" id="tg-grid" checked /> Grid</label>
+            <button id="btn-frame" class="small" title="F: frame the model">Frame</button>
+          </div>
+          <div id="empty-hint" class="empty-hint">
+            <p><strong>Start with points.</strong> Type X, Y and Z on the left and press <em>Add point</em>.</p>
+            <p>Pick three or more points in order, here or in the list, and press <em>Make plane</em> (or click the first point again). Or pick points and <em>Add</em> any element: a sphere on a point, a cylinder between two, an extrusion from an outline. Then choose a paint and click planes to paint them.</p>
+            <p><button id="btn-example" class="small">Open the example house</button></p>
+          </div>
+          <div id="hud" class="hud"></div>
+          <div id="stale" class="stale">The file has errors (see the inspector). This is the last view that worked.</div>
+          <div class="hint">Drag to orbit, right drag or Shift to pan, wheel to zoom. Click a point to pick it. Drag a point to move it on the ground plane; hold Shift to move it up and down.</div>
+        </div>
+      </section>
+      <aside class="pane side-pane modeller-side">
+        <section class="panel">
+          <h2>Paint <span><button id="btn-material" class="small" title="Every attribute of this material">Material…</button> <button id="btn-add-paint" class="small" title="Add a paint">Add</button></span></h2>
+          <div class="panel-body">
+            <div id="palette" class="palette" role="listbox" aria-label="Paints"></div>
+            <div class="paint-edit">
+              <label>Name <input type="text" id="paint-name" spellcheck="false" title="The material id in the file" /></label>
+              <label>Colour <input type="color" id="paint-color" /></label>
+              <button id="btn-remove-paint" class="small danger" title="Remove this paint; its planes take the first paint">Remove</button>
+            </div>
+            <p class="note">Click a paint to paint the selected planes and element. New planes and shapes get it too.</p>
+          </div>
+        </section>
+        <section class="panel elements-panel">
+          <h2><span>Elements <span id="element-count" class="count"></span></span>
+            <span class="menu-wrap">
+              <button id="btn-add" class="small primary" title="Add an ES3D element, placed from the picked points">Add ▾</button>
+              <div id="add-menu" class="menu add-menu"></div>
+            </span>
+          </h2>
+          <div class="panel-body"><ul id="elements" class="elements-tree"></ul><p id="elements-empty" class="empty">No other elements. Add one: it is placed from the points you pick, inside the selected group.</p></div>
+        </section>
+        <section class="panel tabs-panel">
+          <h2 class="tabs">
+            <span role="tablist" aria-label="Selected element"><button id="tab-inspector" class="tab on" role="tab" aria-selected="true" aria-controls="inspector">Inspector</button><button id="tab-source" class="tab" role="tab" aria-selected="false" aria-controls="source">ES3D</button></span>
+            <span id="size" class="count"></span>
+          </h2>
+          <div id="inspector" class="panel-body inspector" role="tabpanel" aria-labelledby="tab-inspector"></div>
+          <pre id="source" class="source" role="tabpanel" aria-labelledby="tab-source" tabindex="0" hidden></pre>
+        </section>
+      </aside>
+    </main>
+    <div id="drop-overlay" class="drop-overlay"><div>Drop an .es3d file</div></div>
+    <div id="toasts" class="toasts"></div>
+  </body>
+</html>

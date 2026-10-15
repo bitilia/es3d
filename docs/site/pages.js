@@ -1,0 +1,105 @@
+// Every page of the website, in one list. The build takes its inputs from
+// here, and the site plugin writes the sitemap and each page's link preview
+// (canonical address, Open Graph and Twitter tags) from it.
+
+/** Address of the published site. Canonical links and the sitemap use it. */
+export const SITE_URL = 'https://es3d.org/';
+
+/**
+ * Pictures shown when a page is shared, from docs/images. Each one is
+ * copied into the built site at images/<file>.
+ */
+export const PREVIEW_IMAGES = {
+  'studio-primitives.jpg': { width: 2000, height: 1125, alt: 'ES3D Studio: the source of a scene on the left, the live 3D preview, scene tree and statistics on the right' },
+  'studio-forest.jpg': { width: 2000, height: 1125, alt: 'The forest example in ES3D Studio: 2,400 trees and rocks placed by three scatter elements' },
+  'studio-errors.jpg': { width: 2000, height: 1125, alt: 'ES3D Studio showing located errors with did-you-mean suggestions, underlined in the editor' },
+  'demo-ashby.jpg': { width: 1600, height: 1000, alt: 'Ashby: fields, a river and a palisaded medieval village with its church and keep' },
+  'demo-parcel.jpg': { width: 1600, height: 1000, alt: 'Parcel: a red gift box with an ivory ribbon and bow' },
+  'demo-spoke.jpg': { width: 1600, height: 1000, alt: 'Spoke: a red bicycle with eight-spoke wheels' },
+  'demo-helio.jpg': { width: 1600, height: 1000, alt: 'Helio: a dark room with three lamps lighting a table' },
+};
+
+const DEFAULT_IMAGE = 'studio-primitives.jpg';
+
+/**
+ * The pages. `file` is relative to docs/. `image` picks the link-preview
+ * picture. `sitemap: false` keeps a page out of the sitemap and out of
+ * search results.
+ */
+export const PAGES = [
+  { file: 'index.html', name: 'Home' },
+  { file: 'examples/index.html', name: 'Examples', image: 'studio-forest.jpg' },
+  { file: 'demo/index.html', name: 'Demo Sites', image: 'demo-ashby.jpg' },
+  { file: 'demo/ashby/index.html', name: 'Ashby', image: 'demo-ashby.jpg' },
+  { file: 'demo/parcel/index.html', name: 'Parcel', image: 'demo-parcel.jpg' },
+  { file: 'demo/spoke/index.html', name: 'Spoke', image: 'demo-spoke.jpg' },
+  { file: 'demo/helio/index.html', name: 'Helio', image: 'demo-helio.jpg' },
+  { file: 'spec/index.html', name: 'Specification', image: 'studio-errors.jpg' },
+  { file: 'reference/index.html', name: 'Element reference', image: 'studio-errors.jpg' },
+  { file: 'media/index.html', name: 'Media' },
+  { file: 'media/why-es3d-came-to-be/index.html', name: 'Why ES3D came to be' },
+  { file: 'media/making-the-web-3d/index.html', name: 'Making the Web 3D' },
+  { file: 'download/index.html', name: 'Download' },
+  { file: 'faq/index.html', name: 'FAQ' },
+  { file: 'benchmark-devices/index.html', name: 'Benchmarks', image: 'studio-forest.jpg' },
+  { file: 'convert/index.html', name: 'File converter' },
+  { file: 'studio/index.html', name: 'ES3D Studio' },
+  { file: 'modeller/index.html', name: 'ES3D Modeller' },
+  { file: '404.html', name: 'Page not found', sitemap: false },
+];
+
+/** The site directory of a page file: 'spec/index.html' → 'spec', 'index.html' → ''. */
+export function pageDir(file) {
+  const dir = file.includes('/') ? file.slice(0, file.lastIndexOf('/')) : '';
+  return file.endsWith('index.html') ? dir : file.replace(/\.html$/, '');
+}
+
+/** The page entry for a file relative to docs/, or undefined. */
+export function pageFor(file) {
+  return PAGES.find((p) => p.file === file);
+}
+
+/** The published address of a page. */
+export function pageUrl(page) {
+  const dir = pageDir(page.file);
+  return SITE_URL + (dir ? `${dir}/` : '');
+}
+
+/** The link-preview picture of a page: its file name and details. */
+export function previewImage(page) {
+  const file = (page && page.image) || DEFAULT_IMAGE;
+  return { file, url: `${SITE_URL}images/${file}`, ...PREVIEW_IMAGES[file] };
+}
+
+/** Calendar date for "Last updated" and sitemap lastmod, YYYY-MM-DD in local time. */
+export function siteDate() {
+  const d = new Date();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${month}-${day}`;
+}
+
+/**
+ * Breadcrumb from the site root to this page. The last name is the page title
+ * when one is passed; earlier names come from the page list.
+ */
+export function breadcrumbItems(page, currentName) {
+  const dir = pageDir(page.file);
+  const parts = dir ? dir.split('/') : [];
+  const items = [{ name: 'Home', url: SITE_URL }];
+  let acc = '';
+  for (let i = 0; i < parts.length; i++) {
+    acc = acc ? `${acc}/${parts[i]}` : parts[i];
+    const node = PAGES.find((p) => pageDir(p.file) === acc);
+    if (!node) continue;
+    const last = i === parts.length - 1;
+    items.push({ name: last && currentName ? currentName : (node.name || parts[i]), url: pageUrl(node) });
+  }
+  return items;
+}
+
+/** sitemap.xml for every page that is listed in it. lastmod is the site date. */
+export function sitemapXml(modified = siteDate()) {
+  const urls = PAGES.filter((p) => p.sitemap !== false).map((p) => `  <url>\n    <loc>${pageUrl(p)}</loc>\n    <lastmod>${modified}</lastmod>\n  </url>`);
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`;
+}

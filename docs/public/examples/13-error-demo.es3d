@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This example is broken on purpose: it shows how ES3D reports problems.
+  Every error carries a line and column, a message and, where possible,
+  a "Did you mean" suggestion. Click an entry in the Problems list to jump
+  to it, then fix the source and watch the scene appear.
+-->
+<es3d version="1">
+  <material id="red" color="#e53935"/>
+  <material id="steel" color="#90a4ae" metallic="1" roughness="0.3"/>
+
+  <sphere raduis="1" position="-3,1,0" material="red"/>
+  <box size="2,2" position="0,1,0" material="stele"/>
+  <cylinder radius="-1" height="2" position="3,1,0"/>
+  <extrude d="M0,0 L1,0 L1 Z" depth="0.5" position="5,0,0"/>
+  <use ref="tree" position="0,0,3"/>
+  <light type="spotlight" position="0,5,0"/>
+  <plane size="12" color="#7cb34"/>
+</es3d>

@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+
+<title>Examples - ES3D</title>
+<meta name="description" content="Thirteen ES3D example scenes, from a rotating cube to a city of 7,300 objects. Each one opens in ES3D Studio.">
+<link rel="canonical" href="https://es3d.org/examples/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ES3D">
+<meta property="og:title" content="Examples">
+<meta property="og:description" content="Thirteen ES3D example scenes, from a rotating cube to a city of 7,300 objects. Each one opens in ES3D Studio.">
+<meta property="og:url" content="https://es3d.org/examples/">
+<meta property="og:image" content="https://es3d.org/images/studio-forest.jpg">
+<meta property="og:image:width" content="2000">
+<meta property="og:image:height" content="1125">
+<meta property="og:image:alt" content="The forest example in ES3D Studio: 2,400 trees and rocks placed by three scatter elements">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://es3d.org/images/studio-forest.jpg">
+<meta name="twitter:image:alt" content="The forest example in ES3D Studio: 2,400 trees and rocks placed by three scatter elements">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://es3d.org/#organization",
+      "name": "ES3D",
+      "url": "https://es3d.org/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/favicon.svg"
+      },
+      "sameAs": [
+        "https://github.com/bitilia/es3d"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://es3d.org/#website",
+      "url": "https://es3d.org/",
+      "name": "ES3D",
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://es3d.org/examples/#webpage",
+      "url": "https://es3d.org/examples/",
+      "name": "Examples",
+      "description": "Thirteen ES3D example scenes, from a rotating cube to a city of 7,300 objects. Each one opens in ES3D Studio.",
+      "isPartOf": {
+        "@id": "https://es3d.org/#website"
+      },
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en",
+      "dateModified": "2026-10-15",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/images/studio-forest.jpg",
+        "width": 2000,
+        "height": 1125
+      },
+      "breadcrumb": {
+        "@id": "https://es3d.org/examples/#breadcrumb"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://es3d.org/examples/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://es3d.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Examples",
+          "item": "https://es3d.org/examples/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+  <script type="module" crossorigin src="../assets/modulepreload-polyfill-P2Xu9kJm.js"></script>
+  <script type="module" crossorigin src="../assets/site-NDrmVV8F.js"></script>
+  <link rel="stylesheet" crossorigin href="../assets/site-Dj63CpNW.css">
+</head>
+<body>
+
+
+<div class="site">
+<a class="skip" href="#content">Skip to content</a>
+<header class="masthead">
+  <a class="brand" href="../"><img src="../favicon.svg" alt="ES3D" width="114" height="36"></a>
+  <p class="tagline">Extensible Scalable 3D. Scenes you can write by hand, the way people write SVG.</p>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Site">
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links"><span class="nav-toggle-icon" aria-hidden="true"></span>Menu<span class="nav-toggle-current"></span></button>
+  <div class="nav-links" id="nav-links">
+  <ul>
+    <li><a href="../" data-nav="home">Home</a></li>
+    <li><a href="../examples/" aria-current="page">Examples</a></li>
+    <li><a href="../demo/" data-nav="demos">Demo Sites</a></li>
+  </ul>
+  <div class="nav-head">Read</div>
+  <ul>
+    <li><a href="../spec/" data-nav="spec">Specification</a></li>
+    <li><a href="../reference/" data-nav="reference">Element reference</a></li>
+    <li><a href="../media/" data-nav="media">Media</a></li>
+  </ul>
+  <div class="nav-head">Get it</div>
+  <ul>
+    <li><a href="../download/" data-nav="download">Download</a></li>
+    <li><a href="../faq/" data-nav="faq">FAQ and links</a></li>
+    <li><a href="https://github.com/bitilia/es3d">Source code</a></li>
+  </ul>
+  <div class="nav-head">Tools</div>
+  <ul>
+    <li><a href="../convert/" data-nav="convert">File converter</a></li>
+    <li><a href="../studio/">ES3D Studio</a></li>
+    <li><a href="../modeller/">ES3D Modeller</a></li>
+  </ul>
+  </div>
+</nav>
+<main id="content">
+
+<h1>Examples</h1>
+<p>Every example is one <code>.es3d</code> text file. Click a picture to open the scene in <a href="../studio/">ES3D Studio</a>, where you can change the source and see the result immediately. Or click the file name and read the source in the browser.</p>
+<p class="small muted">The pictures are screenshots of the reference renderer (WebGL2).</p>
+<div class="table-wrap"><table class="gallery">
+<tbody>
+<tr>
+  <td class="thumb"><a href="../studio/?example=rotating-cube"><img src="../thumbs/rotating-cube.jpg" width="240" height="150" alt="1. Rotating cube" loading="lazy"></a></td>
+  <td><b><a href="../studio/?example=rotating-cube">1. Rotating cube</a></b><br>
+  One rounded box, one animation.<br>
+  <span class="filesize"><b>775 bytes</b> ES3D file <span class="filesize-gzip">· 453 bytes gzipped</span></span><br>
+  <small>File: <a href="../examples/01-rotating-cube.es3d">01-rotating-cube.es3d</a></small></td>
+</tr>
+<tr>
+  <td class="thumb"><a href="../studio/?example=primitives"><img src="../thumbs/primitives.jpg" width="240" height="150" alt="2. Primitive test scene" loading="lazy"></a></td>
+  <td><b><a href="../studio/?example=primitives">2. Primitive test scene</a></b><br>
+  Every geometry type of ES3D v1.<br>
+  <span class="filesize"><b>4.1 kB</b> ES3D file <span class="filesize-gzip">· 1.5 kB gzipped</span></span><br>
+  <small>File: <a href="../examples/02-primitives.es3d">02-primitives.es3d</a></small></td>
+</tr>
+<tr>
+  <td class="thumb"><a href="../studio/?example=logo"><img src="../thumbs/logo.jpg" width="240" height="150" alt="3. Extruded SVG-style logo" loading="lazy"></a></td>
+  <td><b><a href="../studio/?example=logo">3. Extruded SVG-style logo</a></b><br>
+  Path data extruded with a bevel.<br>
+  <span class="filesize"><b>2.7 kB</b> ES3D file <span class="filesize-gzip">· 1.1 kB gzipped</span></span><br>
+  <small>File: <a href="../examples/03-logo.es3d">03-logo.es3d</a></small></td>
+</tr>
+<tr>
+  <td class="thumb"><a href="../studio/?example=forest"><img src="../thumbs/forest.jpg" width="240" height="150" alt="4. Forest (instancing)" loading="lazy"></a></td>
+  <td><b><a href="../studio/?example=forest">4. Forest (instancing)</a></b><br>
+  2,400 objects from two definitions and three scatters.<br>
+  <span class="filesize"><b>2.2 kB</b> ES3D file <span class="filesize-gzip">· 886 bytes gzipped</span></span><br>
+  <small>File: <a href="../examples/04-forest.es3d">04-forest.es3d</a></small></td>
+</tr>
+<tr>
+  <td class="thumb"><a href="../studio/?example=gearbox"><img src="../thumbs/gearbox.jpg" width="240" height="150" alt="5. Gearbox (procedural)" loading="lazy"></a></td>
+  <td><b><a href="../studio/?example=gearbox">5. Gearbox (procedural)</a></b><br>
+  Involute gears, springs, repeats and animation.<br>
+  <span class="filesize"><b>3.7 kB</b> ES3D file <span class="filesize-gzip">· 1.3 kB gzipped</span></span><br>
+  <small>File: <a href="../examples/05-gearbox.es3d">05-gearbox.es3d</a></small></td>
+</tr>
+<tr>
+  <td class="thumb"><a href="../studio/?example=city"><img src="../thumbs/city.jpg" width="240" height="150" alt="6. City (7,300 objects)" loading="lazy"></a></td>
+  <td><b><a href="../studio/?example=city">6. City (7,300 objects)</a></b><br>
+  Grid scatters with random heights and materials.<br>
+  <span class="filesize"><b>2.3 kB</b> ES3D file <span class="filesize-gzip">· 1,009 bytes gzipped</span></span><br>
+  <small>File: <a href="../examples/06-city.es3d">06-city.es3d</a></small></td>
+</tr>
+<tr>
+  <td class="thumb"><a href="../studio/?example=staircases"><img src="../thumbs/staircases.jpg" width="240" height="150" alt="7. Parametric staircases" loading="lazy"></a></td>
+  <td><b><a href="../studio/?example=staircases">7. Parametric staircases</a></b><br>
+  Straight and spiral flights from one step each.<br>
+  <span class="filesize"><b>2.1 kB</b> ES3D file <span class="filesize-gzip">· 938 bytes gzipped</span></span><br>
+  <small>File: <a href="../examples/07-staircases.es3d">07-staircases.es3d</a></small></td>
+</tr>
+<tr>
+  <td class="thumb"><a href="../studio/?example=materials"><img src="../thumbs/materials.jpg" width="240" height="150" alt="8. Materials and textures" loading="lazy"></a></td>
+  <td><b><a href="../studio/?example=materials">8. Materials and textures</a></b><br>
+  Metallic/roughness grid, procedural textures, normal maps.<br>
+  <span class="filesize"><b>3.5 kB</b> ES3D file <span class="filesize-gzip">· 1.1 kB gzipped</span></span><br>
+  <small>File: <a href="../examples/08-materials.es3d">08-materials.es3d</a></small></td>
+</tr>
+<tr>
+  <td class="thumb"><a href="../studio/?example=compact"><img src="../thumbs/compact.jpg" width="240" height="150" alt="9. Compact syntax" loading="lazy"></a></td>
+  <td><b><a href="../studio/?example=compact">9. Compact syntax</a></b><br>
+  A desk scene written in ES3D-C.<br>
+  <span class="filesize"><b>2.7 kB</b> ES3D file <span class="filesize-gzip">· 1.3 kB gzipped</span></span><br>
+  <small>File: <a href="../examples/09-compact-syntax.es3d">09-compact-syntax.es3d</a></small></td>
+</tr>
+<tr>
+  <td class="thumb"><a href="../studio/?example=mesh"><img src="../thumbs/mesh.jpg" width="240" height="150" alt="10. Mesh escape hatch" loading="lazy"></a></td>
+  <td><b><a href="../studio/?example=mesh">10. Mesh escape hatch</a></b><br>
+  Explicit triangle meshes as reusable definitions.<br>
+  <span class="filesize"><b>8.8 kB</b> ES3D file <span class="filesize-gzip">· 3.3 kB gzipped</span></span><br>
+  <small>File: <a href="../examples/10-mesh-escape-hatch.es3d">10-mesh-escape-hatch.es3d</a></small></td>
+</tr>
+<tr>
+  <td class="thumb"><a href="../studio/?example=solar"><img src="../thumbs/solar.jpg" width="240" height="150" alt="11. Solar system" loading="lazy"></a></td>
+  <td><b><a href="../studio/?example=solar">11. Solar system</a></b><br>
+  Nested animated transforms and a starfield.<br>
+  <span class="filesize"><b>3.4 kB</b> ES3D file <span class="filesize-gzip">· 1.1 kB gzipped</span></span><br>
+  <small>File: <a href="../examples/11-solar-system.es3d">11-solar-system.es3d</a></small></td>
+</tr>
+<tr>
+  <td class="thumb"><a href="../studio/?example=lod"><img src="../thumbs/lod.jpg" width="240" height="150" alt="12. LOD stress test (20,000)" loading="lazy"></a></td>
+  <td><b><a href="../studio/?example=lod">12. LOD stress test (20,000)</a></b><br>
+  Automatic and authored levels of detail.<br>
+  <span class="filesize"><b>2.0 kB</b> ES3D file <span class="filesize-gzip">· 877 bytes gzipped</span></span><br>
+  <small>File: <a href="../examples/12-lod-stress.es3d">12-lod-stress.es3d</a></small></td>
+</tr>
+<tr>
+  <td class="thumb"><a href="../studio/?example=errors"><img src="../thumbs/errors.jpg" width="240" height="150" alt="13. Error reporting" loading="lazy"></a></td>
+  <td><b><a href="../studio/?example=errors">13. Error reporting</a></b><br>
+  A broken document showing diagnostics.<br>
+  <span class="filesize"><b>805 bytes</b> ES3D file <span class="filesize-gzip">· 477 bytes gzipped</span></span><br>
+  <small>File: <a href="../examples/13-error-demo.es3d">13-error-demo.es3d</a></small></td>
+</tr>
+</tbody></table></div>
+<p>Four small websites use the same library: a medieval village, a gift box, a bicycle and a lamp room. They are the <a href="../demo/">Demo Sites</a>.</p>
+<p>Want to make your own? Start from one of these in ES3D Studio, or <a href="../convert/">convert</a> an SVG drawing and edit the result.</p>
+</main>
+</div>
+<footer class="footer">
+  <p class="footer-mark"><img src="../favicon.svg" alt="ES3D" width="96" height="30"></p>
+  <ul class="facts">
+    <li><a href="../download/">Get ES3D</a></li>
+    <li>WebGPU and WebGL2</li>
+    <li>No plugin</li>
+    <li><a href="https://github.com/bitilia/es3d/blob/HEAD/LICENSE">Apache 2.0</a></li>
+  </ul>
+  <p><b>es3d.org</b>. Opens in a normal browser. No plugin, no cookies, no trackers.</p>
+  <p>Last updated 2026-10-15. ES3D 1.0.0 is free software under the Apache License 2.0.<br>
+  Questions, bugs, ideas: <a href="https://github.com/bitilia/es3d/issues">open an issue on GitHub</a>.</p>
+</footer>
+</div>
+
+</body>
+</html>

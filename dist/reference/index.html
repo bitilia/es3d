@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+
+<title>Element reference - ES3D</title>
+<meta name="description" content="Every ES3D element and attribute with types, defaults and ranges.">
+<link rel="canonical" href="https://es3d.org/reference/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ES3D">
+<meta property="og:title" content="Element reference">
+<meta property="og:description" content="Every ES3D element and attribute with types, defaults and ranges.">
+<meta property="og:url" content="https://es3d.org/reference/">
+<meta property="og:image" content="https://es3d.org/images/studio-errors.jpg">
+<meta property="og:image:width" content="2000">
+<meta property="og:image:height" content="1125">
+<meta property="og:image:alt" content="ES3D Studio showing located errors with did-you-mean suggestions, underlined in the editor">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://es3d.org/images/studio-errors.jpg">
+<meta name="twitter:image:alt" content="ES3D Studio showing located errors with did-you-mean suggestions, underlined in the editor">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://es3d.org/#organization",
+      "name": "ES3D",
+      "url": "https://es3d.org/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/favicon.svg"
+      },
+      "sameAs": [
+        "https://github.com/bitilia/es3d"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://es3d.org/#website",
+      "url": "https://es3d.org/",
+      "name": "ES3D",
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://es3d.org/reference/#webpage",
+      "url": "https://es3d.org/reference/",
+      "name": "Element reference",
+      "description": "Every ES3D element and attribute with types, defaults and ranges.",
+      "isPartOf": {
+        "@id": "https://es3d.org/#website"
+      },
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en",
+      "dateModified": "2026-10-15",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/images/studio-errors.jpg",
+        "width": 2000,
+        "height": 1125
+      },
+      "breadcrumb": {
+        "@id": "https://es3d.org/reference/#breadcrumb"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://es3d.org/reference/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://es3d.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Element reference",
+          "item": "https://es3d.org/reference/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+  <script type="module" crossorigin src="../assets/modulepreload-polyfill-P2Xu9kJm.js"></script>
+  <script type="module" crossorigin src="../assets/site-NDrmVV8F.js"></script>
+  <link rel="stylesheet" crossorigin href="../assets/site-Dj63CpNW.css">
+</head>
+<body>
+
+
+<div class="site">
+<a class="skip" href="#content">Skip to content</a>
+<header class="masthead">
+  <a class="brand" href="../"><img src="../favicon.svg" alt="ES3D" width="114" height="36"></a>
+  <p class="tagline">Extensible Scalable 3D. Scenes you can write by hand, the way people write SVG.</p>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Site">
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links"><span class="nav-toggle-icon" aria-hidden="true"></span>Menu<span class="nav-toggle-current"></span></button>
+  <div class="nav-links" id="nav-links">
+  <ul>
+    <li><a href="../" data-nav="home">Home</a></li>
+    <li><a href="../examples/" data-nav="examples">Examples</a></li>
+    <li><a href="../demo/" data-nav="demos">Demo Sites</a></li>
+  </ul>
+  <div class="nav-head">Read</div>
+  <ul>
+    <li><a href="../spec/" data-nav="spec">Specification</a></li>
+    <li><a href="../reference/" aria-current="page">Element reference</a></li>
+    <li><a href="../media/" data-nav="media">Media</a></li>
+  </ul>
+  <div class="nav-head">Get it</div>
+  <ul>
+    <li><a href="../download/" data-nav="download">Download</a></li>
+    <li><a href="../faq/" data-nav="faq">FAQ and links</a></li>
+    <li><a href="https://github.com/bitilia/es3d">Source code</a></li>
+  </ul>
+  <div class="nav-head">Tools</div>
+  <ul>
+    <li><a href="../convert/" data-nav="convert">File converter</a></li>
+    <li><a href="../studio/">ES3D Studio</a></li>
+    <li><a href="../modeller/">ES3D Modeller</a></li>
+  </ul>
+  </div>
+</nav>
+<main id="content">
+
+<div class="doc">
+<h1 id="es3d-element-reference">ES3D element reference</h1>
+<p class="source-note">Taken from <a href="https://github.com/bitilia/es3d/blob/HEAD/docs/REFERENCE.md">docs/REFERENCE.md</a>. This page and that file say the same thing.</p>
+<div class="toc"><b>Contents</b>
+<ul>
+<li class="toc-2"><a href="#common-attributes">Common attributes</a></li>
+<li class="toc-2"><a href="#document-structure">Document structure</a></li>
+<li class="toc-3"><a href="#es3d"><code>&lt;es3d&gt;</code></a></li>
+<li class="toc-3"><a href="#title"><code>&lt;title&gt;</code></a></li>
+<li class="toc-3"><a href="#desc"><code>&lt;desc&gt;</code></a></li>
+<li class="toc-3"><a href="#defs"><code>&lt;defs&gt;</code></a></li>
+<li class="toc-3"><a href="#scene"><code>&lt;scene&gt;</code></a></li>
+<li class="toc-3"><a href="#environment"><code>&lt;environment&gt;</code></a></li>
+<li class="toc-2"><a href="#materials">Materials</a></li>
+<li class="toc-3"><a href="#material"><code>&lt;material&gt;</code></a></li>
+<li class="toc-2"><a href="#containers-and-instancing">Containers and instancing</a></li>
+<li class="toc-3"><a href="#group"><code>&lt;group&gt;</code></a></li>
+<li class="toc-3"><a href="#repeat"><code>&lt;repeat&gt;</code></a></li>
+<li class="toc-3"><a href="#scatter"><code>&lt;scatter&gt;</code></a></li>
+<li class="toc-3"><a href="#lod"><code>&lt;lod&gt;</code></a></li>
+<li class="toc-3"><a href="#use"><code>&lt;use&gt;</code></a></li>
+<li class="toc-2"><a href="#shapes">Shapes</a></li>
+<li class="toc-3"><a href="#box"><code>&lt;box&gt;</code></a></li>
+<li class="toc-3"><a href="#sphere"><code>&lt;sphere&gt;</code></a></li>
+<li class="toc-3"><a href="#cylinder"><code>&lt;cylinder&gt;</code></a></li>
+<li class="toc-3"><a href="#cone"><code>&lt;cone&gt;</code></a></li>
+<li class="toc-3"><a href="#capsule"><code>&lt;capsule&gt;</code></a></li>
+<li class="toc-3"><a href="#plane"><code>&lt;plane&gt;</code></a></li>
+<li class="toc-3"><a href="#torus"><code>&lt;torus&gt;</code></a></li>
+<li class="toc-3"><a href="#line"><code>&lt;line&gt;</code></a></li>
+<li class="toc-3"><a href="#polyline"><code>&lt;polyline&gt;</code></a></li>
+<li class="toc-3"><a href="#polygon"><code>&lt;polygon&gt;</code></a></li>
+<li class="toc-3"><a href="#path"><code>&lt;path&gt;</code></a></li>
+<li class="toc-3"><a href="#extrude"><code>&lt;extrude&gt;</code></a></li>
+<li class="toc-3"><a href="#revolve"><code>&lt;revolve&gt;</code></a></li>
+<li class="toc-3"><a href="#sweep"><code>&lt;sweep&gt;</code></a></li>
+<li class="toc-3"><a href="#gear"><code>&lt;gear&gt;</code></a></li>
+<li class="toc-3"><a href="#mesh"><code>&lt;mesh&gt;</code></a></li>
+<li class="toc-2"><a href="#lights-and-cameras">Lights and cameras</a></li>
+<li class="toc-3"><a href="#light"><code>&lt;light&gt;</code></a></li>
+<li class="toc-3"><a href="#camera"><code>&lt;camera&gt;</code></a></li>
+<li class="toc-2"><a href="#animation">Animation</a></li>
+<li class="toc-3"><a href="#animate"><code>&lt;animate&gt;</code></a></li>
+<li class="toc-2"><a href="#value-types">Value types</a></li>
+</ul>
+</div>
+
+<p>Every element and attribute of ES3D version 1 as implemented by the reference reader. Semantics are described in <a href="../spec/">SPEC.md</a>.
+Unknown attributes and elements are errors (with a "did you mean" suggestion); elements whose name starts with <code>x-</code> are vendor extensions and are skipped with a warning.</p>
+<h2 id="common-attributes">Common attributes</h2>
+<p>Scene nodes (shapes, containers, <code>&lt;use&gt;</code>, <code>&lt;scene&gt;</code>) accept these placement and style attributes in addition to their own. The local transform is <code>transform · T(position) · R(rotation) · S(scale)</code>.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td></td><td>id</td><td></td><td></td><td>Unique identifier, referenced by &lt;use ref&gt;, material="…" and path="…".</td></tr>
+<tr><td><code>name</code></td><td></td><td>string</td><td></td><td></td><td>Human readable label shown in tools.</td></tr>
+<tr><td><code>transform</code></td><td><code>t</code></td><td>transform</td><td></td><td></td><td>SVG-style transform list; applied outside position/rotation/scale.</td></tr>
+<tr><td><code>position</code></td><td><code>p</code></td><td>vec3</td><td><code>0,0,0</code></td><td></td><td>Translation x,y,z.</td></tr>
+<tr><td><code>rotation</code></td><td><code>rot</code></td><td>vec3</td><td><code>0,0,0</code></td><td></td><td>Euler angles in degrees, applied about X, then Y, then Z.</td></tr>
+<tr><td><code>scale</code></td><td><code>sc</code></td><td>scale3</td><td><code>1,1,1</code></td><td></td><td>Uniform scale or x,y,z.</td></tr>
+<tr><td><code>visible</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the element and its children are not rendered.</td></tr>
+<tr><td><code>material</code></td><td><code>m</code></td><td>ref → material</td><td></td><td></td><td>Material id. Inherited by descendants, like SVG fill.</td></tr>
+<tr><td><code>color</code></td><td><code>c</code></td><td>color</td><td></td><td></td><td>Base colour override. Inherited by descendants.</td></tr>
+</tbody></table></div>
+<h2 id="document-structure">Document structure</h2>
+<h3 id="es3d"><code>&lt;es3d&gt;</code></h3>
+<p>Root element of an ES3D document.</p>
+<p>Children: <code>&lt;title&gt;</code>, <code>&lt;desc&gt;</code>, <code>&lt;defs&gt;</code>, <code>&lt;scene&gt;</code>, <code>&lt;environment&gt;</code>, <code>&lt;controls&gt;</code>, <code>&lt;box&gt;</code>, <code>&lt;sphere&gt;</code>, <code>&lt;cylinder&gt;</code>, <code>&lt;cone&gt;</code>, <code>&lt;capsule&gt;</code>, <code>&lt;plane&gt;</code>, <code>&lt;torus&gt;</code>, <code>&lt;line&gt;</code>, <code>&lt;polyline&gt;</code>, <code>&lt;polygon&gt;</code>, <code>&lt;path&gt;</code>, <code>&lt;extrude&gt;</code>, <code>&lt;revolve&gt;</code>, <code>&lt;sweep&gt;</code>, <code>&lt;gear&gt;</code>, <code>&lt;mesh&gt;</code>, <code>&lt;group&gt;</code>, <code>&lt;repeat&gt;</code>, <code>&lt;scatter&gt;</code>, <code>&lt;lod&gt;</code>, <code>&lt;use&gt;</code>, <code>&lt;light&gt;</code>, <code>&lt;camera&gt;</code>, <code>&lt;material&gt;</code>.</p>
+<p>Attributes:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>version</code> <strong>(required)</strong></td><td></td><td>string</td><td></td><td></td><td>Format version; this implementation reads version 1.</td></tr>
+<tr><td><code>unit</code></td><td></td><td><code>m</code> | <code>cm</code> | <code>mm</code> | <code>km</code> | <code>in</code> | <code>ft</code></td><td><code>m</code></td><td></td><td>Length unit (informative).</td></tr>
+<tr><td><code>xmlns</code></td><td></td><td>string</td><td></td><td></td><td>Optional. Ignored if present. A namespace is not required.</td></tr>
+<tr><td><code>name</code></td><td></td><td>string</td><td></td><td></td><td>Human readable label shown in tools.</td></tr>
+</tbody></table></div>
+<h3 id="title"><code>&lt;title&gt;</code></h3>
+<p>Document title.</p>
+<p>Children: text content.</p>
+<p>No attributes.</p>
+<h3 id="desc"><code>&lt;desc&gt;</code></h3>
+<p>Free text description.</p>
+<p>Children: text content.</p>
+<p>No attributes.</p>
+<h3 id="defs"><code>&lt;defs&gt;</code></h3>
+<p>Definitions that are not rendered directly; referenced with &lt;use ref&gt;.</p>
+<p>Children: <code>&lt;box&gt;</code>, <code>&lt;sphere&gt;</code>, <code>&lt;cylinder&gt;</code>, <code>&lt;cone&gt;</code>, <code>&lt;capsule&gt;</code>, <code>&lt;plane&gt;</code>, <code>&lt;torus&gt;</code>, <code>&lt;line&gt;</code>, <code>&lt;polyline&gt;</code>, <code>&lt;polygon&gt;</code>, <code>&lt;path&gt;</code>, <code>&lt;extrude&gt;</code>, <code>&lt;revolve&gt;</code>, <code>&lt;sweep&gt;</code>, <code>&lt;gear&gt;</code>, <code>&lt;mesh&gt;</code>, <code>&lt;group&gt;</code>, <code>&lt;repeat&gt;</code>, <code>&lt;scatter&gt;</code>, <code>&lt;lod&gt;</code>, <code>&lt;use&gt;</code>, <code>&lt;light&gt;</code>, <code>&lt;camera&gt;</code>, <code>&lt;material&gt;</code>.</p>
+<p>No attributes.</p>
+<h3 id="scene"><code>&lt;scene&gt;</code></h3>
+<p>Optional wrapper for scene content; behaves like a group.</p>
+<p>Children: <code>&lt;box&gt;</code>, <code>&lt;sphere&gt;</code>, <code>&lt;cylinder&gt;</code>, <code>&lt;cone&gt;</code>, <code>&lt;capsule&gt;</code>, <code>&lt;plane&gt;</code>, <code>&lt;torus&gt;</code>, <code>&lt;line&gt;</code>, <code>&lt;polyline&gt;</code>, <code>&lt;polygon&gt;</code>, <code>&lt;path&gt;</code>, <code>&lt;extrude&gt;</code>, <code>&lt;revolve&gt;</code>, <code>&lt;sweep&gt;</code>, <code>&lt;gear&gt;</code>, <code>&lt;mesh&gt;</code>, <code>&lt;group&gt;</code>, <code>&lt;repeat&gt;</code>, <code>&lt;scatter&gt;</code>, <code>&lt;lod&gt;</code>, <code>&lt;use&gt;</code>, <code>&lt;light&gt;</code>, <code>&lt;camera&gt;</code>, <code>&lt;material&gt;</code>, <code>&lt;environment&gt;</code>, <code>&lt;controls&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+</tbody></table></div>
+<h3 id="environment"><code>&lt;environment&gt;</code></h3>
+<p>Background and ambient (hemisphere) lighting.</p>
+<p>Children: none.</p>
+<p>Attributes:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>background</code></td><td></td><td>color</td><td><code>#171a1f</code></td><td></td><td>Clear colour.</td></tr>
+<tr><td><code>sky</code></td><td></td><td>color</td><td><code>#ccdbf2</code></td><td></td><td>Ambient light colour from above.</td></tr>
+<tr><td><code>ground</code></td><td></td><td>color</td><td><code>#403833</code></td><td></td><td>Ambient light colour from below.</td></tr>
+<tr><td><code>intensity</code></td><td></td><td>number</td><td><code>0.5</code></td><td>≥ 0</td><td>Ambient / environment intensity.</td></tr>
+<tr><td><code>exposure</code></td><td></td><td>number</td><td><code>1</code></td><td>&gt; 0</td><td>Tone mapping exposure.</td></tr>
+</tbody></table></div>
+<h2 id="materials">Materials</h2>
+<h3 id="material"><code>&lt;material&gt;</code></h3>
+<p>Minimal physically based material (metallic/roughness).</p>
+<p>Children: none.</p>
+<p>Attributes:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td></td><td>id</td><td></td><td></td><td>Unique identifier, referenced by &lt;use ref&gt;, material="…" and path="…".</td></tr>
+<tr><td><code>name</code></td><td></td><td>string</td><td></td><td></td><td>Human readable label shown in tools.</td></tr>
+<tr><td><code>color</code></td><td><code>c</code></td><td>color</td><td><code>#ccc</code></td><td></td><td>Base colour (sRGB).</td></tr>
+<tr><td><code>metallic</code></td><td></td><td>number</td><td><code>0</code></td><td>≥ 0, ≤ 1</td><td>0 = dielectric, 1 = metal.</td></tr>
+<tr><td><code>roughness</code></td><td></td><td>number</td><td><code>0.5</code></td><td>≥ 0, ≤ 1</td><td>0 = mirror, 1 = fully rough.</td></tr>
+<tr><td><code>opacity</code></td><td></td><td>number</td><td><code>1</code></td><td>≥ 0, ≤ 1</td><td>Alpha; values below 1 are blended.</td></tr>
+<tr><td><code>emissive</code></td><td></td><td>color</td><td><code>#000</code></td><td></td><td>Emitted colour.</td></tr>
+<tr><td><code>emissiveIntensity</code></td><td></td><td>number</td><td><code>1</code></td><td>≥ 0</td><td>Multiplier for emissive.</td></tr>
+<tr><td><code>map</code></td><td></td><td>texture</td><td></td><td></td><td>Base colour texture: image URL or checker(), grid(), stripes(), noise(), bricks().</td></tr>
+<tr><td><code>normalMap</code></td><td></td><td>normalTexture</td><td></td><td></td><td>Normal map: image URL or bumps(), tiles(), noise(), waves(), bricks().</td></tr>
+<tr><td><code>normalScale</code></td><td></td><td>number</td><td><code>1</code></td><td></td><td>Normal map strength.</td></tr>
+<tr><td><code>uvScale</code></td><td></td><td>vec2</td><td><code>1,1</code></td><td></td><td>Texture repeat in u and v.</td></tr>
+<tr><td><code>doubleSided</code></td><td></td><td>bool</td><td><code>false</code></td><td></td><td>Render back faces too.</td></tr>
+<tr><td><code>unlit</code></td><td></td><td>bool</td><td><code>false</code></td><td></td><td>Ignore lighting; output the base colour.</td></tr>
+<tr><td><code>occlusionMap</code></td><td></td><td>texture</td><td></td><td></td><td>Occlusion texture. The red channel darkens indirect light. Image URL or a procedural texture.</td></tr>
+<tr><td><code>occlusionStrength</code></td><td></td><td>number</td><td><code>1</code></td><td>≥ 0, ≤ 1</td><td>Strength of occlusionMap. 0 disables it, 1 uses the texture as stored.</td></tr>
+<tr><td><code>metallicRoughnessMap</code></td><td></td><td>texture</td><td></td><td></td><td>Packed texture: green multiplies roughness, blue multiplies metallic.</td></tr>
+<tr><td><code>emissiveMap</code></td><td></td><td>texture</td><td></td><td></td><td>sRGB texture multiplied with emissive.</td></tr>
+<tr><td><code>alphaMode</code></td><td></td><td><code>auto</code> | <code>opaque</code> | <code>mask</code> | <code>blend</code></td><td><code>auto</code></td><td></td><td>auto blends when opacity is below 1 and is opaque otherwise. mask discards fragments below alphaCutoff. blend uses opacity as coverage. opaque ignores alpha.</td></tr>
+<tr><td><code>alphaCutoff</code></td><td></td><td>number</td><td><code>0.5</code></td><td>≥ 0, ≤ 1</td><td>Mask threshold.</td></tr>
+</tbody></table></div>
+<h2 id="containers-and-instancing">Containers and instancing</h2>
+<h3 id="group"><code>&lt;group&gt;</code></h3>
+<p>Groups children under a common transform and style.</p>
+<p>Children: <code>&lt;box&gt;</code>, <code>&lt;sphere&gt;</code>, <code>&lt;cylinder&gt;</code>, <code>&lt;cone&gt;</code>, <code>&lt;capsule&gt;</code>, <code>&lt;plane&gt;</code>, <code>&lt;torus&gt;</code>, <code>&lt;line&gt;</code>, <code>&lt;polyline&gt;</code>, <code>&lt;polygon&gt;</code>, <code>&lt;path&gt;</code>, <code>&lt;extrude&gt;</code>, <code>&lt;revolve&gt;</code>, <code>&lt;sweep&gt;</code>, <code>&lt;gear&gt;</code>, <code>&lt;mesh&gt;</code>, <code>&lt;group&gt;</code>, <code>&lt;repeat&gt;</code>, <code>&lt;scatter&gt;</code>, <code>&lt;lod&gt;</code>, <code>&lt;use&gt;</code>, <code>&lt;light&gt;</code>, <code>&lt;camera&gt;</code>, <code>&lt;material&gt;</code>, <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+</tbody></table></div>
+<h3 id="repeat"><code>&lt;repeat&gt;</code></h3>
+<p>Repeats its children count times; copy i is transformed by step applied i times.</p>
+<p>Children: <code>&lt;box&gt;</code>, <code>&lt;sphere&gt;</code>, <code>&lt;cylinder&gt;</code>, <code>&lt;cone&gt;</code>, <code>&lt;capsule&gt;</code>, <code>&lt;plane&gt;</code>, <code>&lt;torus&gt;</code>, <code>&lt;line&gt;</code>, <code>&lt;polyline&gt;</code>, <code>&lt;polygon&gt;</code>, <code>&lt;path&gt;</code>, <code>&lt;extrude&gt;</code>, <code>&lt;revolve&gt;</code>, <code>&lt;sweep&gt;</code>, <code>&lt;gear&gt;</code>, <code>&lt;mesh&gt;</code>, <code>&lt;group&gt;</code>, <code>&lt;repeat&gt;</code>, <code>&lt;scatter&gt;</code>, <code>&lt;lod&gt;</code>, <code>&lt;use&gt;</code>, <code>&lt;light&gt;</code>, <code>&lt;camera&gt;</code>, <code>&lt;material&gt;</code>, <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>count</code> <strong>(required)</strong></td><td><code>n</code></td><td>int</td><td></td><td>≥ 0, ≤ 1000000</td><td>Number of copies.</td></tr>
+<tr><td><code>step</code> <strong>(required)</strong></td><td></td><td>transform</td><td></td><td></td><td>Transform applied cumulatively between copies.</td></tr>
+</tbody></table></div>
+<h3 id="scatter"><code>&lt;scatter&gt;</code></h3>
+<p>Deterministic pseudo-random or grid placement of its children (seeded mulberry32).</p>
+<p>Children: <code>&lt;box&gt;</code>, <code>&lt;sphere&gt;</code>, <code>&lt;cylinder&gt;</code>, <code>&lt;cone&gt;</code>, <code>&lt;capsule&gt;</code>, <code>&lt;plane&gt;</code>, <code>&lt;torus&gt;</code>, <code>&lt;line&gt;</code>, <code>&lt;polyline&gt;</code>, <code>&lt;polygon&gt;</code>, <code>&lt;path&gt;</code>, <code>&lt;extrude&gt;</code>, <code>&lt;revolve&gt;</code>, <code>&lt;sweep&gt;</code>, <code>&lt;gear&gt;</code>, <code>&lt;mesh&gt;</code>, <code>&lt;group&gt;</code>, <code>&lt;repeat&gt;</code>, <code>&lt;scatter&gt;</code>, <code>&lt;lod&gt;</code>, <code>&lt;use&gt;</code>, <code>&lt;light&gt;</code>, <code>&lt;camera&gt;</code>, <code>&lt;material&gt;</code>, <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>count</code></td><td><code>n</code></td><td>int</td><td></td><td>≥ 0, ≤ 1000000</td><td>Number of random copies (random layout).</td></tr>
+<tr><td><code>grid</code></td><td></td><td>count2</td><td></td><td></td><td>Grid layout nx,nz (instead of count).</td></tr>
+<tr><td><code>spacing</code></td><td></td><td>vec2</td><td><code>1,1</code></td><td></td><td>Grid cell size x,z.</td></tr>
+<tr><td><code>area</code></td><td></td><td>size2</td><td></td><td></td><td>Random layout: rectangle width,depth centred at the origin (XZ plane).</td></tr>
+<tr><td><code>radius</code></td><td></td><td>number</td><td></td><td>&gt; 0</td><td>Random layout: disc radius (XZ plane).</td></tr>
+<tr><td><code>seed</code></td><td></td><td>int</td><td><code>1</code></td><td>≥ 0</td><td>Random seed.</td></tr>
+<tr><td><code>jitter</code></td><td></td><td>number</td><td><code>0</code></td><td>≥ 0, ≤ 1</td><td>Grid layout: random offset as a fraction of the cell.</td></tr>
+<tr><td><code>randomScale</code></td><td></td><td>range3</td><td></td><td></td><td>Per-copy scale: a range (uniform, e.g. 0.8..1.2) or x,y,z ranges.</td></tr>
+<tr><td><code>randomRotation</code></td><td></td><td>range3</td><td></td><td></td><td>Per-copy Euler ranges in degrees, e.g. 0,0..360,0.</td></tr>
+<tr><td><code>randomMaterial</code></td><td></td><td>ids → material</td><td></td><td></td><td>Per-copy material chosen from this list of ids.</td></tr>
+</tbody></table></div>
+<h3 id="lod"><code>&lt;lod&gt;</code></h3>
+<p>Level of detail switch: child i is shown while the camera distance is below distances[i].</p>
+<p>Children: <code>&lt;box&gt;</code>, <code>&lt;sphere&gt;</code>, <code>&lt;cylinder&gt;</code>, <code>&lt;cone&gt;</code>, <code>&lt;capsule&gt;</code>, <code>&lt;plane&gt;</code>, <code>&lt;torus&gt;</code>, <code>&lt;line&gt;</code>, <code>&lt;polyline&gt;</code>, <code>&lt;polygon&gt;</code>, <code>&lt;path&gt;</code>, <code>&lt;extrude&gt;</code>, <code>&lt;revolve&gt;</code>, <code>&lt;sweep&gt;</code>, <code>&lt;gear&gt;</code>, <code>&lt;mesh&gt;</code>, <code>&lt;group&gt;</code>, <code>&lt;repeat&gt;</code>, <code>&lt;scatter&gt;</code>, <code>&lt;lod&gt;</code>, <code>&lt;use&gt;</code>, <code>&lt;light&gt;</code>, <code>&lt;camera&gt;</code>, <code>&lt;material&gt;</code>, <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>distances</code> <strong>(required)</strong></td><td></td><td>numbers</td><td></td><td></td><td>Increasing switch distances; one fewer than the number of children.</td></tr>
+</tbody></table></div>
+<h3 id="use"><code>&lt;use&gt;</code></h3>
+<p>Instantiates the element with the given id (like SVG &lt;use&gt;).</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>ref</code> <strong>(required)</strong></td><td><code>href</code></td><td>ref → node</td><td></td><td></td><td>Id of the element to instantiate.</td></tr>
+</tbody></table></div>
+<h2 id="shapes">Shapes</h2>
+<h3 id="box"><code>&lt;box&gt;</code></h3>
+<p>Axis aligned box centred at the origin, optionally with rounded edges.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>size</code></td><td><code>s</code></td><td>size3</td><td><code>1,1,1</code></td><td></td><td>Edge lengths (one value for a cube).</td></tr>
+<tr><td><code>radius</code></td><td><code>r</code></td><td>number</td><td><code>0</code></td><td>≥ 0</td><td>Edge rounding radius.</td></tr>
+<tr><td><code>segments</code></td><td></td><td>int</td><td></td><td>≥ 1, ≤ 32</td><td>Rounding segments (automatic when omitted).</td></tr>
+</tbody></table></div>
+<h3 id="sphere"><code>&lt;sphere&gt;</code></h3>
+<p>Sphere centred at the origin.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>radius</code></td><td><code>r</code></td><td>number</td><td><code>0.5</code></td><td>&gt; 0</td><td>Radius.</td></tr>
+<tr><td><code>segments</code></td><td></td><td>int</td><td></td><td>≥ 3, ≤ 512</td><td>Fixed tessellation (automatic level of detail when omitted).</td></tr>
+</tbody></table></div>
+<h3 id="cylinder"><code>&lt;cylinder&gt;</code></h3>
+<p>Cylinder (or truncated cone) along Y, centred at the origin.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>radius</code></td><td><code>r</code></td><td>number</td><td><code>0.5</code></td><td>&gt; 0</td><td>Bottom radius (and top radius unless radiusTop is set).</td></tr>
+<tr><td><code>radiusTop</code></td><td></td><td>number</td><td></td><td>≥ 0</td><td>Top radius.</td></tr>
+<tr><td><code>height</code></td><td><code>h</code></td><td>number</td><td><code>1</code></td><td>&gt; 0</td><td>Height.</td></tr>
+<tr><td><code>segments</code></td><td></td><td>int</td><td></td><td>≥ 3, ≤ 512</td><td>Fixed number of sides, e.g. 6 for a hexagonal prism.</td></tr>
+<tr><td><code>caps</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>Close the ends.</td></tr>
+</tbody></table></div>
+<h3 id="cone"><code>&lt;cone&gt;</code></h3>
+<p>Cone along Y with its base at -height/2 and apex at +height/2.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>radius</code></td><td><code>r</code></td><td>number</td><td><code>0.5</code></td><td>&gt; 0</td><td>Base radius.</td></tr>
+<tr><td><code>height</code></td><td><code>h</code></td><td>number</td><td><code>1</code></td><td>&gt; 0</td><td>Height.</td></tr>
+<tr><td><code>segments</code></td><td></td><td>int</td><td></td><td>≥ 3, ≤ 512</td><td>Fixed number of sides.</td></tr>
+<tr><td><code>caps</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>Close the base.</td></tr>
+</tbody></table></div>
+<h3 id="capsule"><code>&lt;capsule&gt;</code></h3>
+<p>Capsule along Y; height is the total height including both caps.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>radius</code></td><td><code>r</code></td><td>number</td><td><code>0.25</code></td><td>&gt; 0</td><td>Radius.</td></tr>
+<tr><td><code>height</code></td><td><code>h</code></td><td>number</td><td><code>1</code></td><td>&gt; 0</td><td>Total height (at least 2 × radius).</td></tr>
+<tr><td><code>segments</code></td><td></td><td>int</td><td></td><td>≥ 3, ≤ 512</td><td>Fixed tessellation.</td></tr>
+</tbody></table></div>
+<h3 id="plane"><code>&lt;plane&gt;</code></h3>
+<p>Flat rectangle in the XZ plane facing +Y (rendered double sided).</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>size</code></td><td><code>s</code></td><td>size2</td><td><code>1,1</code></td><td></td><td>Width (x) and depth (z).</td></tr>
+</tbody></table></div>
+<h3 id="torus"><code>&lt;torus&gt;</code></h3>
+<p>Torus around the Y axis.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>radius</code></td><td><code>r</code></td><td>number</td><td><code>0.35</code></td><td>&gt; 0</td><td>Distance from the centre to the tube centre.</td></tr>
+<tr><td><code>tube</code></td><td></td><td>number</td><td><code>0.15</code></td><td>&gt; 0</td><td>Tube radius.</td></tr>
+<tr><td><code>arc</code></td><td></td><td>angle</td><td><code>360</code></td><td>&gt; 0, ≤ 360</td><td>Swept angle in degrees (partial torus / pipe elbow).</td></tr>
+<tr><td><code>segments</code></td><td></td><td>int</td><td></td><td>≥ 3, ≤ 1024</td><td>Fixed segments around the ring.</td></tr>
+<tr><td><code>tubeSegments</code></td><td></td><td>int</td><td></td><td>≥ 3, ≤ 512</td><td>Fixed segments around the tube.</td></tr>
+</tbody></table></div>
+<h3 id="line"><code>&lt;line&gt;</code></h3>
+<p>Straight line segment; rendered as a tube when radius &gt; 0.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>from</code> <strong>(required)</strong></td><td></td><td>vec3</td><td></td><td></td><td>Start point.</td></tr>
+<tr><td><code>to</code> <strong>(required)</strong></td><td></td><td>vec3</td><td></td><td></td><td>End point.</td></tr>
+<tr><td><code>radius</code></td><td><code>r</code></td><td>number</td><td><code>0</code></td><td>≥ 0</td><td>Tube radius (0 = hairline).</td></tr>
+<tr><td><code>segments</code></td><td></td><td>int</td><td></td><td>≥ 3, ≤ 256</td><td>Tube sides.</td></tr>
+</tbody></table></div>
+<h3 id="polyline"><code>&lt;polyline&gt;</code></h3>
+<p>3D polyline or 2D path outline; rendered as a tube when radius &gt; 0.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>points</code></td><td></td><td>points3</td><td></td><td></td><td>x,y,z x,y,z …</td></tr>
+<tr><td><code>d</code></td><td></td><td>path2d</td><td></td><td></td><td>Outline of 2D path data in the XY plane (alternative to points).</td></tr>
+<tr><td><code>closed</code></td><td></td><td>bool</td><td><code>false</code></td><td></td><td>Connect the last point to the first.</td></tr>
+<tr><td><code>smooth</code></td><td></td><td>bool</td><td><code>false</code></td><td></td><td>Interpolate the points with a Catmull-Rom spline.</td></tr>
+<tr><td><code>radius</code></td><td><code>r</code></td><td>number</td><td><code>0</code></td><td>≥ 0</td><td>Tube radius (0 = hairline).</td></tr>
+<tr><td><code>segments</code></td><td></td><td>int</td><td></td><td>≥ 3, ≤ 256</td><td>Tube sides.</td></tr>
+</tbody></table></div>
+<h3 id="polygon"><code>&lt;polygon&gt;</code></h3>
+<p>Filled flat polygon in the XY plane (rendered double sided).</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>points</code> <strong>(required)</strong></td><td></td><td>points2</td><td></td><td></td><td>x,y x,y … (at least 3 points).</td></tr>
+</tbody></table></div>
+<h3 id="path"><code>&lt;path&gt;</code></h3>
+<p>Filled flat 2D path in the XY plane (rendered double sided). In &lt;defs&gt; it is a reusable outline.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>d</code></td><td></td><td>path2d</td><td></td><td></td><td>SVG path data in the local XY plane (y up): M L H V C S Q T A Z.</td></tr>
+<tr><td><code>path</code></td><td></td><td>ref → path</td><td></td><td></td><td>Id of a &lt;path&gt; element whose d is used.</td></tr>
+<tr><td><code>fillRule</code></td><td></td><td><code>nonzero</code> | <code>evenodd</code></td><td><code>nonzero</code></td><td></td><td>How nested contours become holes (SVG fill-rule).</td></tr>
+</tbody></table></div>
+<h3 id="extrude"><code>&lt;extrude&gt;</code></h3>
+<p>Extrudes a 2D path along +Z, optionally with a rounded bevel.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>d</code></td><td></td><td>path2d</td><td></td><td></td><td>SVG path data in the local XY plane (y up): M L H V C S Q T A Z.</td></tr>
+<tr><td><code>path</code></td><td></td><td>ref → path</td><td></td><td></td><td>Id of a &lt;path&gt; element whose d is used.</td></tr>
+<tr><td><code>fillRule</code></td><td></td><td><code>nonzero</code> | <code>evenodd</code></td><td><code>nonzero</code></td><td></td><td>How nested contours become holes (SVG fill-rule).</td></tr>
+<tr><td><code>depth</code></td><td></td><td>number</td><td><code>1</code></td><td>&gt; 0</td><td>Extrusion depth along Z.</td></tr>
+<tr><td><code>bevel</code></td><td></td><td>number</td><td><code>0</code></td><td>≥ 0</td><td>Bevel radius on the front and back edges.</td></tr>
+<tr><td><code>bevelSegments</code></td><td></td><td>int</td><td><code>3</code></td><td>≥ 1, ≤ 16</td><td>Segments per bevel.</td></tr>
+<tr><td><code>center</code></td><td></td><td>bool</td><td><code>false</code></td><td></td><td>Centre the extrusion on z = 0.</td></tr>
+</tbody></table></div>
+<h3 id="revolve"><code>&lt;revolve&gt;</code></h3>
+<p>Revolves (lathes) a 2D profile around the Y axis; x is the distance from the axis.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>d</code></td><td></td><td>path2d</td><td></td><td></td><td>SVG path data in the local XY plane (y up): M L H V C S Q T A Z.</td></tr>
+<tr><td><code>path</code></td><td></td><td>ref → path</td><td></td><td></td><td>Id of a &lt;path&gt; element whose d is used.</td></tr>
+<tr><td><code>fillRule</code></td><td></td><td><code>nonzero</code> | <code>evenodd</code></td><td><code>nonzero</code></td><td></td><td>How nested contours become holes (SVG fill-rule).</td></tr>
+<tr><td><code>angle</code></td><td></td><td>angle</td><td><code>360</code></td><td>&gt; 0, ≤ 360</td><td>Revolution angle in degrees.</td></tr>
+<tr><td><code>segments</code></td><td></td><td>int</td><td></td><td>≥ 3, ≤ 1024</td><td>Fixed number of radial segments.</td></tr>
+</tbody></table></div>
+<h3 id="sweep"><code>&lt;sweep&gt;</code></h3>
+<p>Sweeps a profile (circle or 2D path) along a 3D spine with rotation minimising frames.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>d</code></td><td></td><td>path2d</td><td></td><td></td><td>SVG path data in the local XY plane (y up): M L H V C S Q T A Z.</td></tr>
+<tr><td><code>path</code></td><td></td><td>ref → path</td><td></td><td></td><td>Id of a &lt;path&gt; element whose d is used.</td></tr>
+<tr><td><code>fillRule</code></td><td></td><td><code>nonzero</code> | <code>evenodd</code></td><td><code>nonzero</code></td><td></td><td>How nested contours become holes (SVG fill-rule).</td></tr>
+<tr><td><code>radius</code></td><td><code>r</code></td><td>number</td><td></td><td>&gt; 0</td><td>Circular profile radius (alternative to d/path).</td></tr>
+<tr><td><code>along</code> <strong>(required)</strong></td><td></td><td>spine</td><td></td><td></td><td>Spine: x,y,z points, 3D path data (M L C S Q T Z) or helix(r,pitch,turns).</td></tr>
+<tr><td><code>smooth</code></td><td></td><td>bool</td><td><code>false</code></td><td></td><td>Interpolate spine points with a Catmull-Rom spline.</td></tr>
+<tr><td><code>twist</code></td><td></td><td>angle</td><td><code>0</code></td><td></td><td>Profile rotation in degrees from start to end.</td></tr>
+<tr><td><code>taper</code></td><td></td><td>number</td><td><code>1</code></td><td>≥ 0</td><td>Profile scale at the end (1 = constant).</td></tr>
+<tr><td><code>caps</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>Close open ends.</td></tr>
+<tr><td><code>segments</code></td><td></td><td>int</td><td></td><td>≥ 3, ≤ 256</td><td>Circle profile sides.</td></tr>
+</tbody></table></div>
+<h3 id="gear"><code>&lt;gear&gt;</code></h3>
+<p>Involute spur gear in the XY plane, extruded along Z.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>teeth</code></td><td></td><td>int</td><td><code>24</code></td><td>≥ 5, ≤ 400</td><td>Number of teeth.</td></tr>
+<tr><td><code>module</code></td><td></td><td>number</td><td><code>0.04</code></td><td>&gt; 0</td><td>Module: pitch diameter / teeth.</td></tr>
+<tr><td><code>pressureAngle</code></td><td></td><td>angle</td><td><code>20</code></td><td>≥ 10, ≤ 35</td><td>Pressure angle in degrees.</td></tr>
+<tr><td><code>depth</code></td><td></td><td>number</td><td><code>0.2</code></td><td>&gt; 0</td><td>Face width (extrusion depth).</td></tr>
+<tr><td><code>bore</code></td><td></td><td>number</td><td><code>0</code></td><td>≥ 0</td><td>Radius of the centre hole.</td></tr>
+<tr><td><code>bevel</code></td><td></td><td>number</td><td><code>0</code></td><td>≥ 0</td><td>Edge bevel radius.</td></tr>
+<tr><td><code>center</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>Centre the gear on z = 0.</td></tr>
+</tbody></table></div>
+<h3 id="mesh"><code>&lt;mesh&gt;</code></h3>
+<p>Explicit indexed triangle mesh (escape hatch for data that is not procedural).</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Accepts the common attributes, plus:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collide</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the camera may pass through the element and its children (see &lt;controls collide&gt;).</td></tr>
+<tr><td><code>positions</code> <strong>(required)</strong></td><td></td><td>floats</td><td></td><td></td><td>x y z for every vertex.</td></tr>
+<tr><td><code>indices</code></td><td></td><td>indices</td><td></td><td></td><td>Triangle vertex indices (3 per triangle); omitted = non-indexed triangles.</td></tr>
+<tr><td><code>normals</code></td><td></td><td>floats</td><td></td><td></td><td>Optional x y z normal per vertex (computed when omitted).</td></tr>
+<tr><td><code>uvs</code></td><td></td><td>floats</td><td></td><td></td><td>Optional u v per vertex.</td></tr>
+<tr><td><code>smooth</code></td><td></td><td>angle</td><td><code>30</code></td><td>≥ 0, ≤ 180</td><td>Crease angle for computed normals (0 = flat).</td></tr>
+</tbody></table></div>
+<h2 id="lights-and-cameras">Lights and cameras</h2>
+<h3 id="light"><code>&lt;light&gt;</code></h3>
+<p>Directional, point, spot, ambient or hemisphere light.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Attributes:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td></td><td>id</td><td></td><td></td><td>Unique identifier, referenced by &lt;use ref&gt;, material="…" and path="…".</td></tr>
+<tr><td><code>name</code></td><td></td><td>string</td><td></td><td></td><td>Human readable label shown in tools.</td></tr>
+<tr><td><code>transform</code></td><td><code>t</code></td><td>transform</td><td></td><td></td><td>SVG-style transform list; applied outside position/rotation/scale.</td></tr>
+<tr><td><code>position</code></td><td><code>p</code></td><td>vec3</td><td><code>0,0,0</code></td><td></td><td>Light position (point/spot).</td></tr>
+<tr><td><code>rotation</code></td><td><code>rot</code></td><td>vec3</td><td><code>0,0,0</code></td><td></td><td>Euler angles in degrees, applied about X, then Y, then Z.</td></tr>
+<tr><td><code>visible</code></td><td></td><td>bool</td><td><code>true</code></td><td></td><td>When false the element and its children are not rendered.</td></tr>
+<tr><td><code>type</code> <strong>(required)</strong></td><td></td><td><code>directional</code> | <code>point</code> | <code>spot</code> | <code>ambient</code> | <code>hemisphere</code></td><td></td><td></td><td>Light kind.</td></tr>
+<tr><td><code>color</code></td><td><code>c</code></td><td>color</td><td><code>#fff</code></td><td></td><td>Light colour.</td></tr>
+<tr><td><code>intensity</code></td><td></td><td>number</td><td><code>1</code></td><td>≥ 0</td><td>Intensity multiplier.</td></tr>
+<tr><td><code>direction</code></td><td><code>dir</code></td><td>vec3</td><td></td><td></td><td>Direction the light travels (directional/spot).</td></tr>
+<tr><td><code>target</code></td><td></td><td>vec3</td><td></td><td></td><td>Point the light aims at (alternative to direction).</td></tr>
+<tr><td><code>range</code></td><td></td><td>number</td><td><code>0</code></td><td>≥ 0</td><td>Point/spot cut-off distance (0 = unlimited).</td></tr>
+<tr><td><code>angle</code></td><td></td><td>angle</td><td><code>45</code></td><td>≥ 1, ≤ 179</td><td>Spot cone angle in degrees.</td></tr>
+<tr><td><code>penumbra</code></td><td></td><td>number</td><td><code>0.2</code></td><td>≥ 0, ≤ 1</td><td>Spot edge softness.</td></tr>
+<tr><td><code>groundColor</code></td><td></td><td>color</td><td><code>#403833</code></td><td></td><td>Hemisphere light colour from below.</td></tr>
+</tbody></table></div>
+<h3 id="camera"><code>&lt;camera&gt;</code></h3>
+<p>Perspective or orthographic camera. The first camera is the initial view.</p>
+<p>Children: <code>&lt;animate&gt;</code>.</p>
+<p>Attributes:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td></td><td>id</td><td></td><td></td><td>Unique identifier, referenced by &lt;use ref&gt;, material="…" and path="…".</td></tr>
+<tr><td><code>name</code></td><td></td><td>string</td><td></td><td></td><td>Human readable label shown in tools.</td></tr>
+<tr><td><code>transform</code></td><td><code>t</code></td><td>transform</td><td></td><td></td><td>SVG-style transform list; applied outside position/rotation/scale.</td></tr>
+<tr><td><code>position</code></td><td><code>p</code></td><td>vec3</td><td><code>0,0,10</code></td><td></td><td>Eye position.</td></tr>
+<tr><td><code>rotation</code></td><td><code>rot</code></td><td>vec3</td><td></td><td></td><td>Euler orientation (used when no target is given; the camera looks down -Z).</td></tr>
+<tr><td><code>target</code></td><td></td><td>vec3</td><td></td><td></td><td>Point the camera looks at.</td></tr>
+<tr><td><code>up</code></td><td></td><td>vec3</td><td><code>0,1,0</code></td><td></td><td>Up vector.</td></tr>
+<tr><td><code>type</code></td><td></td><td><code>perspective</code> | <code>orthographic</code></td><td><code>perspective</code></td><td></td><td>Projection.</td></tr>
+<tr><td><code>fov</code></td><td></td><td>angle</td><td><code>45</code></td><td>≥ 1, ≤ 179</td><td>Vertical field of view in degrees (perspective).</td></tr>
+<tr><td><code>height</code></td><td></td><td>number</td><td><code>10</code></td><td>&gt; 0</td><td>Visible height (orthographic).</td></tr>
+<tr><td><code>near</code></td><td></td><td>number</td><td></td><td>&gt; 0</td><td>Near clip distance (automatic when omitted).</td></tr>
+<tr><td><code>far</code></td><td></td><td>number</td><td></td><td>&gt; 0</td><td>Far clip distance (automatic when omitted).</td></tr>
+<tr><td><code>aspect</code></td><td></td><td>number</td><td><code>1</code></td><td>&gt; 0</td><td>Width / height of the view the author framed (e.g. 1.778 for 16:9). fov is the vertical angle at this aspect ratio.</td></tr>
+<tr><td><code>fit</code></td><td></td><td><code>contain</code> | <code>cover</code> | <code>width</code> | <code>height</code></td><td><code>contain</code></td><td></td><td>How the framed view adapts to other screens: contain keeps all of it visible, cover fills the screen, width and height keep that extent fixed.</td></tr>
+</tbody></table></div>
+<h2 id="animation">Animation</h2>
+<h3 id="animate"><code>&lt;animate&gt;</code></h3>
+<p>Animates a transform of its parent (position, rotation, scale; target and fov of a camera) over time or over page scroll.</p>
+<p>Children: none.</p>
+<p>Attributes:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Alias</th><th>Type</th><th>Default</th><th>Range</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>attr</code> <strong>(required)</strong></td><td></td><td><code>position</code> | <code>rotation</code> | <code>scale</code> | <code>target</code> | <code>fov</code></td><td></td><td></td><td>Animated attribute. target and fov apply to &lt;camera&gt; only.</td></tr>
+<tr><td><code>from</code></td><td></td><td>animValue</td><td></td><td></td><td>Start value (defaults to the parent value).</td></tr>
+<tr><td><code>to</code></td><td></td><td>animValue</td><td></td><td></td><td>End value.</td></tr>
+<tr><td><code>values</code></td><td></td><td>keyframes</td><td></td><td></td><td>Key values separated by semicolons, e.g. 0,1,0; 2,1,0; 2,3,0 (instead of from/to).</td></tr>
+<tr><td><code>keyTimes</code></td><td></td><td>numbers</td><td></td><td></td><td>Progress (0 to 1) at which each of values is reached; evenly spaced when omitted.</td></tr>
+<tr><td><code>along</code></td><td></td><td>spine</td><td></td><td></td><td>Path to move along at constant speed (position and target): x,y,z points, 3D path data or helix().</td></tr>
+<tr><td><code>smooth</code></td><td></td><td>bool</td><td><code>false</code></td><td></td><td>Pass through values or along points on a smooth (centripetal Catmull-Rom) curve.</td></tr>
+<tr><td><code>dur</code></td><td></td><td>duration</td><td></td><td></td><td>Duration of one cycle, e.g. 4s or 500ms (required unless timeline="scroll").</td></tr>
+<tr><td><code>begin</code></td><td></td><td>duration</td><td><code>0</code></td><td>≥ 0</td><td>Delay before the animation starts.</td></tr>
+<tr><td><code>repeat</code></td><td></td><td>repeatCount</td><td><code>indefinite</code></td><td></td><td>Number of cycles or 'indefinite'.</td></tr>
+<tr><td><code>alternate</code></td><td></td><td>bool</td><td><code>false</code></td><td></td><td>Play every second cycle backwards.</td></tr>
+<tr><td><code>easing</code></td><td></td><td><code>linear</code> | <code>ease-in</code> | <code>ease-out</code> | <code>ease-in-out</code></td><td><code>linear</code></td><td></td><td>Timing function.</td></tr>
+<tr><td><code>timeline</code></td><td></td><td><code>time</code> | <code>scroll</code></td><td><code>time</code></td><td></td><td>time: plays by the clock. scroll: progress follows page scroll from 0 to 1 (dur, begin, repeat and alternate are not used).</td></tr>
+</tbody></table></div>
+<h2 id="value-types">Value types</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Type</th><th>Syntax</th></tr></thead>
+<tbody>
+<tr><td>angle</td><td>Number of degrees.</td></tr>
+<tr><td>animValue</td><td>Three numbers (one or three for scale, one for fov).</td></tr>
+<tr><td>bool</td><td><code>true</code> or <code>false</code>.</td></tr>
+<tr><td>color</td><td><code>#rgb</code>, <code>#rrggbb</code>, <code>#rrggbbaa</code>, <code>rgb(r,g,b)</code>, <code>rgba(r,g,b,a)</code> or a CSS colour name; sRGB.</td></tr>
+<tr><td>count2</td><td>Two positive whole numbers <code>nx,nz</code>.</td></tr>
+<tr><td>duration</td><td>Time: <code>4</code>, <code>4s</code> or <code>250ms</code>.</td></tr>
+<tr><td>enum</td><td>One of the listed keywords.</td></tr>
+<tr><td>floats</td><td>Whitespace separated numbers (mesh data, stored as float32).</td></tr>
+<tr><td>id</td><td>Identifier: a letter or <code>_</code> followed by letters, digits, <code>_ . : -</code>.</td></tr>
+<tr><td>idlist</td><td>Comma or space separated ids.</td></tr>
+<tr><td>indices</td><td>Whitespace separated non-negative whole numbers.</td></tr>
+<tr><td>int</td><td>Whole number.</td></tr>
+<tr><td>keyframes</td><td>Key values separated by semicolons, each with as many numbers as <code>from</code>/<code>to</code>: <code>0,1,0; 2,1,0; 2,3,0</code>.</td></tr>
+<tr><td>normalTexture</td><td>Image URL, or a procedural normal map: <code>bumps(count,strength)</code>, <code>tiles(count,strength,gap)</code>, <code>noise(scale,strength,seed)</code>, <code>waves(count,strength)</code>, <code>bricks(count,strength)</code>.</td></tr>
+<tr><td>number</td><td>Decimal number, e.g. <code>1</code>, <code>-0.25</code>, <code>.5</code>, <code>2e-3</code>.</td></tr>
+<tr><td>numbers</td><td>List of numbers.</td></tr>
+<tr><td>path2d</td><td>SVG path data: <code>M L H V C S Q T A Z</code> (absolute and relative), in the local XY plane with y up.</td></tr>
+<tr><td>points2</td><td>Point list <code>x,y x,y …</code>.</td></tr>
+<tr><td>points3</td><td>Point list <code>x,y,z x,y,z …</code>.</td></tr>
+<tr><td>range3</td><td>A range <code>lo..hi</code> used for x, y and z, or three comma separated ranges/numbers <code>x,y,z</code>.</td></tr>
+<tr><td>ref</td><td>Id of another element of the indicated kind.</td></tr>
+<tr><td>repeatCount</td><td>Number of repetitions or <code>indefinite</code>.</td></tr>
+<tr><td>scale3</td><td>One number (uniform) or three numbers.</td></tr>
+<tr><td>size2</td><td>One number (both dimensions) or two numbers.</td></tr>
+<tr><td>size3</td><td>One number (all three dimensions) or three numbers.</td></tr>
+<tr><td>spine</td><td>3D spine: <code>x,y,z x,y,z …</code>, 3D path data (<code>M L C S Q T Z</code> with 3 numbers per point) or <code>helix(radius,pitch,turns[,segmentsPerTurn])</code>.</td></tr>
+<tr><td>string</td><td>Free text.</td></tr>
+<tr><td>texture</td><td>Image URL, or a procedural texture: <code>checker(count,color1,color2)</code>, <code>grid(count,width,line,background)</code>, <code>stripes(count,color1,color2)</code>, <code>noise(scale,color1,color2,seed)</code>, <code>bricks(count,brick,mortar)</code>; trailing arguments may be omitted.</td></tr>
+<tr><td>transform</td><td>SVG-style list: <code>translate(x[,y[,z]])</code>, <code>rotate(x,y,z)</code>, <code>rotate(a,ax,ay,az)</code>, <code>rotateX(a)</code>, <code>rotateY(a)</code>, <code>rotateZ(a)</code>, <code>scale(s)</code>, <code>scale(x,y,z)</code>, <code>quat(x,y,z,w)</code>, <code>matrix(16 numbers, column-major)</code>; composed left to right.</td></tr>
+<tr><td>vec2</td><td>Two numbers <code>x,y</code> (comma and/or space separated).</td></tr>
+<tr><td>vec3</td><td>Three numbers <code>x,y,z</code>.</td></tr>
+</tbody></table></div>
+</div>
+</main>
+</div>
+<footer class="footer">
+  <p class="footer-mark"><img src="../favicon.svg" alt="ES3D" width="96" height="30"></p>
+  <ul class="facts">
+    <li><a href="../download/">Get ES3D</a></li>
+    <li>WebGPU and WebGL2</li>
+    <li>No plugin</li>
+    <li><a href="https://github.com/bitilia/es3d/blob/HEAD/LICENSE">Apache 2.0</a></li>
+  </ul>
+  <p><b>es3d.org</b>. Opens in a normal browser. No plugin, no cookies, no trackers.</p>
+  <p>Last updated 2026-10-15. ES3D 1.0.0 is free software under the Apache License 2.0.<br>
+  Questions, bugs, ideas: <a href="https://github.com/bitilia/es3d/issues">open an issue on GitHub</a>.</p>
+</footer>
+</div>
+
+</body>
+</html>

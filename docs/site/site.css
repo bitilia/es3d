@@ -1,0 +1,1043 @@
+/* The ES3D website.
+   A light paper page on a pale field, system type. No webfonts. */
+
+:root {
+  --desktop: #e7f3f1;
+  --page: #ffffff;
+  --text: #1a2422;
+  --muted: #5c6b68;
+  --heading: #0e3d3a;
+  --link: #0b6e75;
+  --visited: #0b6e75;
+  --active: #0b6e75;
+  --face: #f3f7f6;
+  --light: #ffffff;
+  --shadow: #c5d5d1;
+  --dark: #1a2422;
+  --code-bg: #f4f8f7;
+  --code-text: #1a2422;
+  --cell-head: #e7f3f1;
+  --note-bg: #e7f6f3;
+  --note-border: #b7ddd4;
+  --term-bg: #14302e;
+  --term-text: #e7f6f2;
+  --toc-bg: #f4f8f7;
+  --fast-bg: #c8efd4;
+  --fast-text: #0b5c34;
+  --fast-cell: #f1faf3;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:focus-visible {
+  outline: 2px solid var(--heading);
+  outline-offset: 2px;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 32px 16px;
+  background: var(--desktop);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+/* ---------------------------------------------------------------- window */
+
+.skip {
+  position: absolute;
+  left: 12px;
+  top: 8px;
+  padding: 6px 10px;
+  background: var(--page);
+  color: var(--heading);
+  border-radius: 6px;
+  transform: translateY(-140%);
+}
+
+.skip:focus {
+  transform: none;
+  z-index: 2;
+}
+
+.site {
+  max-width: 1080px;
+  margin: 0 auto;
+  background: var(--page);
+  border: 1px solid color-mix(in srgb, var(--heading) 12%, transparent);
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(14, 61, 58, 0.06);
+}
+
+.masthead {
+  padding: 22px 28px 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+}
+
+.masthead .brand {
+  display: inline-block;
+  line-height: 0;
+}
+
+.masthead .brand img,
+.footer-mark img {
+  display: block;
+  height: auto;
+}
+
+.masthead .tagline {
+  margin: 6px 0 0;
+  max-width: 38em;
+  font-size: 1.15rem;
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* ------------------------------------------------------------ navigation */
+
+.nav {
+  flex: 0 0 210px;
+  padding: 18px 14px;
+  border-right: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+  font-size: 14px;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+}
+
+.nav .nav-head {
+  margin: 10px 0 4px;
+  font-weight: bold;
+  color: var(--heading);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.nav-links > .nav-head:first-child {
+  margin-top: 0;
+}
+
+/* the phone menu button; site.js turns it on (see the phone width rules) */
+.nav-toggle {
+  display: none;
+}
+
+.nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav li {
+  margin: 0 0 4px;
+}
+
+.nav a,
+.button {
+  display: block;
+  padding: 6px 8px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  text-decoration: none;
+  font: 14px/1.35 "Segoe UI", system-ui, sans-serif;
+}
+
+.nav a:hover,
+.button:hover {
+  background: color-mix(in srgb, var(--heading) 8%, var(--page));
+  text-decoration: none;
+}
+
+.nav a:active,
+.button:active {
+  background: color-mix(in srgb, var(--heading) 14%, var(--page));
+}
+
+.nav a[aria-current='page'] {
+  background: color-mix(in srgb, var(--heading) 12%, var(--page));
+  color: var(--heading);
+  font-weight: 650;
+}
+
+.button {
+  display: inline-block;
+  cursor: pointer;
+  color: var(--page);
+  background: var(--heading);
+  border-color: var(--heading);
+}
+
+.button:hover,
+.button:active {
+  background: color-mix(in srgb, var(--heading) 82%, #000);
+  border-color: color-mix(in srgb, var(--heading) 82%, #000);
+  color: var(--page);
+}
+
+.button:disabled {
+  color: var(--muted);
+  background: var(--face);
+  border-color: var(--shadow);
+  cursor: default;
+  text-decoration: none;
+}
+
+.button.big {
+  padding: 6px 16px;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.nav .counter-box {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 11px;
+}
+
+main {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 32px 36px;
+}
+
+/* ------------------------------------------------------------ typography */
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: var(--heading);
+  line-height: 1.25;
+  font-weight: 650;
+}
+
+main h1 {
+  font-size: 2rem;
+  margin: 22px 0 12px;
+  letter-spacing: -0.02em;
+}
+
+main h2 {
+  font-size: 1.35rem;
+  margin: 32px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+}
+
+main h3 {
+  font-size: 18px;
+  margin: 20px 0 6px;
+}
+
+main h4 {
+  font-size: 16px;
+  margin: 16px 0 4px;
+}
+
+a {
+  color: var(--link);
+}
+
+a:visited {
+  color: var(--visited);
+}
+
+a:active {
+  color: var(--active);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--shadow);
+  margin: 18px 0;
+}
+
+code,
+pre,
+kbd,
+textarea.code {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+code {
+  font-size: 0.95em;
+}
+
+/* long identifiers in running text may break anywhere rather than widen the page */
+:not(pre) > code {
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+  border: 1px solid var(--shadow);
+  border-radius: 10px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+pre code {
+  font-size: inherit;
+}
+
+pre.terminal {
+  background: var(--term-bg);
+  color: var(--term-text);
+}
+
+blockquote {
+  margin: 12px 0;
+  padding: 6px 12px;
+  background: var(--note-bg);
+  border: 1px solid var(--note-border);
+}
+
+blockquote p {
+  margin: 4px 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+small,
+.small {
+  font-size: 13px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.center {
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------- tables */
+
+.table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 10px 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid var(--shadow);
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+th,
+td {
+  border: 1px solid var(--shadow);
+  padding: 4px 8px;
+  vertical-align: top;
+}
+
+th {
+  background: var(--cell-head);
+  font-size: 14px;
+  text-align: left;
+}
+
+td.num,
+th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Result rows: ready / frame. .fast is the lowest time of that kind in the row. */
+table.timings {
+  font-variant-numeric: tabular-nums;
+}
+
+table.timings th,
+table.timings td:first-child {
+  white-space: nowrap;
+}
+
+table.timings th:first-child,
+table.timings td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--page);
+  box-shadow: 1px 0 0 var(--shadow);
+}
+
+table.timings th:first-child {
+  z-index: 2;
+  background: var(--cell-head);
+}
+
+table.timings td.pair {
+  white-space: nowrap;
+}
+
+table.timings .sep {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+table.timings .fast {
+  background: var(--fast-bg);
+  color: var(--fast-text);
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-weight: 650;
+}
+
+table.timings td.best {
+  background: var(--fast-cell);
+}
+
+table.timings tbody tr:hover td {
+  background: color-mix(in srgb, var(--heading) 5%, var(--page));
+}
+
+table.timings tbody tr:hover td.best {
+  background: color-mix(in srgb, var(--fast-bg) 55%, var(--page));
+}
+
+table.timings tbody tr:hover td:first-child {
+  background: color-mix(in srgb, var(--heading) 5%, var(--page));
+}
+
+table.gallery td {
+  padding: 8px;
+}
+
+/* file sizes: the ES3D file and gzipped (docs/site/filesize.js) */
+.filesize {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.filesize b {
+  color: var(--heading);
+}
+.filesize-gzip {
+  white-space: nowrap;
+}
+
+table.gallery td.thumb {
+  width: 256px;
+}
+
+table.gallery img {
+  display: block;
+  border-radius: 8px;
+}
+
+.no-thumb {
+  display: block;
+  width: 240px;
+  height: 150px;
+  background: var(--face);
+}
+
+/* ----------------------------------------------------------- doc pages */
+
+.doc h1:first-child {
+  margin-top: 4px;
+}
+
+.source-note {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.toc {
+  display: inline-block;
+  max-width: 100%;
+  margin: 4px 0 12px;
+  padding: 10px 16px 10px 12px;
+  background: var(--toc-bg);
+  border: 1px solid var(--shadow);
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.toc ul {
+  margin: 4px 0 0;
+  padding-left: 20px;
+}
+
+.toc li.toc-3 {
+  margin-left: 18px;
+  font-size: 14px;
+}
+
+.doc li {
+  margin: 2px 0;
+}
+
+/* -------------------------------------------------------------- notes */
+
+.callout {
+  margin: 0 0 8px;
+  padding: 10px 14px;
+  background: var(--note-bg);
+  border: 1px solid var(--note-border);
+  border-radius: 8px;
+}
+
+.note {
+  margin: 12px 0;
+  padding: 10px 14px;
+  background: var(--note-bg);
+  border: 1px solid var(--note-border);
+  border-radius: 8px;
+}
+
+.lessons {
+  padding-left: 1.2em;
+}
+
+.lessons li {
+  margin: 0.7em 0;
+}
+
+.counter {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--note-bg);
+  border-radius: 999px;
+}
+
+.counter b {
+  display: inline-block;
+  min-width: 0.65em;
+  margin: 0;
+  color: var(--heading);
+  font: 650 15px/1.4 "Segoe UI", system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+/* The home page logo: the flat SVG first, then the live renderer fading
+   in over it (home.js adds .live after its first frame). */
+.logo3d {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  height: 120px;
+  margin: 4px auto 0;
+}
+
+.logo3d .logo-still {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  max-width: 100%;
+  height: 72px; /* the size of the live logo's first frame */
+  margin: auto;
+  transition: opacity 0.5s ease;
+}
+
+.logo3d .logo-live {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.logo3d.live .logo-live {
+  opacity: 1;
+}
+
+.logo3d.live .logo-still {
+  opacity: 0;
+}
+
+.logo3d canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+}
+
+.logo3d canvas:active {
+  cursor: grabbing;
+}
+
+.two-col {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.two-col > * {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.faq dt {
+  margin-top: 14px;
+  font-weight: bold;
+}
+
+.faq dd {
+  margin: 4px 0 0 22px;
+}
+
+/* --------------------------------------------------------------- footer */
+
+.footer {
+  padding: 22px 24px 24px;
+  border-top: 1px solid color-mix(in srgb, var(--heading) 12%, transparent);
+  text-align: center;
+  font: 13px/1.6 "Segoe UI", system-ui, sans-serif;
+  color: var(--muted);
+}
+
+.footer p {
+  margin: 12px 0;
+}
+
+.footer-mark {
+  margin: 0 0 14px;
+}
+
+.footer-mark img {
+  margin: 0 auto;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px 20px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.facts li {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.facts a {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--heading);
+  color: var(--page);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.facts a:visited {
+  color: var(--page);
+}
+
+.facts a:hover,
+.facts a:active {
+  background: color-mix(in srgb, var(--heading) 82%, #000);
+  color: var(--page);
+  text-decoration: none;
+}
+
+.media-waiting {
+  color: var(--muted);
+}
+
+.media-item {
+  margin: 0 0 16px;
+  padding: 16px 18px;
+  border: 1px solid color-mix(in srgb, var(--heading) 14%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--note-bg) 65%, var(--page));
+}
+
+.media-item h2 {
+  margin: 0 0 4px;
+  padding: 0;
+  border: 0;
+  font-size: 1.15rem;
+}
+
+.media-by {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* -------------------------------------------------------------- converter */
+
+.disclaimer {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  background: #fff1a8;
+  border: 1px solid #e0b422;
+  border-radius: 8px;
+}
+
+fieldset {
+  margin: 0 0 14px;
+  padding: 8px 14px 12px;
+  border: 1px solid var(--shadow);
+  border-radius: 12px;
+}
+
+legend {
+  padding: 0 6px;
+  font: 650 15px "Segoe UI", system-ui, sans-serif;
+  color: var(--heading);
+}
+
+label {
+  cursor: pointer;
+}
+
+input[type='number'],
+input[type='text'],
+select {
+  font: 15px "Segoe UI", system-ui, sans-serif;
+  padding: 4px 8px;
+  border: 1px solid var(--shadow);
+  border-radius: 8px;
+  background: var(--page);
+  color: var(--text);
+  max-width: 100%;
+}
+
+input[type='number'] {
+  width: 5.5em;
+}
+
+.dropzone {
+  padding: 22px 12px;
+  text-align: center;
+  background: var(--toc-bg);
+  border: 1px dashed var(--shadow);
+  border-radius: 12px;
+}
+
+.dropzone.over {
+  background: var(--note-bg);
+  border-color: var(--heading);
+}
+
+.dropzone p {
+  margin: 6px 0;
+}
+
+.samples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 6px 18px;
+}
+
+.radio-list label {
+  display: block;
+}
+
+.option-group[hidden] {
+  display: none;
+}
+
+.preview-box {
+  position: relative;
+  height: 360px;
+  background: #10211f;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.preview-box canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.preview-box .overlay {
+  position: absolute;
+  left: 6px;
+  bottom: 4px;
+  color: #ccc;
+  font: 11px Verdana, Arial, sans-serif;
+  pointer-events: none;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.status {
+  margin: 8px 0;
+  font-weight: bold;
+}
+
+.status.error {
+  color: var(--active);
+}
+
+.warnings {
+  margin: 6px 0;
+  padding-left: 20px;
+  font-size: 15px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+textarea.code {
+  display: block;
+  width: 100%;
+  height: 260px;
+  padding: 10px 12px;
+  background: var(--code-bg);
+  color: var(--code-text);
+  border: 1px solid var(--shadow);
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.45;
+  resize: vertical;
+  white-space: pre;
+  overflow: auto;
+}
+
+/* ----------------------------------------------------------- phone width */
+
+@media (max-width: 760px) {
+  body {
+    padding: 0;
+    font-size: 16px;
+  }
+
+  .site {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .masthead {
+    padding: 16px;
+  }
+
+  .layout {
+    display: block;
+  }
+
+  .nav {
+    position: static;
+    padding: 8px 12px;
+    border-right: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+  }
+
+  /* Without script every link is listed, each at least 24px tall (WCAG 2.2
+     target size). With script the list folds away behind a Menu button. */
+  .nav .nav-head {
+    display: none;
+  }
+
+  .nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .nav li {
+    margin: 0;
+  }
+
+  .nav a {
+    padding: 4px 8px;
+    font-size: 13px;
+  }
+
+  .nav.collapsible .nav-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 44px;
+    padding: 6px 10px;
+    border: 1px solid color-mix(in srgb, var(--heading) 18%, transparent);
+    border-radius: 10px;
+    background: var(--face);
+    color: var(--heading);
+    font: 650 15px/1.2 "Segoe UI", system-ui, sans-serif;
+    cursor: pointer;
+  }
+
+  .nav-toggle-icon,
+  .nav-toggle-icon::before,
+  .nav-toggle-icon::after {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 1px;
+    background: currentColor;
+  }
+
+  .nav-toggle-icon {
+    position: relative;
+  }
+
+  .nav-toggle-icon::before,
+  .nav-toggle-icon::after {
+    content: "";
+    position: absolute;
+    left: 0;
+  }
+
+  .nav-toggle-icon::before {
+    top: -6px;
+  }
+
+  .nav-toggle-icon::after {
+    top: 6px;
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle-icon {
+    background: transparent;
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle-icon::before {
+    top: 0;
+    transform: rotate(45deg);
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle-icon::after {
+    top: 0;
+    transform: rotate(-45deg);
+  }
+
+  .nav-toggle-current {
+    margin-left: auto;
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 14px;
+  }
+
+  .nav.collapsible .nav-links {
+    display: none;
+  }
+
+  .nav.collapsible.open .nav-links {
+    display: block;
+    padding: 4px 2px 6px;
+  }
+
+  .nav.collapsible.open .nav-head {
+    display: block;
+    margin: 12px 0 4px;
+  }
+
+  .nav.collapsible.open .nav-links > ul:first-child {
+    margin-top: 8px;
+  }
+
+  .nav.collapsible.open ul {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+
+  .nav.collapsible.open a {
+    padding: 9px 10px;
+    font-size: 15px;
+    background: var(--face);
+  }
+
+  .nav.collapsible.open a[aria-current='page'] {
+    background: color-mix(in srgb, var(--heading) 12%, var(--page));
+  }
+
+  .nav .counter-box {
+    display: none;
+  }
+
+  main {
+    padding: 10px 16px 18px;
+  }
+
+  main h1 {
+    font-size: 24px;
+  }
+
+  .logo3d {
+    height: 88px;
+  }
+
+  .logo3d .logo-still {
+    height: 54px;
+  }
+
+  .preview-box {
+    height: 280px;
+  }
+
+  table.gallery td.thumb {
+    width: auto;
+  }
+
+  table.gallery tr {
+    display: block;
+    border-bottom: 1px solid var(--shadow);
+  }
+
+  table.gallery td {
+    display: block;
+    border: 0;
+  }
+
+  table.gallery img {
+    width: 240px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo3d canvas {
+    animation: none;
+  }
+
+  .logo3d .logo-still,
+  .logo3d .logo-live {
+    transition: none;
+  }
+}

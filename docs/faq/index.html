@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!--#include virtual="head.html" -->
+<title>FAQ and links - ES3D</title>
+<meta name="description" content="Questions about ES3D, the 3D scene format, and the early mistakes of SVG that this format refuses.">
+</head>
+<body>
+<!--#set var="page" value="faq" -->
+<!--#set var="title" value="FAQ and links" -->
+<!--#include virtual="top.html" -->
+<h1>Frequently asked questions</h1>
+
+<dl class="faq">
+  <dt>What is ES3D?</dt>
+  <dd>A file format for 3D scenes that describes <i>how to build</i> the geometry, instead of listing the finished triangles. Boxes, spheres, SVG path outlines extruded or turned on a lathe, tubes swept along curves, gears, copies placed by repeat and scatter rules. The viewer creates the triangles, at the level of detail the screen needs. ES3D stands for <b>Extensible Scalable 3D</b>.</dd>
+
+  <dt>How is it like SVG?</dt>
+  <dd>You can read it and write it by hand. Shapes are elements with attributes. Outlines use SVG's path commands (<code>M L H V C S Q T A Z</code>). Transforms are written the SVG way. <code>&lt;defs&gt;</code> and <code>&lt;use&gt;</code> work the same way, and materials are inherited the way <code>fill</code> is. Two differences matter: it is 3D, and the y axis points up.</dd>
+
+  <dt>Why not just use glTF?</dt>
+  <dd>glTF carries finished meshes. ES3D describes a scene made of shapes and repetition: diagrams, technical models, architecture, generated worlds. Those files can be hundreds or thousands of times smaller. A scan is stored as a mesh, so it stays about the size of the original.</dd>
+
+  <dt>Can I convert my existing files?</dt>
+  <dd>Yes, with the <a href="../convert/">converter</a>. SVG drawings become real ES3D shapes, because their outlines are extruded. STEP solids from CAD software become ES3D shapes too: boxes, extrusions, cylinders, spheres, tori and revolves, or face by face paths and revolves, with exact arcs. Only free-form (NURBS) faces, which ES3D has no element for, are tessellated. OBJ, STL, glTF and tessellated STEP become <code>&lt;mesh&gt;</code> elements, about as large as the original. The other direction is glTF, OBJ, STL and STEP, so a slicer or a 3D program can open the result.</dd>
+
+  <dt>Does the converter upload my files?</dt>
+  <dd>No. It is JavaScript in your browser. The files are read, converted and saved on your own computer.</dd>
+
+  <dt>Which browsers work?</dt>
+  <dd>Any current browser with WebGL2, which is nearly all of them, on computers and on phones. If the browser also has WebGPU, the renderer uses that. Both draw the same picture. There is nothing to install.</dd>
+
+  <dt>Does it work on my phone?</dt>
+  <dd>Viewing and converting, yes. Drag with one finger to turn a scene, and pinch to zoom. Writing scenes in ES3D Studio is easier with a keyboard and a larger screen.</dd>
+
+  <dt>How fast is it?</dt>
+  <dd>On a PC with an RTX 5060 Ti the forest draws in 1.4 ms with ES3D's own level of detail, and in about 8 ms when three.js draws every triangle of the same scene from glTF. A Galaxy S25+ and a Motorola moto g54 5G are slower and the gap is wider. A scanned mesh is the other way round: there is nothing to simplify, and glTF is ready first. The figures are the median of ten passes, on the <a href="../#speed">home page</a> and in <a href="../benchmark-devices/">the full tables</a>.</dd>
+
+  <dt>What does "extensible" mean?</dt>
+  <dd>An element whose name starts with <code>x-</code> is an extension. A viewer that does not know it skips it and warns. Every other unknown element or attribute is an error, so a typo is never quietly ignored. Documents carry a version number. The rules for later versions are in the specification. There is one version 1, not a stack of profiles.</dd>
+
+  <dt>What can't ES3D do?</dt>
+  <dd>Version 1 has no skeletal animation, no morph targets, no physics and no text. Animation only moves, turns and scales things. Materials are a small physically based set: colour, metallic, roughness, opacity, emission, textures. The attribute is still named <code>color</code>. The file also has no script. It is a scene, not a program.</dd>
+
+  <dt>Is it free?</dt>
+  <dd>Yes. The specification, the library, the tools and this site are free software under the Apache License 2.0. The source is on <a href="https://github.com/bitilia/es3d">GitHub</a>.</dd>
+
+  <dt>I found a bug. Where do I report it?</dt>
+  <dd>Please <a href="https://github.com/bitilia/es3d/issues">open an issue on GitHub</a>. If a file does not load, attach the file (or the smallest piece that still fails) and the error message, including the line and column.</dd>
+</dl>
+
+<h2>What SVG got wrong, and what we are not copying</h2>
+<p>SVG became the vector format of the web, but the first decade was rough. A few of those failures are specific enough that a new format can just refuse them.</p>
+<ul class="lessons">
+  <li><b>It needed a plugin, and the biggest browser ignored it.</b> In 2000 the practical way to see SVG was Adobe's viewer, a browser add-on. Internet Explorer 6, 7 and 8 never implemented SVG, so the format sat out the years when Flash was what people actually shipped. ES3D's reference renderer is part of this site. WebGPU is used when the browser has it. WebGL2 is the fallback. If both are missing, you still have the text file.</li>
+  <li><b>The spec split into profiles, and one of them never shipped.</b> SVG Tiny 1.1, Tiny 1.2, Basic, and a Full profile that did not become a Recommendation left authors guessing which subset a phone or a browser had. Version 1 of ES3D is one set of elements. Compact syntax and JSON are spellings of that same tree, not smaller dialects that drop features.</li>
+  <li><b>The spec listed features browsers then refused.</b> Filters arrived late and unevenly. IE9 implemented SVG and declined SMIL animation. Chrome later deprecated SMIL too. SVG Fonts were specified and then dropped. SVG 2 marked further features "at risk" and removed them. The public text here matches what the reference renderer actually does. Animation is a transform tween (move, turn, scale). It is not SMIL, and it is not a promise of a second animation system.</li>
+  <li><b>One XML mistake blanked the picture.</b> A missing <code>xmlns</code>, or a single well-formedness error, made Mozilla show an XML error page instead of the graphic. ES3D does not require a namespace. If you paste <code>xmlns</code> in anyway, it is ignored. Errors name a line and a column. Studio keeps the last valid scene on screen and marks it stale, rather than going blank.</li>
+  <li><b>The file type and the gzip extension confused servers.</b> Browsers wanted <code>image/svg+xml</code> and often refused anything else. <code>.svgz</code> was gzip under a special extension, and servers regularly gzipped it a second time or sent the wrong headers. An <code>.es3d</code> file is UTF-8 text. Until a media type is registered, <code>text/plain</code> is fine, and you can still read it. Compression is <code>.es3d.gz</code>, an ordinary gzip file. There is no <code>.es3dz</code>.</li>
+  <li><b>An "image" could be a program.</b> SVG can carry script, external resources, and (through a DTD) entity declarations. That last one is the billion-laughs trick: a small file expands into a huge one. Treating the file as a picture then became an XSS problem, and the W3C later had to define separate secure modes depending on whether the SVG was an <code>&lt;img&gt;</code>, a background, or a document. ES3D has no script and no event handlers. The markup parser accepts only the five predefined entities. A DOCTYPE is ignored, so it cannot declare more. The SVG importer expands simple Illustrator-style entities once, refuses nested expansion, and stops if the expansion grows large.</li>
+</ul>
+<p>The interesting part of SVG, for this project, was the other half: a text file, a small set of shapes, paths you can copy between tools, and <code>defs</code>/<code>use</code>. That is the part ES3D keeps.</p>
+
+<h2>Links</h2>
+<p>Related formats and specifications:</p>
+<ul>
+  <li><a href="https://www.w3.org/TR/SVG2/">SVG 2</a> (W3C). The 2D format ES3D borrows path syntax from. The early history is in the W3C note <a href="https://www.w3.org/Graphics/SVG/WG/wiki/Secret_Origin_of_SVG">Secret Origin of SVG</a>.</li>
+  <li><a href="https://www.w3.org/TR/svg-integration/">SVG Integration</a> (W3C). The later attempt to say which SVG features must be turned off when the file is used as an image.</li>
+  <li><a href="https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html">glTF 2.0</a> (Khronos Group). The transmission format for finished 3D meshes.</li>
+  <li><a href="https://www.web3d.org/">Web3D Consortium</a>. Home of X3D and VRML, the older declarative 3D formats for the web.</li>
+  <li><a href="https://openusd.org/">OpenUSD</a>. Pixar's Universal Scene Description.</li>
+  <li><a href="https://www.w3.org/TR/webgpu/">WebGPU</a> (W3C) and <a href="https://registry.khronos.org/webgl/specs/latest/2.0/">WebGL 2.0</a> (Khronos). The two graphics interfaces the ES3D renderer uses.</li>
+  <li><a href="https://en.wikipedia.org/wiki/Wavefront_.obj_file">Wavefront OBJ</a>, <a href="https://en.wikipedia.org/wiki/STL_(file_format)">STL</a>, <a href="https://en.wikipedia.org/wiki/ISO_10303-21">STEP (ISO 10303-21)</a> and <a href="https://en.wikipedia.org/wiki/VRML">VRML</a> on Wikipedia.</li>
+  <li><a href="https://www.rfc-editor.org/rfc/rfc6838">RFC 6838</a>. How media types such as <code>model/vnd.es3d</code> are registered.</li>
+</ul>
+<!--#include virtual="bottom.html" -->
+</body>
+</html>

@@ -1,0 +1,1848 @@
+{
+ "generated": "2026-10-07T14:00:52.432Z",
+ "environment": {
+  "node": "22.22.0",
+  "platform": "linux x64",
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+  "cores": 4,
+  "wasm": true
+ },
+ "settings": {
+  "lod": 0,
+  "objTriangleLimit": 3000000,
+  "gzipLevel": 9,
+  "brotliQuality": "11 (9 above 2 MB)",
+  "budgetMs": 1500,
+  "maxRuns": 15,
+  "vertexBytes": 32
+ },
+ "scenes": [
+  {
+   "id": "cube",
+   "label": "Rotating cube",
+   "note": "One object: fixed costs dominate.",
+   "instances": 2,
+   "exportedInstances": 2,
+   "geometries": 2,
+   "materials": 2,
+   "elements": 11,
+   "triangles": 974,
+   "uniqueTriangles": 974,
+   "formats": [
+    {
+     "format": "es3d",
+     "label": "ES3D markup (as authored)",
+     "bytes": 775,
+     "gzip": 453,
+     "brotli": 386,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.6549240000000509,
+      "build": 0.6085519999999178,
+      "geometry": 0.19157100000006722,
+      "ready": 1.455047000000036
+     },
+     "gpuBytes": 31144,
+     "lossless": true
+    },
+    {
+     "format": "es3d-min",
+     "label": "ES3D markup, minified",
+     "bytes": 543,
+     "gzip": 343,
+     "brotli": 302,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.5412399999999025,
+      "build": 0.5205610000000434,
+      "geometry": 0.19157100000006722,
+      "ready": 1.253372000000013
+     },
+     "gpuBytes": 31144,
+     "lossless": true
+    },
+    {
+     "format": "es3d-compact",
+     "label": "ES3D compact syntax",
+     "bytes": 437,
+     "gzip": 303,
+     "brotli": 269,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.7712589999999864,
+      "build": 0.5347679999999855,
+      "geometry": 0.19157100000006722,
+      "ready": 1.497598000000039
+     },
+     "gpuBytes": 31144,
+     "lossless": true
+    },
+    {
+     "format": "es3d-cached",
+     "label": "ES3D, meshes from the geometry cache",
+     "bytes": 775,
+     "gzip": 453,
+     "brotli": 386,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.5758710000000065,
+      "build": 0.5801729999999452,
+      "restore": 1.170733999999925,
+      "geometry": 0.004829999999856227,
+      "ready": 2.4137410000000727,
+      "generated": 0,
+      "bytes": 25420
+     },
+     "cacheBytes": 25420,
+     "gpuBytes": 31144,
+     "lossless": true
+    },
+    {
+     "format": "obj",
+     "label": "OBJ + MTL",
+     "bytes": 51864,
+     "gzip": 9696,
+     "brotli": 6341,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 4.681253000000197,
+      "build": 0,
+      "geometry": 0,
+      "ready": 4.681253000000197
+     },
+     "exportMs": 24.3951340000001,
+     "gpuBytes": 31144,
+     "vertices": 604,
+     "triangles": 974,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb",
+     "label": "glTF binary (GLB)",
+     "bytes": 22020,
+     "gzip": 8625,
+     "brotli": 4510,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.7641889999999876,
+      "build": 0,
+      "geometry": 0,
+      "ready": 0.7641889999999876
+     },
+     "exportMs": 3.9793260000001283,
+     "gpuBytes": 31144,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb",
+     "label": "GLB, read by three.js",
+     "bytes": 22020,
+     "gzip": 8625,
+     "brotli": 4510,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.2347089999998389,
+      "build": 0,
+      "geometry": 0,
+      "ready": 1.2347089999998389
+     },
+     "gpuBytes": 31144,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-inst",
+     "label": "GLB + EXT_mesh_gpu_instancing",
+     "bytes": 22064,
+     "gzip": 8665,
+     "brotli": 4514,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.5273430000002008,
+      "build": 0,
+      "geometry": 0,
+      "ready": 0.5273430000002008
+     },
+     "exportMs": 1.259791999999834,
+     "gpuBytes": 31144,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb-inst",
+     "label": "GLB + instancing, read by three.js",
+     "bytes": 22064,
+     "gzip": 8665,
+     "brotli": 4514,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.226730000000316,
+      "build": 0,
+      "geometry": 0,
+      "ready": 1.226730000000316
+     },
+     "gpuBytes": 31144,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-q",
+     "label": "GLB + instancing + KHR_mesh_quantization",
+     "bytes": 14980,
+     "gzip": 8815,
+     "brotli": 5080,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.1291439999999966,
+      "build": 0,
+      "geometry": 0,
+      "ready": 1.1291439999999966
+     },
+     "exportMs": 2.282389000000421,
+     "gpuBytes": 31144,
+     "equivalent": true,
+     "lossless": false
+    }
+   ],
+   "versusThree": {
+    "reference": "three-glb-inst",
+    "es3d": 0.873841000000084,
+    "three": 1.559016000000156,
+    "ratio": 0.5637960888365491,
+    "rounds": 15
+   }
+  },
+  {
+   "id": "primitives",
+   "label": "Primitive test",
+   "note": "Every primitive type once; curved surfaces.",
+   "instances": 19,
+   "exportedInstances": 19,
+   "geometries": 19,
+   "materials": 15,
+   "elements": 43,
+   "triangles": 44936,
+   "uniqueTriangles": 44936,
+   "formats": [
+    {
+     "format": "es3d",
+     "label": "ES3D markup (as authored)",
+     "bytes": 4173,
+     "gzip": 1525,
+     "brotli": 1288,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.001517000000149,
+      "build": 1.5059879999998884,
+      "geometry": 4.530800999999883,
+      "ready": 7.0383059999999205
+     },
+     "gpuBytes": 1838232,
+     "lossless": true
+    },
+    {
+     "format": "es3d-min",
+     "label": "ES3D markup, minified",
+     "bytes": 2856,
+     "gzip": 1211,
+     "brotli": 1068,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.8137980000001335,
+      "build": 1.0901490000001104,
+      "geometry": 4.530800999999883,
+      "ready": 6.434748000000127
+     },
+     "gpuBytes": 1838232,
+     "lossless": true
+    },
+    {
+     "format": "es3d-compact",
+     "label": "ES3D compact syntax",
+     "bytes": 2416,
+     "gzip": 1142,
+     "brotli": 1025,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 2.0170680000001084,
+      "build": 1.5795250000001033,
+      "geometry": 4.530800999999883,
+      "ready": 8.127394000000095
+     },
+     "gpuBytes": 1838232,
+     "lossless": true
+    },
+    {
+     "format": "es3d-cached",
+     "label": "ES3D, meshes from the geometry cache",
+     "bytes": 4173,
+     "gzip": 1525,
+     "brotli": 1288,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.2025400000002264,
+      "build": 1.5793129999992743,
+      "restore": 1.6408280000005107,
+      "geometry": 0.01468499999919004,
+      "ready": 4.442796000000271,
+      "generated": 0,
+      "bytes": 1568952
+     },
+     "cacheBytes": 1568952,
+     "gpuBytes": 1838232,
+     "lossless": true
+    },
+    {
+     "format": "obj",
+     "label": "OBJ + MTL",
+     "bytes": 3242223,
+     "gzip": 652688,
+     "brotli": 580445,
+     "brotliQuality": 9,
+     "load": {
+      "runs": 15,
+      "parse": 88.83465400000023,
+      "build": 0,
+      "geometry": 0,
+      "ready": 88.83465400000023
+     },
+     "exportMs": 652.1855299999997,
+     "gpuBytes": 1837816,
+     "vertices": 40555,
+     "triangles": 44936,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb",
+     "label": "glTF binary (GLB)",
+     "bytes": 1256940,
+     "gzip": 653894,
+     "brotli": 331088,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.6241049999989627,
+      "build": 0,
+      "geometry": 0,
+      "ready": 1.6241049999989627
+     },
+     "exportMs": 9.590469000000667,
+     "gpuBytes": 1838232,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb",
+     "label": "GLB, read by three.js",
+     "bytes": 1256940,
+     "gzip": 653894,
+     "brotli": 331088,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 4.042411999998876,
+      "build": 0,
+      "geometry": 0,
+      "ready": 4.042411999998876
+     },
+     "gpuBytes": 1838232,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-inst",
+     "label": "GLB + EXT_mesh_gpu_instancing",
+     "bytes": 1256984,
+     "gzip": 653922,
+     "brotli": 330308,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.6539560000019264,
+      "build": 0,
+      "geometry": 0,
+      "ready": 1.6539560000019264
+     },
+     "exportMs": 5.041558000000805,
+     "gpuBytes": 1838232,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb-inst",
+     "label": "GLB + instancing, read by three.js",
+     "bytes": 1256984,
+     "gzip": 653922,
+     "brotli": 330308,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 3.2792589999990014,
+      "build": 0,
+      "geometry": 0,
+      "ready": 3.2792589999990014
+     },
+     "gpuBytes": 1838232,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-q",
+     "label": "GLB + instancing + KHR_mesh_quantization",
+     "bytes": 771152,
+     "gzip": 458854,
+     "brotli": 203194,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 27.312439000001177,
+      "build": 0,
+      "geometry": 0,
+      "ready": 27.312439000001177
+     },
+     "exportMs": 18.46488700000191,
+     "gpuBytes": 1838232,
+     "equivalent": true,
+     "lossless": false
+    }
+   ],
+   "versusThree": {
+    "reference": "three-glb-inst",
+    "es3d": 4.746694000001298,
+    "three": 5.5669140000027255,
+    "ratio": 0.8385747187670114,
+    "rounds": 15
+   }
+  },
+  {
+   "id": "logo",
+   "label": "Extruded logo",
+   "note": "SVG-style path data extruded with bevels.",
+   "instances": 8,
+   "exportedInstances": 8,
+   "geometries": 8,
+   "materials": 4,
+   "elements": 28,
+   "triangles": 8224,
+   "uniqueTriangles": 8224,
+   "formats": [
+    {
+     "format": "es3d",
+     "label": "ES3D markup (as authored)",
+     "bytes": 2734,
+     "gzip": 1176,
+     "brotli": 1011,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.6733830000011949,
+      "build": 0.7314130000013392,
+      "geometry": 1.1615039999960572,
+      "ready": 2.5662999999985914
+     },
+     "gpuBytes": 337568,
+     "lossless": true
+    },
+    {
+     "format": "es3d-min",
+     "label": "ES3D markup, minified",
+     "bytes": 1826,
+     "gzip": 814,
+     "brotli": 733,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.6711629999990691,
+      "build": 0.6001939999987371,
+      "geometry": 1.1615039999960572,
+      "ready": 2.4328609999938635
+     },
+     "gpuBytes": 337568,
+     "lossless": true
+    },
+    {
+     "format": "es3d-compact",
+     "label": "ES3D compact syntax",
+     "bytes": 1546,
+     "gzip": 759,
+     "brotli": 691,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.8456779999978608,
+      "build": 0.4922839999999269,
+      "geometry": 1.1615039999960572,
+      "ready": 2.499465999993845
+     },
+     "gpuBytes": 337568,
+     "lossless": true
+    },
+    {
+     "format": "es3d-cached",
+     "label": "ES3D, meshes from the geometry cache",
+     "bytes": 2734,
+     "gzip": 1176,
+     "brotli": 1011,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.7737720000004629,
+      "build": 0.7460610000052839,
+      "restore": 0.798454000003403,
+      "geometry": 0.006938999998965301,
+      "ready": 2.4337569999988773,
+      "generated": 0,
+      "bytes": 288436
+     },
+     "cacheBytes": 288436,
+     "gpuBytes": 337568,
+     "lossless": true
+    },
+    {
+     "format": "obj",
+     "label": "OBJ + MTL",
+     "bytes": 530155,
+     "gzip": 98528,
+     "brotli": 60337,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 22.566916000003403,
+      "build": 0,
+      "geometry": 0,
+      "ready": 22.566916000003403
+     },
+     "exportMs": 36.21422199999506,
+     "gpuBytes": 337248,
+     "vertices": 7449,
+     "triangles": 8224,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb",
+     "label": "glTF binary (GLB)",
+     "bytes": 233988,
+     "gzip": 82856,
+     "brotli": 41608,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.6083559999970021,
+      "build": 0,
+      "geometry": 0,
+      "ready": 0.6083559999970021
+     },
+     "exportMs": 0.8470360000064829,
+     "gpuBytes": 337568,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb",
+     "label": "GLB, read by three.js",
+     "bytes": 233988,
+     "gzip": 82856,
+     "brotli": 41608,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.3561420000041835,
+      "build": 0,
+      "geometry": 0,
+      "ready": 1.3561420000041835
+     },
+     "gpuBytes": 337568,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-inst",
+     "label": "GLB + EXT_mesh_gpu_instancing",
+     "bytes": 234032,
+     "gzip": 82902,
+     "brotli": 41608,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.9067440000071656,
+      "build": 0,
+      "geometry": 0,
+      "ready": 0.9067440000071656
+     },
+     "exportMs": 0.8532220000051893,
+     "gpuBytes": 337568,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb-inst",
+     "label": "GLB + instancing, read by three.js",
+     "bytes": 234032,
+     "gzip": 82902,
+     "brotli": 41608,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.4131340000021737,
+      "build": 0,
+      "geometry": 0,
+      "ready": 1.4131340000021737
+     },
+     "gpuBytes": 337568,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-q",
+     "label": "GLB + instancing + KHR_mesh_quantization",
+     "bytes": 145116,
+     "gzip": 67886,
+     "brotli": 36817,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 4.670159000001149,
+      "build": 0,
+      "geometry": 0,
+      "ready": 4.670159000001149
+     },
+     "exportMs": 9.860469999999623,
+     "gpuBytes": 337568,
+     "equivalent": true,
+     "lossless": false
+    }
+   ],
+   "versusThree": {
+    "reference": "three-glb-inst",
+    "es3d": 2.2414109999954235,
+    "three": 2.5386319999961415,
+    "ratio": 0.8586670652415249,
+    "rounds": 15
+   }
+  },
+  {
+   "id": "gearbox",
+   "label": "Gearbox",
+   "note": "Procedural gears, sweeps and revolved profiles.",
+   "instances": 38,
+   "exportedInstances": 38,
+   "geometries": 9,
+   "materials": 5,
+   "elements": 45,
+   "triangles": 94212,
+   "uniqueTriangles": 49152,
+   "formats": [
+    {
+     "format": "es3d",
+     "label": "ES3D markup (as authored)",
+     "bytes": 3830,
+     "gzip": 1363,
+     "brotli": 1165,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.7548710000046412,
+      "build": 0.9704290000008768,
+      "geometry": 3.608550999997533,
+      "ready": 5.333851000003051
+     },
+     "gpuBytes": 2242688,
+     "lossless": true
+    },
+    {
+     "format": "es3d-min",
+     "label": "ES3D markup, minified",
+     "bytes": 2324,
+     "gzip": 868,
+     "brotli": 761,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.7985229999976582,
+      "build": 0.8854720000017551,
+      "geometry": 3.608550999997533,
+      "ready": 5.292545999996946
+     },
+     "gpuBytes": 2242688,
+     "lossless": true
+    },
+    {
+     "format": "es3d-compact",
+     "label": "ES3D compact syntax",
+     "bytes": 1822,
+     "gzip": 789,
+     "brotli": 705,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.4268349999983911,
+      "build": 1.0917679999984102,
+      "geometry": 3.608550999997533,
+      "ready": 6.127153999994334
+     },
+     "gpuBytes": 2242688,
+     "lossless": true
+    },
+    {
+     "format": "es3d-cached",
+     "label": "ES3D, meshes from the geometry cache",
+     "bytes": 3830,
+     "gzip": 1363,
+     "brotli": 1165,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.9872859999959473,
+      "build": 1.0936480000018491,
+      "restore": 1.4606169999970007,
+      "geometry": 0.0066609999994398095,
+      "ready": 3.4604739999995218,
+      "generated": 0,
+      "bytes": 1946152
+     },
+     "cacheBytes": 1946152,
+     "gpuBytes": 2242688,
+     "lossless": true
+    },
+    {
+     "format": "obj",
+     "label": "OBJ + MTL",
+     "bytes": 6756617,
+     "gzip": 1229632,
+     "brotli": 957192,
+     "brotliQuality": 9,
+     "load": {
+      "runs": 8,
+      "parse": 169.88198550000016,
+      "build": 0,
+      "geometry": 0,
+      "ready": 169.88198550000016
+     },
+     "exportMs": 598.0546430000031,
+     "gpuBytes": 4231792,
+     "vertices": 96904,
+     "triangles": 94212,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb",
+     "label": "glTF binary (GLB)",
+     "bytes": 1542632,
+     "gzip": 684368,
+     "brotli": 321278,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 2.2189130000042496,
+      "build": 0,
+      "geometry": 0,
+      "ready": 2.2189130000042496
+     },
+     "exportMs": 11.083834999997634,
+     "gpuBytes": 2242688,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb",
+     "label": "GLB, read by three.js",
+     "bytes": 1542632,
+     "gzip": 684368,
+     "brotli": 321278,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 4.3526550000024145,
+      "build": 0,
+      "geometry": 0,
+      "ready": 4.3526550000024145
+     },
+     "gpuBytes": 2242688,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-inst",
+     "label": "GLB + EXT_mesh_gpu_instancing",
+     "bytes": 1542592,
+     "gzip": 684621,
+     "brotli": 322433,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.6162120000008144,
+      "build": 0,
+      "geometry": 0,
+      "ready": 1.6162120000008144
+     },
+     "exportMs": 4.552464000000327,
+     "gpuBytes": 2242688,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb-inst",
+     "label": "GLB + instancing, read by three.js",
+     "bytes": 1542592,
+     "gzip": 684621,
+     "brotli": 322433,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 3.999833000008948,
+      "build": 0,
+      "geometry": 0,
+      "ready": 3.999833000008948
+     },
+     "gpuBytes": 2242688,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-q",
+     "label": "GLB + instancing + KHR_mesh_quantization",
+     "bytes": 924204,
+     "gzip": 511177,
+     "brotli": 218174,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 27.118308000004617,
+      "build": 0,
+      "geometry": 0,
+      "ready": 27.118308000004617
+     },
+     "exportMs": 13.400886000003084,
+     "gpuBytes": 2242688,
+     "equivalent": true,
+     "lossless": false
+    }
+   ],
+   "versusThree": {
+    "reference": "three-glb-inst",
+    "es3d": 5.426987000013469,
+    "three": 4.920341000004555,
+    "ratio": 1.115199061622462,
+    "rounds": 15
+   }
+  },
+  {
+   "id": "forest",
+   "label": "Forest (scatter)",
+   "note": "7,401 instances placed by three <scatter> elements.",
+   "instances": 7401,
+   "exportedInstances": 7401,
+   "geometries": 5,
+   "materials": 8,
+   "elements": 30,
+   "triangles": 1936802,
+   "uniqueTriangles": 2540,
+   "formats": [
+    {
+     "format": "es3d",
+     "label": "ES3D markup (as authored)",
+     "bytes": 2225,
+     "gzip": 886,
+     "brotli": 737,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.5674180000060005,
+      "build": 2.3492830000031972,
+      "geometry": 0.1654710000002524,
+      "ready": 3.08217200000945
+     },
+     "gpuBytes": 555824,
+     "lossless": true
+    },
+    {
+     "format": "es3d-min",
+     "label": "ES3D markup, minified",
+     "bytes": 1447,
+     "gzip": 598,
+     "brotli": 521,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.6733910000039032,
+      "build": 2.8947539999935543,
+      "geometry": 0.1654710000002524,
+      "ready": 3.73361599999771
+     },
+     "gpuBytes": 555824,
+     "lossless": true
+    },
+    {
+     "format": "es3d-compact",
+     "label": "ES3D compact syntax",
+     "bytes": 1115,
+     "gzip": 535,
+     "brotli": 471,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.2433369999926072,
+      "build": 3.149240999991889,
+      "geometry": 0.1654710000002524,
+      "ready": 4.558048999984749
+     },
+     "gpuBytes": 555824,
+     "lossless": true
+    },
+    {
+     "format": "es3d-cached",
+     "label": "ES3D, meshes from the geometry cache",
+     "bytes": 2225,
+     "gzip": 886,
+     "brotli": 737,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.4901910000044154,
+      "build": 2.208960999996634,
+      "restore": 0.6076339999999618,
+      "geometry": 0.003289000000222586,
+      "ready": 3.5218539999914356,
+      "generated": 0,
+      "bytes": 67396
+     },
+     "cacheBytes": 67396,
+     "gpuBytes": 555824,
+     "lossless": true
+    },
+    {
+     "format": "obj",
+     "label": "OBJ + MTL",
+     "bytes": 150069560,
+     "gzip": 23956918,
+     "brotli": 21302218,
+     "brotliQuality": 9,
+     "load": {
+      "runs": 1,
+      "parse": 5040.859520999991,
+      "build": 0,
+      "geometry": 0,
+      "ready": 5040.859520999991
+     },
+     "exportMs": 17613.403600000005,
+     "gpuBytes": 77136664,
+     "vertices": 1690504,
+     "triangles": 1936802,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb",
+     "label": "glTF binary (GLB)",
+     "bytes": 1056684,
+     "gzip": 231961,
+     "brotli": 173182,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 21.781262000004062,
+      "build": 0,
+      "geometry": 0,
+      "ready": 21.781262000004062
+     },
+     "exportMs": 60.18340999999782,
+     "gpuBytes": 555824,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb",
+     "label": "GLB, read by three.js",
+     "bytes": 1056684,
+     "gzip": 231961,
+     "brotli": 173182,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 6,
+      "parse": 230.87740650000342,
+      "build": 0,
+      "geometry": 0,
+      "ready": 230.87740650000342
+     },
+     "gpuBytes": 555824,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-inst",
+     "label": "GLB + EXT_mesh_gpu_instancing",
+     "bytes": 357552,
+     "gzip": 186452,
+     "brotli": 130210,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 9.902979999984382,
+      "build": 0,
+      "geometry": 0,
+      "ready": 9.902979999984382
+     },
+     "exportMs": 17.36588599998504,
+     "gpuBytes": 555824,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb-inst",
+     "label": "GLB + instancing, read by three.js",
+     "bytes": 357552,
+     "gzip": 186452,
+     "brotli": 130210,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 3.8182009999873117,
+      "build": 0,
+      "geometry": 0,
+      "ready": 3.8182009999873117
+     },
+     "gpuBytes": 555824,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-q",
+     "label": "GLB + instancing + KHR_mesh_quantization",
+     "bytes": 338616,
+     "gzip": 186650,
+     "brotli": 132168,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 11.719930999999633,
+      "build": 0,
+      "geometry": 0,
+      "ready": 11.719930999999633
+     },
+     "exportMs": 10.857516000018222,
+     "gpuBytes": 555824,
+     "equivalent": true,
+     "lossless": false
+    }
+   ],
+   "versusThree": {
+    "reference": "three-glb-inst",
+    "es3d": 2.4475230000098236,
+    "three": 6.179164999979548,
+    "ratio": 0.5098856872252917,
+    "rounds": 15
+   }
+  },
+  {
+   "id": "forest-explicit",
+   "label": "Forest (explicit)",
+   "note": "The same forest with every instance written out as an element (what a DCC exporter would write).",
+   "instances": 7401,
+   "exportedInstances": 7401,
+   "geometries": 5,
+   "materials": 8,
+   "elements": 2427,
+   "triangles": 1936802,
+   "uniqueTriangles": 2540,
+   "formats": [
+    {
+     "format": "es3d",
+     "label": "ES3D markup (as authored)",
+     "bytes": 342430,
+     "gzip": 57059,
+     "brotli": 48469,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 18.638856000005035,
+      "build": 13.021139000018593,
+      "geometry": 0.17420900001889095,
+      "ready": 31.83420400004252
+     },
+     "gpuBytes": 555824,
+     "lossless": true
+    },
+    {
+     "format": "es3d-min",
+     "label": "ES3D markup, minified",
+     "bytes": 210915,
+     "gzip": 54799,
+     "brotli": 46271,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 17.42940799999633,
+      "build": 12.591074000025401,
+      "geometry": 0.17420900001889095,
+      "ready": 30.19469100004062
+     },
+     "gpuBytes": 555824,
+     "lossless": true
+    },
+    {
+     "format": "es3d-compact",
+     "label": "ES3D compact syntax",
+     "bytes": 174045,
+     "gzip": 53786,
+     "brotli": 45883,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 35.81870099998196,
+      "build": 15.11321300000418,
+      "geometry": 0.17420900001889095,
+      "ready": 51.10612300000503
+     },
+     "gpuBytes": 555824,
+     "lossless": true
+    },
+    {
+     "format": "es3d-cached",
+     "label": "ES3D, meshes from the geometry cache",
+     "bytes": 342430,
+     "gzip": 57059,
+     "brotli": 48469,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 18.962197999993805,
+      "build": 13.355118000006769,
+      "restore": 6.80900800001109,
+      "geometry": 0.004249000019626692,
+      "ready": 36.69440699997358,
+      "generated": 0,
+      "bytes": 67396
+     },
+     "cacheBytes": 67396,
+     "gpuBytes": 555824,
+     "lossless": true
+    },
+    {
+     "format": "obj",
+     "label": "OBJ + MTL",
+     "bytes": 150069560,
+     "gzip": 23956918,
+     "brotli": 21302218,
+     "brotliQuality": 9,
+     "load": {
+      "runs": 1,
+      "parse": 5040.859520999991,
+      "build": 0,
+      "geometry": 0,
+      "ready": 5040.859520999991
+     },
+     "exportMs": 17613.403600000005,
+     "gpuBytes": 77136664,
+     "vertices": 1690504,
+     "triangles": 1936802,
+     "equivalent": true,
+     "lossless": false,
+     "sameAs": "forest"
+    },
+    {
+     "format": "glb",
+     "label": "glTF binary (GLB)",
+     "bytes": 1056684,
+     "gzip": 231961,
+     "brotli": 173182,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 21.781262000004062,
+      "build": 0,
+      "geometry": 0,
+      "ready": 21.781262000004062
+     },
+     "exportMs": 60.18340999999782,
+     "gpuBytes": 555824,
+     "equivalent": true,
+     "lossless": false,
+     "sameAs": "forest"
+    },
+    {
+     "format": "three-glb",
+     "label": "GLB, read by three.js",
+     "bytes": 1056684,
+     "gzip": 231961,
+     "brotli": 173182,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 6,
+      "parse": 230.87740650000342,
+      "build": 0,
+      "geometry": 0,
+      "ready": 230.87740650000342
+     },
+     "gpuBytes": 555824,
+     "equivalent": true,
+     "lossless": false,
+     "sameAs": "forest"
+    },
+    {
+     "format": "glb-inst",
+     "label": "GLB + EXT_mesh_gpu_instancing",
+     "bytes": 357552,
+     "gzip": 186452,
+     "brotli": 130210,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 9.902979999984382,
+      "build": 0,
+      "geometry": 0,
+      "ready": 9.902979999984382
+     },
+     "exportMs": 17.36588599998504,
+     "gpuBytes": 555824,
+     "equivalent": true,
+     "lossless": false,
+     "sameAs": "forest"
+    },
+    {
+     "format": "three-glb-inst",
+     "label": "GLB + instancing, read by three.js",
+     "bytes": 357552,
+     "gzip": 186452,
+     "brotli": 130210,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 3.8182009999873117,
+      "build": 0,
+      "geometry": 0,
+      "ready": 3.8182009999873117
+     },
+     "gpuBytes": 555824,
+     "equivalent": true,
+     "lossless": false,
+     "sameAs": "forest"
+    },
+    {
+     "format": "glb-q",
+     "label": "GLB + instancing + KHR_mesh_quantization",
+     "bytes": 338616,
+     "gzip": 186650,
+     "brotli": 132168,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 11.719930999999633,
+      "build": 0,
+      "geometry": 0,
+      "ready": 11.719930999999633
+     },
+     "exportMs": 10.857516000018222,
+     "gpuBytes": 555824,
+     "equivalent": true,
+     "lossless": false,
+     "sameAs": "forest"
+    }
+   ],
+   "versusThree": {
+    "reference": "three-glb-inst",
+    "es3d": 37.247709999996005,
+    "three": 10.982274000009056,
+    "ratio": 4.4069120720295585,
+    "rounds": 15
+   }
+  },
+  {
+   "id": "city",
+   "label": "City",
+   "note": "10,926 instances on grids.",
+   "instances": 10926,
+   "exportedInstances": 10926,
+   "geometries": 6,
+   "materials": 9,
+   "elements": 30,
+   "triangles": 8684758,
+   "uniqueTriangles": 3534,
+   "formats": [
+    {
+     "format": "es3d",
+     "label": "ES3D markup (as authored)",
+     "bytes": 2391,
+     "gzip": 1009,
+     "brotli": 839,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.5526029999891762,
+      "build": 2.0804559999960475,
+      "geometry": 0.25935999999637716,
+      "ready": 2.892418999981601
+     },
+     "gpuBytes": 811848,
+     "lossless": true
+    },
+    {
+     "format": "es3d-min",
+     "label": "ES3D markup, minified",
+     "bytes": 1518,
+     "gzip": 692,
+     "brotli": 591,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.4967869999818504,
+      "build": 1.9967759999854024,
+      "geometry": 0.25935999999637716,
+      "ready": 2.75292299996363
+     },
+     "gpuBytes": 811848,
+     "lossless": true
+    },
+    {
+     "format": "es3d-compact",
+     "label": "ES3D compact syntax",
+     "bytes": 1193,
+     "gzip": 619,
+     "brotli": 536,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.8526859999983571,
+      "build": 2.111062000010861,
+      "geometry": 0.25935999999637716,
+      "ready": 3.2231080000055954
+     },
+     "gpuBytes": 811848,
+     "lossless": true
+    },
+    {
+     "format": "es3d-cached",
+     "label": "ES3D, meshes from the geometry cache",
+     "bytes": 2391,
+     "gzip": 1009,
+     "brotli": 839,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.4483369999798015,
+      "build": 1.7676320000027772,
+      "restore": 0.504386999993585,
+      "geometry": 0.002621999999973923,
+      "ready": 2.8154370000120252,
+      "generated": 0,
+      "bytes": 91936
+     },
+     "cacheBytes": 91936,
+     "gpuBytes": 811848,
+     "lossless": true
+    },
+    {
+     "format": "obj",
+     "label": "OBJ + MTL",
+     "skipped": "8.7 M triangles exceed --obj-limit 3 M",
+     "triangles": 8684758,
+     "vertices": null,
+     "estimatedBytes": 667572937
+    },
+    {
+     "format": "glb",
+     "label": "glTF binary (GLB)",
+     "bytes": 1080456,
+     "gzip": 233169,
+     "brotli": 172467,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 20.130165000009583,
+      "build": 0,
+      "geometry": 0,
+      "ready": 20.130165000009583
+     },
+     "exportMs": 44.51265099999728,
+     "gpuBytes": 811848,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb",
+     "label": "GLB, read by three.js",
+     "bytes": 1080456,
+     "gzip": 233169,
+     "brotli": 172467,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 5,
+      "parse": 297.3553510000056,
+      "build": 0,
+      "geometry": 0,
+      "ready": 297.3553510000056
+     },
+     "gpuBytes": 811848,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-inst",
+     "label": "GLB + EXT_mesh_gpu_instancing",
+     "bytes": 519768,
+     "gzip": 174370,
+     "brotli": 126838,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 16.781014000007417,
+      "build": 0,
+      "geometry": 0,
+      "ready": 16.781014000007417
+     },
+     "exportMs": 12.438574000028893,
+     "gpuBytes": 811848,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb-inst",
+     "label": "GLB + instancing, read by three.js",
+     "bytes": 519768,
+     "gzip": 174370,
+     "brotli": 126838,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 4.644419999996899,
+      "build": 0,
+      "geometry": 0,
+      "ready": 4.644419999996899
+     },
+     "gpuBytes": 811848,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-q",
+     "label": "GLB + instancing + KHR_mesh_quantization",
+     "bytes": 494024,
+     "gzip": 177586,
+     "brotli": 106956,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 18.684043999994174,
+      "build": 0,
+      "geometry": 0,
+      "ready": 18.684043999994174
+     },
+     "exportMs": 15.902842000010423,
+     "gpuBytes": 811848,
+     "equivalent": true,
+     "lossless": false
+    }
+   ],
+   "versusThree": {
+    "reference": "three-glb-inst",
+    "es3d": 2.8549439999915194,
+    "three": 8.296539000002667,
+    "ratio": 0.3817478329372032,
+    "rounds": 15
+   }
+  },
+  {
+   "id": "lod-stress",
+   "label": "LOD stress",
+   "note": "25,728 instances, curved primitives with automatic LOD.",
+   "instances": 25728,
+   "exportedInstances": 22845,
+   "geometries": 8,
+   "materials": 5,
+   "elements": 28,
+   "triangles": 39038786,
+   "uniqueTriangles": 6446,
+   "formats": [
+    {
+     "format": "es3d",
+     "label": "ES3D markup (as authored)",
+     "bytes": 2070,
+     "gzip": 877,
+     "brotli": 706,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.48253000000840984,
+      "build": 5.268321000010474,
+      "geometry": 0.3887690000119619,
+      "ready": 6.139620000030845
+     },
+     "gpuBytes": 1840808,
+     "lossless": true
+    },
+    {
+     "format": "es3d-min",
+     "label": "ES3D markup, minified",
+     "bytes": 1274,
+     "gzip": 581,
+     "brotli": 504,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.366915999999037,
+      "build": 4.83004799997434,
+      "geometry": 0.3887690000119619,
+      "ready": 5.585732999985339
+     },
+     "gpuBytes": 1840808,
+     "lossless": true
+    },
+    {
+     "format": "es3d-compact",
+     "label": "ES3D compact syntax",
+     "bytes": 989,
+     "gzip": 519,
+     "brotli": 450,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.7389160000020638,
+      "build": 5.046963000000687,
+      "geometry": 0.3887690000119619,
+      "ready": 6.174648000014713
+     },
+     "gpuBytes": 1840808,
+     "lossless": true
+    },
+    {
+     "format": "es3d-cached",
+     "label": "ES3D, meshes from the geometry cache",
+     "bytes": 2070,
+     "gzip": 877,
+     "brotli": 706,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 0.4426969999913126,
+      "build": 5.071384999988368,
+      "restore": 0.6424410000036005,
+      "geometry": 0.0036299999919719994,
+      "ready": 6.18109500000719,
+      "generated": 0,
+      "bytes": 160224
+     },
+     "cacheBytes": 160224,
+     "gpuBytes": 1840808,
+     "lossless": true
+    },
+    {
+     "format": "obj",
+     "label": "OBJ + MTL",
+     "skipped": "39.0 M triangles exceed --obj-limit 3 M",
+     "triangles": 39038786,
+     "vertices": null,
+     "estimatedBytes": 3000801754
+    },
+    {
+     "format": "glb",
+     "label": "glTF binary (GLB)",
+     "bytes": 2628624,
+     "gzip": 616575,
+     "brotli": 555327,
+     "brotliQuality": 9,
+     "load": {
+      "runs": 15,
+      "parse": 54.462716000009095,
+      "build": 0,
+      "geometry": 0,
+      "ready": 54.462716000009095
+     },
+     "exportMs": 118.78627399998368,
+     "gpuBytes": 1656296,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb",
+     "label": "GLB, read by three.js",
+     "bytes": 2628624,
+     "gzip": 616575,
+     "brotli": 555327,
+     "brotliQuality": 9,
+     "load": {
+      "runs": 2,
+      "parse": 757.0409714999987,
+      "build": 0,
+      "geometry": 0,
+      "ready": 757.0409714999987
+     },
+     "gpuBytes": 1656296,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-inst",
+     "label": "GLB + EXT_mesh_gpu_instancing",
+     "bytes": 1052328,
+     "gzip": 441292,
+     "brotli": 341177,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 39.28390199999558,
+      "build": 0,
+      "geometry": 0,
+      "ready": 39.28390199999558
+     },
+     "exportMs": 36.23399799998151,
+     "gpuBytes": 1656296,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb-inst",
+     "label": "GLB + instancing, read by three.js",
+     "bytes": 1052328,
+     "gzip": 441292,
+     "brotli": 341177,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 8.771012000011979,
+      "build": 0,
+      "geometry": 0,
+      "ready": 8.771012000011979
+     },
+     "gpuBytes": 1656296,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-q",
+     "label": "GLB + instancing + KHR_mesh_quantization",
+     "bytes": 1008872,
+     "gzip": 442936,
+     "brotli": 326779,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 29.716599999985192,
+      "build": 0,
+      "geometry": 0,
+      "ready": 29.716599999985192
+     },
+     "exportMs": 33.38121699998737,
+     "gpuBytes": 1656296,
+     "equivalent": true,
+     "lossless": false
+    }
+   ],
+   "versusThree": {
+    "reference": "three-glb-inst",
+    "es3d": 6.136249000002863,
+    "three": 12.863217000005534,
+    "ratio": 0.48616768576510594,
+    "rounds": 15
+   }
+  },
+  {
+   "id": "scan",
+   "label": "Scanned mesh",
+   "note": "An irregular 81,920-triangle mesh with no procedural structure: the ES3D worst case.",
+   "instances": 1,
+   "exportedInstances": 1,
+   "geometries": 1,
+   "materials": 1,
+   "elements": 7,
+   "triangles": 81920,
+   "uniqueTriangles": 81920,
+   "formats": [
+    {
+     "format": "es3d",
+     "label": "ES3D markup (as authored)",
+     "bytes": 2434548,
+     "gzip": 709029,
+     "brotli": 699426,
+     "brotliQuality": 9,
+     "load": {
+      "runs": 15,
+      "parse": 13.274606999999378,
+      "build": 2.3865789999836124,
+      "geometry": 8.360373999981675,
+      "ready": 24.021559999964666
+     },
+     "gpuBytes": 2293888,
+     "lossless": true
+    },
+    {
+     "format": "es3d-min",
+     "label": "ES3D markup, minified",
+     "bytes": 2319763,
+     "gzip": 703502,
+     "brotli": 694215,
+     "brotliQuality": 9,
+     "load": {
+      "runs": 15,
+      "parse": 12.153023000020767,
+      "build": 2.320395999995526,
+      "geometry": 8.360373999981675,
+      "ready": 22.833792999997968
+     },
+     "gpuBytes": 2293888,
+     "lossless": true
+    },
+    {
+     "format": "es3d-compact",
+     "label": "ES3D compact syntax",
+     "bytes": 2319707,
+     "gzip": 703452,
+     "brotli": 694189,
+     "brotliQuality": 9,
+     "load": {
+      "runs": 15,
+      "parse": 29.905140999995638,
+      "build": 2.330328999989433,
+      "geometry": 8.360373999981675,
+      "ready": 40.595843999966746
+     },
+     "gpuBytes": 2293888,
+     "lossless": true
+    },
+    {
+     "format": "es3d-cached",
+     "label": "ES3D, meshes from the geometry cache",
+     "skipped": "nothing to cache (nothing cacheable)"
+    },
+    {
+     "format": "obj",
+     "label": "OBJ + MTL",
+     "bytes": 5363101,
+     "gzip": 1307323,
+     "brotli": 1233732,
+     "brotliQuality": 9,
+     "load": {
+      "runs": 11,
+      "parse": 130.17404899999383,
+      "build": 0,
+      "geometry": 0,
+      "ready": 130.17404899999383
+     },
+     "exportMs": 296.7613629999978,
+     "gpuBytes": 2293888,
+     "vertices": 40962,
+     "triangles": 81920,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb",
+     "label": "glTF binary (GLB)",
+     "bytes": 1475612,
+     "gzip": 1229741,
+     "brotli": 1033043,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.3102009999856818,
+      "build": 0,
+      "geometry": 0,
+      "ready": 1.3102009999856818
+     },
+     "exportMs": 2.4958589999878313,
+     "gpuBytes": 2293888,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb",
+     "label": "GLB, read by three.js",
+     "bytes": 1475612,
+     "gzip": 1229741,
+     "brotli": 1033043,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.8963669999793638,
+      "build": 0,
+      "geometry": 0,
+      "ready": 1.8963669999793638
+     },
+     "gpuBytes": 2293888,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-inst",
+     "label": "GLB + EXT_mesh_gpu_instancing",
+     "bytes": 1475656,
+     "gzip": 1229794,
+     "brotli": 1040463,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.681856000010157,
+      "build": 0,
+      "geometry": 0,
+      "ready": 1.681856000010157
+     },
+     "exportMs": 4.729106000013417,
+     "gpuBytes": 2293888,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "three-glb-inst",
+     "label": "GLB + instancing, read by three.js",
+     "bytes": 1475656,
+     "gzip": 1229794,
+     "brotli": 1040463,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 1.624201999977231,
+      "build": 0,
+      "geometry": 0,
+      "ready": 1.624201999977231
+     },
+     "gpuBytes": 2293888,
+     "equivalent": true,
+     "lossless": false
+    },
+    {
+     "format": "glb-q",
+     "label": "GLB + instancing + KHR_mesh_quantization",
+     "bytes": 984256,
+     "gzip": 743696,
+     "brotli": 554948,
+     "brotliQuality": 11,
+     "load": {
+      "runs": 15,
+      "parse": 21.379856000014115,
+      "build": 0,
+      "geometry": 0,
+      "ready": 21.379856000014115
+     },
+     "exportMs": 18.436014999984764,
+     "gpuBytes": 2293888,
+     "equivalent": true,
+     "lossless": false
+    }
+   ],
+   "versusThree": {
+    "reference": "three-glb-inst",
+    "es3d": 25.220227999961935,
+    "three": 2.9242170000215992,
+    "ratio": 8.598200621592467,
+    "rounds": 15
+   }
+  }
+ ]
+}

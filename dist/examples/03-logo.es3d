@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  An SVG-style logo: every letter is 2D path data (M L H V A Z, y up),
+  extruded with a rounded bevel. The whole logo is a few hundred bytes of
+  path data instead of tens of thousands of triangles, and it stays sharp at
+  any zoom because the curves are re-tessellated for the current level of detail.
+-->
+<es3d version="1">
+  <title>Extruded ES3D logo</title>
+  <environment background="#0e1117" sky="#c9dcff" ground="#211d26" intensity="0.45"/>
+  <camera position="0.35,0.95,3.6" target="0,0.42,0" fov="40"/>
+  <light type="directional" direction="-0.35,-0.6,-1" intensity="1.1"/>
+  <light type="point" position="-2.2,1.6,1.2" color="#4fc3f7" intensity="5" range="8"/>
+  <light type="point" position="2.4,1.2,1.4" color="#ffb74d" intensity="5" range="8"/>
+  <light type="directional" direction="0.2,-0.3,1" color="#7e57c2" intensity="0.6"/>
+
+  <defs>
+    <material id="ice" color="#81d4fa" metallic="0.35" roughness="0.22"/>
+    <material id="amber" color="#ffb74d" metallic="0.5" roughness="0.25"/>
+    <material id="base" color="#1e2530" roughness="0.55"/>
+    <material id="glow" color="#ff9800" emissive="#ff6d00" emissiveIntensity="1.6"/>
+
+    <!-- glyph outlines in a 100 unit em square -->
+    <path id="E" d="M0,0 H60 V16 H18 V42 H52 V58 H18 V84 H60 V100 H0 Z"/>
+    <path id="S" d="M56.31,81.58 A28,28 0 1,1 30,44 A16,16 0 1,0 14.96,22.53 L3.69,18.42 A28,28 0 1,1 30,56 A16,16 0 1,0 45.04,77.47 Z"/>
+    <path id="three" d="M3.69,81.58 A28,28 0 1,0 47.32,50 A28,28 0 1,0 3.69,18.42 L14.96,22.53 A16,16 0 1,1 30,44 H16 V56 H30 A16,16 0 1,1 14.96,77.47 Z"/>
+    <path id="D" d="M0,0 H30 A40,50 0 0,1 30,100 H0 Z M16,16 H30 A24,34 0 0,1 30,84 H16 Z" fillRule="evenodd"/>
+    <path id="hex" d="M0,100 L-43.3,75 L-43.3,25 L0,0 L43.3,25 L43.3,75 Z M0,82 L-27.71,66 L-27.71,34 L0,18 L27.71,34 L27.71,66 Z" fillRule="evenodd"/>
+  </defs>
+
+  <group transform="translate(-1.21,0.12,0) scale(0.0085)">
+    <extrude path="hex" depth="24" bevel="3" center="true" position="-60,0,0" material="amber"/>
+    <sphere radius="12" position="-60,50,0" material="glow"/>
+    <group material="ice">
+      <extrude path="E" depth="24" bevel="3" center="true"/>
+      <extrude path="S" depth="24" bevel="3" center="true" position="70,0,0"/>
+      <extrude path="three" depth="24" bevel="3" center="true" position="136,0,0"/>
+    </group>
+    <extrude path="D" depth="24" bevel="3" center="true" position="206,0,0" material="amber"/>
+    <!-- a swept underline: a circle swept along a 3D cubic Bezier -->
+    <sweep radius="2.6" along="M-100,-16,6 C0,-34,22 160,-4,-18 282,-18,4" material="amber"/>
+  </group>
+
+  <box size="3.9,0.12,1.1" radius="0.05" position="0.04,-0.12,0" material="base"/>
+</es3d>

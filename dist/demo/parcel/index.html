@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parcel — gift boxes</title>
+  <meta name="description" content="Parcel: a gift box with a hinged lid, a ribbon and a bow, converted from CAD (STEP) into ES3D shapes and drawn live in the browser. Pick a wrap and open the box.">
+  <meta name="theme-color" content="#f3ecdf">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23f3ecdf' width='32' height='32'/%3E%3Crect fill='%23e7b4a8' x='7' y='12' width='18' height='12' rx='1'/%3E%3Cpath stroke='%23fbf6ee' stroke-width='2' d='M16 12v12M7 18h18'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://es3d.org/demo/parcel/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ES3D">
+<meta property="og:title" content="Parcel — gift boxes">
+<meta property="og:description" content="Parcel: a gift box with a hinged lid, a ribbon and a bow, converted from CAD (STEP) into ES3D shapes and drawn live in the browser. Pick a wrap and open the box.">
+<meta property="og:url" content="https://es3d.org/demo/parcel/">
+<meta property="og:image" content="https://es3d.org/images/demo-parcel.jpg">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="1000">
+<meta property="og:image:alt" content="Parcel: a red gift box with an ivory ribbon and bow">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://es3d.org/images/demo-parcel.jpg">
+<meta name="twitter:image:alt" content="Parcel: a red gift box with an ivory ribbon and bow">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://es3d.org/#organization",
+      "name": "ES3D",
+      "url": "https://es3d.org/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/favicon.svg"
+      },
+      "sameAs": [
+        "https://github.com/bitilia/es3d"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://es3d.org/#website",
+      "url": "https://es3d.org/",
+      "name": "ES3D",
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://es3d.org/demo/parcel/#webpage",
+      "url": "https://es3d.org/demo/parcel/",
+      "name": "Parcel — gift boxes",
+      "description": "Parcel: a gift box with a hinged lid, a ribbon and a bow, converted from CAD (STEP) into ES3D shapes and drawn live in the browser. Pick a wrap and open the box.",
+      "isPartOf": {
+        "@id": "https://es3d.org/#website"
+      },
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en",
+      "dateModified": "2026-10-15",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/images/demo-parcel.jpg",
+        "width": 1600,
+        "height": 1000
+      },
+      "breadcrumb": {
+        "@id": "https://es3d.org/demo/parcel/#breadcrumb"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://es3d.org/demo/parcel/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://es3d.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Demo Sites",
+          "item": "https://es3d.org/demo/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Parcel — gift boxes",
+          "item": "https://es3d.org/demo/parcel/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+  <script type="module" crossorigin src="../../assets/demo/parcel/index-PJEL_R-Z.js"></script>
+  <link rel="modulepreload" crossorigin href="../../assets/modulepreload-polyfill-P2Xu9kJm.js">
+  <link rel="modulepreload" crossorigin href="../../assets/orbit-controls-BUn7A4nu.js">
+  <link rel="modulepreload" crossorigin href="../../assets/stage-C8W367jR.js">
+  <link rel="modulepreload" crossorigin href="../../assets/stage-DOB5ywP-.js">
+  <link rel="modulepreload" crossorigin href="../../assets/scene-CW8VxoY4.js">
+  <link rel="stylesheet" crossorigin href="../../assets/stage-D0OQqKG3.css">
+  <link rel="stylesheet" crossorigin href="../../assets/index-CWNRm9kE.css">
+</head>
+<body>
+  <header>
+    <a class="word" href="./">Parcel</a>
+    <nav>
+      <a href="../../">ES3D</a>
+      <a href="../">Demo Sites</a>
+      <a href="../ashby/">Ashby</a>
+      <a href="../spoke/">Spoke</a>
+      <a href="../helio/">Helio</a>
+    </nav>
+  </header>
+
+  <main class="hero">
+    <section class="copy">
+      <p class="kicker">Gift wrapping</p>
+      <h1>The lid is a hinge.</h1>
+      <p id="detail">Bright red paper, an ivory bow, and a bottle.</p>
+      <div class="actions">
+        <button type="button" id="toggle" aria-pressed="false">Open the box</button>
+        <div class="swatches" id="swatches" role="group" aria-label="Wrap"></div>
+      </div>
+      <p class="hint" id="hint"></p>
+      <p class="filesize-line"><span class="filesize"><b>13.4 kB</b> ES3D file <span class="filesize-gzip">· 2.8 kB gzipped</span></span></p>
+    </section>
+    <div class="view">
+      <canvas id="view" aria-label="Gift box. Drag to turn it. Click it to open the lid."></canvas>
+      <p class="stage-status">Starting the renderer…</p>
+      <pre class="stage-error" hidden></pre>
+    </div>
+  </main>
+
+  <aside class="notes" aria-label="About the model">
+    <article>
+      <h2>From the CAD model</h2>
+      <p>Box, lid, ribbon and bow, converted from the CAD tool's STEP files into ES3D shapes. The lid swings on the back edge.</p>
+    </article>
+    <article>
+      <h2>Its own colours</h2>
+      <p>Paper, ribbon and the room are a separate choice for each wrap, so the three stay apart.</p>
+    </article>
+    <article>
+      <h2>One object</h2>
+      <p>Red and blush hold a bottle. Ink holds a stone. Sage holds a pot and a cone of leaves.</p>
+    </article>
+    <article>
+      <h2>The file</h2>
+      <p>The box came from CAD as STEP, and the <a href="../../convert/">converter</a> wrote it as ES3D shapes, not triangles: the lid is one extrusion, the box and the ribbon are flat faces, and the bow's curves are revolves, exact to the CAD model. The whole scene is 13.4 kB. Scenes built from shapes stay small: all of <a href="../ashby/">Ashby</a> is 11.9 kB, and <a href="../spoke/">Spoke</a> is 3.8 kB.</p>
+    </article>
+  </aside>
+</body>
+</html>

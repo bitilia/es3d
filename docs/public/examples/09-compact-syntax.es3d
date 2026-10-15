@@ -1,0 +1,73 @@
+// ES3D compact syntax ("ES3D-C"): the same document model as the markup
+// syntax, without angle brackets, quotes or closing tags.
+//   element#id @ref "text" attr=value ... { children }
+// Short aliases: p=position rot=rotation sc=scale t=transform m=material
+// c=color s=size r=radius h=height n=count dir=direction
+// Use the "To markup" button to convert this file (and back again).
+es3d version=1
+
+title "Desk (compact syntax)"
+environment background=#191c22 sky=#e5ecf6 ground=#3a3128 intensity=.55
+camera p=1.1,1.05,1.35 target=0,.45,0 fov=40
+light type=directional dir=-.4,-1,-.6 intensity=1.1
+light type=point p=-.3,.95,.05 c=#ffe2b0 intensity=1.6 range=3
+
+defs {
+  material#wood c=#8d5a32 roughness=.55 map=stripes(40,#94603a,#7d4f2c) uvScale=1,4
+  material#paper c=#f4f1ea roughness=.9
+  material#black c=#202326 roughness=.4
+  material#chrome c=#d0d6dc metallic=1 roughness=.18
+  material#mug c=#ef5350 roughness=.3
+  material#screen c=#0d1117 emissive=#1e88e5 emissiveIntensity=.35 roughness=.2
+  material#bulb c=#fff8e1 emissive=#ffe082 emissiveIntensity=3
+  // one pencil, reused below
+  group#pencil {
+    cylinder r=.004 h=.17 segments=6 rot=0,0,90 c=#ffca28
+    cone r=.004 h=.014 segments=6 rot=0,0,-90 p=.092,0,0 c=#e0c39a
+  }
+  // book: two covers, a spine and the page block between them
+  group#book {
+    box s=.21,.004,.15 p=0,.014,0 m=black
+    box s=.21,.004,.15 p=0,-.014,0 m=black
+    box s=.006,.032,.15 p=-.102,0,0 m=black
+    box s=.2,.024,.144 p=.002,0,0 m=paper
+  }
+}
+
+// desk top and legs
+box s=1.4,.04,.7 p=0,.43,0 r=.008 m=wood
+repeat n=2 step=translate(1.3,0,0) {
+  repeat n=2 step=translate(0,0,.6) {
+    cylinder r=.018 h=.41 p=-.65,.205,-.3 m=chrome
+  }
+}
+
+// stack of books: a repeat with a small twist per copy
+repeat n=4 step="translate(0,.033,0) rotate(0,7,0)" p=-.45,.466,.1 {
+  use @book
+}
+
+// mug: a revolved closed profile (outside wall, rim, inside wall)
+revolve d="M0,0 L.04,0 C.045,.03 .045,.07 .042,.095 L.037,.095 C.039,.07 .039,.03 .035,.006 L0,.006 Z" p=.25,.45,.12 m=mug
+torus r=.022 tube=.005 arc=180 p=.292,.497,.12 rot=0,0,-90 m=mug
+
+// pencils fanned out
+repeat n=5 step="translate(0,0,.012) rotate(0,6,0)" p=.05,.455,.2 {
+  use @pencil
+}
+
+// monitor: thin rounded box on a swept stand
+group p=0,.45,-.2 {
+  box s=.62,.37,.02 r=.008 p=0,.3,0 m=black
+  box s=.59,.34,.004 p=0,.3,.011 m=screen
+  sweep r=.012 along="M0,0,0 C0,.06,.04 0,.1,-.02 0,.12,0" m=chrome
+  cylinder r=.09 h=.008 p=0,.004,0 m=chrome
+}
+
+// desk lamp: base, arm (swept curve) and shade (revolved)
+group p=-.32,.45,-.02 {
+  cylinder r=.06 h=.015 p=0,.0075,0 m=black
+  sweep r=.007 along="M0,0,0 C0,.25,0 .12,.38,0 .22,.34,0" m=chrome
+  revolve d="M0,0 L.012,0 L.06,-.07 L.056,-.072 L.01,-.004" p=.22,.36,0 rot=0,0,-30 m=black
+  sphere r=.018 p=.200,.33,0 m=bulb
+}

@@ -1,0 +1,86 @@
+{
+ "session": "2026-10-07_18-39-57",
+ "commit": "25fedae-dirty",
+ "started": "2026-10-07T17:39:57.063Z",
+ "scenes": [
+  {
+   "id": "cube",
+   "label": "Rotating cube"
+  },
+  {
+   "id": "primitives",
+   "label": "Primitive test"
+  },
+  {
+   "id": "logo",
+   "label": "Extruded logo"
+  },
+  {
+   "id": "gearbox",
+   "label": "Gearbox"
+  },
+  {
+   "id": "forest",
+   "label": "Forest (scatter)"
+  },
+  {
+   "id": "city",
+   "label": "City"
+  },
+  {
+   "id": "scan",
+   "label": "Scanned mesh"
+  }
+ ],
+ "formats": [
+  {
+   "id": "es3d",
+   "label": "ES3D (auto LOD)"
+  },
+  {
+   "id": "es3d-progressive",
+   "label": "ES3D (progressive)"
+  },
+  {
+   "id": "es3d-cached",
+   "label": "ES3D (stored meshes)"
+  },
+  {
+   "id": "es3d-lod0",
+   "label": "ES3D (LOD 0 only)"
+  },
+  {
+   "id": "obj",
+   "label": "OBJ + MTL"
+  },
+  {
+   "id": "glb",
+   "label": "glTF binary (GLB)"
+  },
+  {
+   "id": "glb-inst",
+   "label": "GLB + EXT_mesh_gpu_instancing"
+  },
+  {
+   "id": "three-glb",
+   "label": "GLB in three.js"
+  },
+  {
+   "id": "three-glb-inst",
+   "label": "GLB + instancing in three.js"
+  },
+  {
+   "id": "es3d-three",
+   "label": "ES3D in three.js (LOD 0)"
+  }
+ ],
+ "backends": [
+  "webgpu",
+  "webgl2"
+ ],
+ "frames": 40,
+ "size": "960x540",
+ "repeat": 10,
+ "cooldownMs": 0,
+ "objLimit": 3000000
+}

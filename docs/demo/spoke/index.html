@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spoke — bicycles</title>
+  <meta name="description" content="Spoke: a bicycle with a 28-to-14 drivetrain, drawn live from one small ES3D file. Scroll for a tour along a camera path written into the same file.">
+  <meta name="theme-color" content="#141513">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23141513' width='32' height='32'/%3E%3Ccircle cx='10' cy='20' r='5' fill='none' stroke='%23d6ff4a' stroke-width='2'/%3E%3Ccircle cx='23' cy='20' r='5' fill='none' stroke='%23d6ff4a' stroke-width='2'/%3E%3Cpath stroke='%23f4f1ea' stroke-width='1.5' d='M10 20 L16 11 L23 20 L16 11 L14 16 L10 20'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../fonts.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header>
+    <a class="word" href="./">Spoke</a>
+    <nav>
+      <a href="../../">ES3D</a>
+      <a href="../">Demo Sites</a>
+      <a href="../ashby/">Ashby</a>
+      <a href="../parcel/">Parcel</a>
+      <a href="../helio/">Helio</a>
+    </nav>
+  </header>
+  <main>
+    <div class="title-row">
+      <h1>Twenty-eight to fourteen.</h1>
+      <p>One chainring and one cog. Scroll out and the spokes leave before the tyre does.</p>
+    </div>
+    <div class="view">
+      <canvas id="view" aria-label="Bicycle. Drag to turn it, scroll to zoom. The wheels and gears are turning."></canvas>
+      <p class="stage-status">Starting the renderer…</p>
+      <pre class="stage-error" hidden></pre>
+      <p class="hint" id="hint"></p>
+    </div>
+    <div class="bar">
+      <div class="paints" id="paints" role="group" aria-label="Frame paint"></div>
+      <ul class="specs">
+        <li><strong>28 / 14</strong> teeth, so the wheel turns twice for each crank</li>
+        <li><strong>8</strong> spokes, until the camera steps back</li>
+        <li><strong>One</strong> tube between each joint</li>
+      </ul>
+    </div>
+    <p class="filesize-line"><!--#filesize of="demo/spoke" --></p>
+  </main>
+  <section class="tour" id="tour" aria-label="A tour of the bicycle that follows the page as you scroll">
+    <div class="tour-stage">
+      <canvas id="tour-view" aria-hidden="true"></canvas>
+      <p class="stage-status">Starting the renderer…</p>
+      <pre class="stage-error" hidden></pre>
+    </div>
+    <div class="tour-copy">
+      <article data-es3d-stop="0">
+        <h2>Ride along.</h2>
+        <p>Keep scrolling. The camera follows a path written into the same ES3D file as the bicycle, one key view per paragraph.</p>
+      </article>
+      <article data-es3d-stop="0.34">
+        <h2>Twenty-eight teeth.</h2>
+        <p>The chainring turns once for every two turns of the rear cog. Both are gears the file describes by tooth count, not triangles.</p>
+      </article>
+      <article data-es3d-stop="0.67">
+        <h2>Eight spokes.</h2>
+        <p>Close up, the wheel draws every spoke. The file stores one spoke and a rule to repeat it.</p>
+      </article>
+      <article data-es3d-stop="1">
+        <h2>Then less.</h2>
+        <p>From far away the spokes drop out, then the rim. Same file, fewer triangles, and you cannot tell from here.</p>
+        <p class="filesize-line">The whole file, camera path included:<br><!--#filesize of="demo/spoke-tour" --></p>
+      </article>
+    </div>
+  </section>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+var e=`es3d:handoff`,t=2e6;function n(t,n){if(n.length>2e6)return!1;try{return localStorage.setItem(e,JSON.stringify({name:t,text:n,at:Date.now()})),!0}catch{return!1}}function r(){try{let t=localStorage.getItem(e);localStorage.removeItem(e);let n=t?JSON.parse(t):null;return n&&typeof n.text==`string`?n:null}catch{return null}}export{r as n,n as r,t};
+//# sourceMappingURL=handoff-mtZVqaF7.js.map

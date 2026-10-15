@@ -1,0 +1,78 @@
+{
+  "docs/public/es3d-logo.es3d": {
+    "es3d": 2392,
+    "gzip": 1066
+  },
+  "docs/public/examples/01-rotating-cube.es3d": {
+    "es3d": 775,
+    "gzip": 453
+  },
+  "docs/public/examples/02-primitives.es3d": {
+    "es3d": 4173,
+    "gzip": 1525
+  },
+  "docs/public/examples/03-logo.es3d": {
+    "es3d": 2734,
+    "gzip": 1176
+  },
+  "docs/public/examples/04-forest.es3d": {
+    "es3d": 2225,
+    "gzip": 886
+  },
+  "docs/public/examples/05-gearbox.es3d": {
+    "es3d": 3830,
+    "gzip": 1363
+  },
+  "docs/public/examples/06-city.es3d": {
+    "es3d": 2391,
+    "gzip": 1009
+  },
+  "docs/public/examples/07-staircases.es3d": {
+    "es3d": 2111,
+    "gzip": 938
+  },
+  "docs/public/examples/08-materials.es3d": {
+    "es3d": 3615,
+    "gzip": 1104
+  },
+  "docs/public/examples/09-compact-syntax.es3d": {
+    "es3d": 2795,
+    "gzip": 1375
+  },
+  "docs/public/examples/10-mesh-escape-hatch.es3d": {
+    "es3d": 9005,
+    "gzip": 3385
+  },
+  "docs/public/examples/11-solar-system.es3d": {
+    "es3d": 3492,
+    "gzip": 1118
+  },
+  "docs/public/examples/12-lod-stress.es3d": {
+    "es3d": 2070,
+    "gzip": 877
+  },
+  "docs/public/examples/13-error-demo.es3d": {
+    "es3d": 805,
+    "gzip": 477
+  },
+  "demo/ashby": {
+    "es3d": 12197,
+    "gzip": 2941
+  },
+  "demo/parcel": {
+    "es3d": 13750,
+    "gzip": 2838
+  },
+  "demo/spoke": {
+    "es3d": 3925,
+    "gzip": 1040
+  },
+  "demo/spoke-tour": {
+    "es3d": 4219,
+    "gzip": 1140
+  },
+  "demo/helio": {
+    "es3d": 2361,
+    "gzip": 782
+  }
+}

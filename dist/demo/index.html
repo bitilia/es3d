@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ES3D Demo Sites</title>
+  <meta name="description" content="Four small sites built with the ES3D library: a medieval village, a CAD gift box, a bicycle and a lamp room, each drawn live from one small ES3D file.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23241c16' width='32' height='32'/%3E%3Crect fill='%23e7b4a8' x='8' y='10' width='16' height='12'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://es3d.org/demo/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ES3D">
+<meta property="og:title" content="ES3D Demo Sites">
+<meta property="og:description" content="Four small sites built with the ES3D library: a medieval village, a CAD gift box, a bicycle and a lamp room, each drawn live from one small ES3D file.">
+<meta property="og:url" content="https://es3d.org/demo/">
+<meta property="og:image" content="https://es3d.org/images/demo-ashby.jpg">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="1000">
+<meta property="og:image:alt" content="Ashby: fields, a river and a palisaded medieval village with its church and keep">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://es3d.org/images/demo-ashby.jpg">
+<meta name="twitter:image:alt" content="Ashby: fields, a river and a palisaded medieval village with its church and keep">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://es3d.org/#organization",
+      "name": "ES3D",
+      "url": "https://es3d.org/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/favicon.svg"
+      },
+      "sameAs": [
+        "https://github.com/bitilia/es3d"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://es3d.org/#website",
+      "url": "https://es3d.org/",
+      "name": "ES3D",
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://es3d.org/demo/#webpage",
+      "url": "https://es3d.org/demo/",
+      "name": "ES3D Demo Sites",
+      "description": "Four small sites built with the ES3D library: a medieval village, a CAD gift box, a bicycle and a lamp room, each drawn live from one small ES3D file.",
+      "isPartOf": {
+        "@id": "https://es3d.org/#website"
+      },
+      "publisher": {
+        "@id": "https://es3d.org/#organization"
+      },
+      "inLanguage": "en",
+      "dateModified": "2026-10-15",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/images/demo-ashby.jpg",
+        "width": 1600,
+        "height": 1000
+      },
+      "breadcrumb": {
+        "@id": "https://es3d.org/demo/#breadcrumb"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://es3d.org/demo/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://es3d.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "ES3D Demo Sites",
+          "item": "https://es3d.org/demo/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+  <script type="module" crossorigin src="../assets/demo/index-DvtFMEwY.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-P2Xu9kJm.js">
+  <link rel="modulepreload" crossorigin href="../assets/orbit-controls-BUn7A4nu.js">
+  <link rel="modulepreload" crossorigin href="../assets/stage-C8W367jR.js">
+  <link rel="modulepreload" crossorigin href="../assets/stage-DOB5ywP-.js">
+  <link rel="modulepreload" crossorigin href="../assets/scene-C__i9sY6.js">
+  <link rel="modulepreload" crossorigin href="../assets/scene-CW8VxoY4.js">
+  <link rel="modulepreload" crossorigin href="../assets/scene-B_-xeyEz.js">
+  <link rel="modulepreload" crossorigin href="../assets/scene-CKKD5cBA.js">
+  <link rel="stylesheet" crossorigin href="../assets/stage-D0OQqKG3.css">
+  <link rel="stylesheet" crossorigin href="../assets/index-p5d_djiO.css">
+</head>
+<body>
+  <header><a class="site" href="../">ES3D</a></header>
+  <main>
+  <h1 class="sr-only">Demo Sites</h1>
+  <!-- size lines: recorded in docs/site/sizes.json (npm run sizes), written in by the site plugin -->
+  <a class="band ashby" href="./ashby/">
+    <div class="view">
+      <canvas id="ashby-view" aria-hidden="true"></canvas>
+      <p class="stage-status">Starting the renderer…</p>
+      <pre class="stage-error" hidden></pre>
+    </div>
+    <div class="copy">
+      <p class="kicker">ES3D · 01</p>
+      <h2>Ashby</h2>
+      <p>A medieval village in one file. Scroll, and the camera flies you in through the gate.</p>
+      <span class="size"><span class="filesize"><b>11.9 kB</b> ES3D file <span class="filesize-gzip">· 2.9 kB gzipped</span></span></span>
+      <span class="go">Walk in</span>
+    </div>
+  </a>
+
+  <a class="band parcel" href="./parcel/">
+    <div class="copy">
+      <p class="kicker">ES3D · 02</p>
+      <h2>Parcel</h2>
+      <p>A CAD gift box with a hinged lid, a ribbon, and a bow.</p>
+      <span class="size"><span class="filesize"><b>13.4 kB</b> ES3D file <span class="filesize-gzip">· 2.8 kB gzipped</span></span></span>
+      <span class="go">Open the site</span>
+    </div>
+    <div class="view">
+      <canvas id="parcel-view" aria-hidden="true"></canvas>
+      <p class="stage-status">Starting the renderer…</p>
+      <pre class="stage-error" hidden></pre>
+    </div>
+  </a>
+
+  <a class="band spoke" href="./spoke/">
+    <div class="view">
+      <canvas id="spoke-view" aria-hidden="true"></canvas>
+      <p class="stage-status">Starting the renderer…</p>
+      <pre class="stage-error" hidden></pre>
+    </div>
+    <div class="copy">
+      <p class="kicker">ES3D · 03</p>
+      <h2>Spoke</h2>
+      <p>A bicycle. Eight spokes, two gears, and the frame is one tube per joint.</p>
+      <span class="size"><span class="filesize"><b>3.8 kB</b> ES3D file <span class="filesize-gzip">· 1.0 kB gzipped</span></span></span>
+      <span class="go">See the works</span>
+    </div>
+  </a>
+
+  <a class="band helio" href="./helio/">
+    <div class="view">
+      <canvas id="helio-view" aria-hidden="true"></canvas>
+      <p class="stage-status">Starting the renderer…</p>
+      <pre class="stage-error" hidden></pre>
+    </div>
+    <div class="copy">
+      <p class="kicker">ES3D · 04</p>
+      <h2>Helio</h2>
+      <p>Three lamps on a table. Each shade has a light inside it.</p>
+      <span class="size"><span class="filesize"><b>2.3 kB</b> ES3D file <span class="filesize-gzip">· 782 bytes gzipped</span></span></span>
+      <span class="go">Step inside</span>
+    </div>
+  </a>
+  </main>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!--#include virtual="head.html" -->
+<title>Making the Web 3D - ES3D</title>
+<meta name="description" content="Making the Web 3D: a very brief introduction of the ES3D format from the founder. A 3D scene file you can write by hand, the way people write SVG.">
+<link rel="canonical" href="https://es3d.org/media/making-the-web-3d/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ES3D">
+<meta property="og:title" content="Making the Web 3D">
+<meta property="og:description" content="A very brief introduction of the ES3D format from the founder.">
+<meta property="og:url" content="https://es3d.org/media/making-the-web-3d/">
+<meta property="article:published_time" content="2026-10-15">
+<meta property="article:modified_time" content="<!--#echo var="LAST_MODIFIED" -->">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Making the Web 3D">
+<meta name="twitter:description" content="A very brief introduction of the ES3D format from the founder.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Making the Web 3D",
+  "alternativeHeadline": "A very brief introduction of the format from the founder",
+  "description": "A very brief introduction of the ES3D format from the founder. ES3D does for a 3D scene what SVG does for a drawing.",
+  "inLanguage": "en",
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://es3d.org/images/studio-primitives.jpg",
+    "width": 2000,
+    "height": 1125
+  },
+  "datePublished": "2026-10-15",
+  "dateModified": "<!--#echo var="LAST_MODIFIED" -->",
+  "author": {
+    "@type": "Person",
+    "name": "The founder of ES3D",
+    "jobTitle": "Founder",
+    "affiliation": {
+      "@type": "Organization",
+      "@id": "https://es3d.org/#organization",
+      "name": "ES3D",
+      "url": "https://es3d.org/"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://es3d.org/#organization",
+    "name": "ES3D",
+    "url": "https://es3d.org/"
+  },
+  "mainEntityOfPage": "https://es3d.org/media/making-the-web-3d/",
+  "url": "https://es3d.org/media/making-the-web-3d/",
+  "isAccessibleForFree": true,
+  "about": [
+    { "@type": "SoftwareApplication", "@id": "https://es3d.org/#software", "name": "ES3D", "applicationCategory": "File format", "url": "https://es3d.org/" },
+    "Extensible Scalable 3D",
+    "3D file format",
+    "SVG"
+  ],
+  "keywords": "ES3D, Extensible Scalable 3D, Making the Web 3D, 3D file format, SVG, WebGPU, WebGL2"
+}
+</script>
+</head>
+<body>
+<!--#set var="page" value="media" -->
+<!--#set var="title" value="Making the Web 3D" -->
+<!--#include virtual="top.html" -->
+<article>
+  <h1>Making the Web 3D</h1>
+  <p class="media-by">A very brief introduction of the format from the founder. 15 October 2026.</p>
+
+  <p>For years, 3D file formats have prioritized precision, whether for 3D printing or high-quality renders. But the browser doesn't care about that level of precision. As long as you're within a pixel or so, precision isn't that important. Most websites with 3D models use simple designs, and no file format actually targeted that use case. Many sites literally used a scroll-through video instead.</p>
+
+  <p>I thought: this sounds a lot like what SVG does for 2D. What's stopping us from making it 3D? Turns out: nothing.</p>
+
+  <p>So I sat down and built it.</p>
+
+  <p>ES3D (Extensible Scalable 3D) is a file format for 3D scenes. It does for a scene what SVG does for a drawing. The file describes the objects: a rounded box here, an outline extruded into a solid there, two thousand trees on a hill. The viewer builds the triangles at the detail the screen actually needs. A forest fits in under a kilobyte, and a text editor is enough to write it.</p>
+
+  <p>The main question is: Does it actually work? I believe it does, and here are some <a href="../../#size">benchmarks</a> to prove it.</p>
+
+  <p>Not only that. The <a href="../../demo/">showcase sites</a> are interactive 3D designs made with it. I took the best of SVG and applied it to 3D.</p>
+</article>
+<!--#include virtual="bottom.html" -->
+</body>
+</html>

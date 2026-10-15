@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  20,000 instances in eleven lines. Curved primitives carry four levels of
+  detail that the renderer picks per instance from its projected size, and
+  the <lod> element switches between authored alternatives by distance.
+  Toggle "Auto LOD" and watch the triangle count in the statistics panel.
+-->
+<es3d version="1">
+  <title>LOD stress test: 20,000 objects</title>
+  <environment background="#0d1015" sky="#dbe6f5" ground="#2a2622" intensity="0.6"/>
+  <camera position="60,38,70" target="0,0,0" fov="45"/>
+  <light type="directional" direction="-0.4,-1,-0.6" intensity="1.2"/>
+
+  <defs>
+    <material id="a" color="#4fc3f7" roughness="0.3"/>
+    <material id="b" color="#ffb74d" roughness="0.35"/>
+    <material id="c" color="#81c784" roughness="0.4"/>
+    <material id="d" color="#e57373" roughness="0.3" metallic="0.3"/>
+    <material id="floor" color="#252a33" roughness="0.9"/>
+    <!-- authored levels of detail: detailed / simplified / impostor -->
+    <lod id="tower" distances="25,60">
+      <group>
+        <cylinder radius="0.35" height="2" position="0,1,0"/>
+        <torus radius="0.35" tube="0.08" position="0,0.5,0"/>
+        <torus radius="0.35" tube="0.08" position="0,1.5,0"/>
+        <sphere radius="0.4" position="0,2.2,0"/>
+      </group>
+      <group>
+        <cylinder radius="0.35" height="2" position="0,1,0" segments="8"/>
+        <sphere radius="0.4" position="0,2.2,0" segments="8"/>
+      </group>
+      <box size="0.7,2.6,0.7" position="0,1.3,0"/>
+    </lod>
+  </defs>
+
+  <plane size="230" material="floor"/>
+  <scatter grid="100,100" spacing="2.2,2.2" jitter="0.4" seed="2" randomScale="0.6..1.1" randomMaterial="a,b,c,d">
+    <sphere radius="0.6" position="0,0.6,0"/>
+  </scatter>
+  <scatter count="9000" area="220,220" seed="8" randomScale="0.7..1.3" randomRotation="0,0..360,0" randomMaterial="a,b,c,d">
+    <box size="0.5" radius="0.08" position="0,0.25,0"/>
+  </scatter>
+  <scatter grid="31,31" spacing="7,7" seed="5" randomMaterial="a,b,c,d">
+    <use ref="tower"/>
+  </scatter>
+</es3d>

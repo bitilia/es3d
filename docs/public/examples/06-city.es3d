@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  A city block grid: 3,600 buildings and 3,600 street trees, each a single
+  <scatter> over a 60 x 60 grid with per-instance random height and facade
+  material. Roads are two <repeat> elements. About 7,300 rendered objects are
+  described in under 2 KB; the renderer batches them into a handful of
+  instanced draw calls and switches the trees to coarser levels of detail in
+  the distance.
+-->
+<es3d version="1">
+  <title>City: thousands of instances</title>
+  <environment background="#c5d7e8" sky="#e3eef9" ground="#55524b" intensity="0.75"/>
+  <camera position="150,110,170" target="0,0,0" fov="40"/>
+  <light type="directional" direction="-0.55,-1,-0.25" color="#fff5e6" intensity="1.4"/>
+
+  <defs>
+    <material id="glass1" color="#90a4ae" roughness="0.3" metallic="0.4"/>
+    <material id="glass2" color="#78909c" roughness="0.25" metallic="0.5"/>
+    <material id="brick" color="#a1665e" roughness="0.85"/>
+    <material id="sand" color="#d7c9a8" roughness="0.8"/>
+    <material id="white" color="#e8e6e1" roughness="0.7"/>
+    <material id="asphalt" color="#3b3e44" roughness="0.95"/>
+    <material id="park" color="#5f8f45" roughness="1"/>
+    <material id="leaf" color="#3f8f3a" roughness="0.8"/>
+    <material id="trunk" color="#5d4037" roughness="0.9"/>
+    <group id="street-tree">
+      <cylinder radius="0.12" height="1.2" position="0,0.6,0" material="trunk"/>
+      <sphere radius="0.7" position="0,1.6,0" material="leaf"/>
+    </group>
+  </defs>
+
+  <plane size="372" material="park"/>
+  <repeat count="61" step="translate(6,0,0)">
+    <plane size="1.6,362" position="-180,0.02,0" material="asphalt"/>
+  </repeat>
+  <repeat count="61" step="translate(0,0,6)">
+    <plane size="362,1.6" position="0,0.02,-180" material="asphalt"/>
+  </repeat>
+
+  <scatter grid="60,60" spacing="6,6" seed="9" jitter="0.12" randomScale="1,0.6..7,1" randomMaterial="glass1,glass2,brick,sand,white">
+    <box size="3.4,4,3.4" position="0,2,0"/>
+  </scatter>
+  <scatter grid="60,60" spacing="6,6" seed="4" position="2.35,0,2.35" randomScale="0.7..1.2">
+    <use ref="street-tree"/>
+  </scatter>
+
+  <!-- a few landmarks -->
+  <cylinder radius="5" height="60" position="21,30,-27" material="glass2"/>
+  <cone radius="5" height="8" position="21,64,-27" material="white"/>
+  <capsule radius="4" height="40" position="-45,20,39" material="glass1"/>
+</es3d>

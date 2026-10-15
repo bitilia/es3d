@@ -1,0 +1,17 @@
+{
+  "examples": [
+    { "id": "rotating-cube", "file": "01-rotating-cube.es3d", "title": "1. Rotating cube", "description": "One rounded box, one animation." },
+    { "id": "primitives", "file": "02-primitives.es3d", "title": "2. Primitive test scene", "description": "Every geometry type of ES3D v1." },
+    { "id": "logo", "file": "03-logo.es3d", "title": "3. Extruded SVG-style logo", "description": "Path data extruded with a bevel." },
+    { "id": "forest", "file": "04-forest.es3d", "title": "4. Forest (instancing)", "description": "2,400 objects from two definitions and three scatters." },
+    { "id": "gearbox", "file": "05-gearbox.es3d", "title": "5. Gearbox (procedural)", "description": "Involute gears, springs, repeats and animation." },
+    { "id": "city", "file": "06-city.es3d", "title": "6. City (7,300 objects)", "description": "Grid scatters with random heights and materials." },
+    { "id": "staircases", "file": "07-staircases.es3d", "title": "7. Parametric staircases", "description": "Straight and spiral flights from one step each." },
+    { "id": "materials", "file": "08-materials.es3d", "title": "8. Materials and textures", "description": "Metallic/roughness grid, procedural textures, normal maps." },
+    { "id": "compact", "file": "09-compact-syntax.es3d", "title": "9. Compact syntax", "description": "A desk scene written in ES3D-C." },
+    { "id": "mesh", "file": "10-mesh-escape-hatch.es3d", "title": "10. Mesh escape hatch", "description": "Explicit triangle meshes as reusable definitions." },
+    { "id": "solar", "file": "11-solar-system.es3d", "title": "11. Solar system", "description": "Nested animated transforms and a starfield." },
+    { "id": "lod", "file": "12-lod-stress.es3d", "title": "12. LOD stress test (20,000)", "description": "Automatic and authored levels of detail." },
+    { "id": "errors", "file": "13-error-demo.es3d", "title": "13. Error reporting", "description": "A broken document showing diagnostics." }
+  ]
+}

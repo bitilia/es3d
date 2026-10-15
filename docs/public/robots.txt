@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://es3d.org/sitemap.xml

@@ -1,0 +1,772 @@
+/* Styles for the ES3D Modeller, on top of app.css (shared with Studio). */
+
+.layout.modeller {
+  grid-template-columns: minmax(300px, 28%) minmax(240px, 1fr) 340px;
+}
+
+.points-pane {
+  display: grid;
+  grid-template-rows: minmax(160px, 1.2fr) minmax(140px, 1fr);
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+}
+
+.modeller-side {
+  grid-template-rows: auto minmax(110px, 0.8fr) minmax(180px, 1.4fr);
+  grid-template-columns: minmax(0, 1fr);
+  border-left: 1px solid var(--line);
+}
+
+.points-pane {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.layout.modeller .panel {
+  min-width: 0;
+}
+
+.title-input {
+  font: inherit;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 3px 8px;
+  width: 220px;
+}
+
+.title-input:hover,
+.title-input:focus {
+  border-color: var(--line);
+  background: var(--bg3);
+  outline: none;
+}
+
+button.primary {
+  background: #17394a;
+  border-color: #2b6a86;
+  color: #e1f5fe;
+}
+
+button.primary:hover:not(:disabled) {
+  background: #1d4a60;
+  border-color: var(--accent);
+}
+
+.count {
+  color: var(--faint);
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.note {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.note.error {
+  color: var(--error);
+}
+
+.empty {
+  color: var(--faint);
+  font-size: 12px;
+  margin: 6px 2px;
+}
+
+/* adding points */
+.add-point {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px 4px;
+}
+
+.add-point label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+input[type='number'],
+.paint-edit input[type='text'] {
+  font: 12px var(--mono);
+  color: var(--text);
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 3px 6px;
+  min-width: 0;
+}
+
+input[type='number']:focus,
+.paint-edit input[type='text']:focus,
+.paste textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.add-point input {
+  width: 64px;
+}
+
+.paste {
+  padding: 2px 10px 6px;
+  font-size: 12px;
+}
+
+.paste summary {
+  cursor: pointer;
+  color: var(--muted);
+  user-select: none;
+}
+
+.paste textarea {
+  display: block;
+  width: 100%;
+  margin: 6px 0;
+  font: 12px var(--mono);
+  color: var(--text);
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px;
+  resize: vertical;
+}
+
+.paste .row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.layout.modeller .panel h2 > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.points-panel .panel-body,
+.planes-panel .panel-body {
+  border-top: 1px solid var(--line);
+}
+
+/* the points table */
+.points-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.points-table th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--faint);
+  padding: 2px 3px;
+}
+
+.points-table td {
+  padding: 1px 3px;
+}
+
+.points-table input {
+  width: 100%;
+  max-width: 86px;
+}
+
+.points-table tr.sel td {
+  background: rgba(255, 183, 77, 0.1);
+}
+
+.points-table tr.drag td {
+  background: rgba(79, 195, 247, 0.12);
+}
+
+.pick {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  font: 11px var(--mono);
+  color: var(--faint);
+}
+
+tr.sel .pick {
+  background: var(--accent2);
+  border-color: var(--accent2);
+  color: #1a1206;
+  font-weight: 700;
+}
+
+.point-name {
+  font-family: var(--mono);
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.point-name .unused {
+  color: var(--faint);
+  margin-left: 4px;
+}
+
+button.icon {
+  border: none;
+  background: none;
+  color: var(--faint);
+  padding: 2px 6px;
+}
+
+button.icon:hover {
+  color: var(--error);
+  background: none;
+}
+
+/* planes */
+.make-plane {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+}
+
+.planes-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.planes-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 4px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.planes-list li:hover {
+  background: var(--bg3);
+}
+
+.planes-list li.sel {
+  background: rgba(79, 195, 247, 0.14);
+  box-shadow: inset 2px 0 var(--accent);
+}
+
+.planes-list .swatch {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.planes-list .name {
+  white-space: nowrap;
+}
+
+.planes-list .ids {
+  flex: 1;
+  min-width: 0;
+  color: var(--faint);
+  font-family: var(--mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.planes-list .warn {
+  color: var(--warning);
+}
+
+/* viewport */
+.viewport-wrap #viewport {
+  cursor: default;
+}
+
+.viewport-wrap.painting #viewport {
+  cursor: crosshair;
+}
+
+.segmented {
+  display: inline-flex;
+}
+
+.segmented button {
+  border-radius: 0;
+  padding: 2px 10px;
+  font-size: 12px;
+}
+
+.segmented button:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.segmented button:last-child {
+  border-radius: 0 6px 6px 0;
+  border-left: none;
+}
+
+.segmented button.on {
+  background: #17394a;
+  border-color: #2b6a86;
+  color: #e1f5fe;
+}
+
+.labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: move;
+  user-select: none;
+  will-change: transform;
+}
+
+.handle .dot {
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.handle:hover .dot {
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.handle .text {
+  margin-top: -16px;
+  font: 11px/1 var(--mono);
+  color: #e6edf5;
+  text-shadow: 0 0 3px #000, 0 0 2px #000;
+  white-space: nowrap;
+}
+
+.labels.no-text .handle .text {
+  display: none;
+}
+
+.handle.hidden {
+  opacity: 0.3;
+}
+
+.handle.sel .dot {
+  border-color: var(--accent2);
+}
+
+.handle.sel .text {
+  color: var(--accent2);
+  font-weight: 700;
+}
+
+.empty-hint {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(420px, calc(100% - 32px));
+  padding: 14px 18px;
+  background: rgba(15, 18, 24, 0.86);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.empty-hint p {
+  margin: 0 0 8px;
+}
+
+.empty-hint p:last-child {
+  margin: 0;
+}
+
+.empty-hint strong,
+.empty-hint em {
+  color: var(--text);
+  font-style: normal;
+}
+
+.empty-hint[hidden] {
+  display: none;
+}
+
+/* paints */
+.palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  gap: 6px;
+}
+
+.paint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 2px;
+  border: 1px solid transparent;
+  background: none;
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--muted);
+  overflow: hidden;
+}
+
+.paint .chip {
+  width: 30px;
+  height: 22px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.paint .label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.paint.on {
+  border-color: var(--accent);
+  background: var(--bg3);
+  color: var(--text);
+}
+
+.paint-edit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.paint-edit label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.paint-edit input[type='text'] {
+  width: 110px;
+}
+
+.paint-edit input[type='color'] {
+  width: 34px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: none;
+}
+
+/* elements */
+.elements-tree,
+.elements-tree ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.elements-tree ul {
+  padding-left: 14px;
+  border-left: 1px solid var(--line);
+  margin-left: 7px;
+}
+
+.el-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.el-row:hover {
+  background: var(--bg3);
+}
+
+.el-row.sel {
+  background: rgba(79, 195, 247, 0.14);
+  box-shadow: inset 2px 0 var(--accent);
+}
+
+.el-row .icon-glyph {
+  width: 14px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.el-row .tag-name {
+  font-family: var(--mono);
+  color: #82aaff;
+}
+
+.el-row .who {
+  color: var(--text);
+}
+
+.el-row .what {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--faint);
+  font-family: var(--mono);
+}
+
+.el-row .err {
+  color: var(--error);
+}
+
+.el-row .warn {
+  color: var(--warning);
+}
+
+.add-menu {
+  min-width: 300px;
+  max-height: 70vh;
+  overflow: auto;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 400;
+}
+
+.add-menu .menu-group {
+  padding: 6px 10px 2px;
+  font-size: 11px;
+  color: var(--faint);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.add-menu button {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  white-space: normal;
+}
+
+.add-menu button b {
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.add-menu button span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* inspector and source tabs */
+.tabs-panel {
+  border-bottom: none;
+}
+
+.tabs .tab {
+  border: none;
+  background: none;
+  padding: 0 10px 0 0;
+  font: inherit;
+  color: var(--faint);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.tabs .tab.on {
+  color: var(--text);
+}
+
+.inspector[hidden] {
+  display: none;
+}
+
+.insp-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.insp-head strong {
+  font-family: var(--mono);
+  color: #82aaff;
+}
+
+.insp-actions {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.insp-diag {
+  font-size: 12px;
+  padding: 4px 8px;
+  margin: 4px 0;
+  border-radius: 5px;
+  border-left: 3px solid var(--warning);
+  background: rgba(255, 204, 102, 0.08);
+}
+
+.insp-diag.error {
+  border-left-color: var(--error);
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.insp-text {
+  width: 100%;
+  font: 12px var(--sans);
+  color: var(--text);
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px;
+  margin: 4px 0 8px;
+}
+
+.insp-rows {
+  display: grid;
+  gap: 3px;
+}
+
+.insp-row {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.insp-name {
+  font-family: var(--mono);
+  color: var(--faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.insp-row.set .insp-name {
+  color: #c792ea;
+}
+
+.insp-name b {
+  color: var(--warning);
+  margin-left: 2px;
+}
+
+.insp-row input[type='text'],
+.insp-row select {
+  width: 100%;
+  min-width: 0;
+  font: 12px var(--mono);
+  padding: 2px 6px;
+}
+
+.insp-row input[type='text']::placeholder {
+  color: var(--faint);
+}
+
+.colour-field {
+  display: flex;
+  gap: 4px;
+  min-width: 0;
+}
+
+.colour-field input[type='color'] {
+  flex: none;
+  width: 28px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: none;
+}
+
+.handle.object .dot {
+  border-radius: 2px;
+  transform: rotate(45deg) scale(0.8);
+  background: rgba(79, 195, 247, 0.35);
+  border-color: var(--accent);
+}
+
+.handle.object .text {
+  color: var(--accent);
+}
+
+/* source */
+
+.source[hidden] {
+  display: none;
+}
+
+.source {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  overflow: auto;
+  padding: 8px 10px;
+  font: 11.5px/1.5 var(--mono);
+  color: var(--text);
+  white-space: pre;
+  tab-size: 2;
+}
+
+.toast-warning {
+  border-left-color: var(--warning);
+}
+
+/* small screens: the viewport first, then the lists */
+@media (max-width: 900px) {
+  .layout.modeller {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .points-pane,
+  .modeller-side {
+    display: flex;
+    flex-direction: column;
+    border: none;
+  }
+
+  .points-pane .panel-body {
+    max-height: 45vh;
+  }
+
+  .source {
+    max-height: 50vh;
+  }
+
+  .title-input {
+    width: 160px;
+  }
+}
+
+.hud:empty {
+  display: none;
+}

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!--#include virtual="head.html" -->
+<title>ES3D</title>
+<meta name="description" content="ES3D (Extensible Scalable 3D) is a file format for 3D scenes you can write by hand, with a free converter, a browser editor and a WebGPU/WebGL2 renderer.">
+<link rel="canonical" href="https://es3d.org/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://es3d.org/#organization",
+      "name": "ES3D",
+      "url": "https://es3d.org/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/favicon.svg"
+      },
+      "sameAs": "https://github.com/bitilia/es3d"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://es3d.org/#website",
+      "url": "https://es3d.org/",
+      "name": "ES3D",
+      "alternateName": "Extensible Scalable 3D",
+      "description": "ES3D (Extensible Scalable 3D) is a file format for 3D scenes you can write by hand, with a free converter, a browser editor and a WebGPU/WebGL2 renderer.",
+      "publisher": { "@id": "https://es3d.org/#organization" },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://es3d.org/#webpage",
+      "url": "https://es3d.org/",
+      "name": "ES3D",
+      "description": "ES3D (Extensible Scalable 3D) is a file format for 3D scenes you can write by hand, with a free converter, a browser editor and a WebGPU/WebGL2 renderer.",
+      "isPartOf": { "@id": "https://es3d.org/#website" },
+      "dateModified": "<!--#echo var="LAST_MODIFIED" -->",
+      "about": { "@id": "https://es3d.org/#software" },
+      "publisher": { "@id": "https://es3d.org/#organization" },
+      "inLanguage": "en"
+    },
+    {
+      "@type": ["SoftwareApplication", "SoftwareSourceCode"],
+      "@id": "https://es3d.org/#software",
+      "name": "ES3D",
+      "alternateName": "Extensible Scalable 3D",
+      "applicationCategory": "File format",
+      "operatingSystem": "Web",
+      "description": "A file format for 3D scenes you can write by hand, the way people write SVG. The viewer builds the triangles. A free converter, a browser editor, and a WebGPU and WebGL2 renderer.",
+      "url": "https://es3d.org/",
+      "softwareVersion": "<!--#echo var="VERSION" -->",
+      "license": "https://www.apache.org/licenses/LICENSE-2.0",
+      "codeRepository": "https://github.com/bitilia/es3d",
+      "programmingLanguage": "JavaScript",
+      "runtimePlatform": ["WebGPU", "WebGL2"],
+      "featureList": [
+        "Hand-written 3D scenes",
+        "Converter for SVG, OBJ, STL, STEP and glTF",
+        "Browser editor",
+        "WebGPU and WebGL2 renderer"
+      ],
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": { "@id": "https://es3d.org/#organization" },
+      "publisher": { "@id": "https://es3d.org/#organization" }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<!--#set var="page" value="home" -->
+<!--#set var="title" value="Home" -->
+<!--#include virtual="top.html" -->
+
+<div class="logo3d" id="logo3d"><img class="logo-still" src="favicon.svg" alt="ES3D" width="304" height="96" fetchpriority="high"></div>
+<p class="center small muted">The logo above is drawn live by <span id="logo-backend">the ES3D renderer</span> from the file <a href="#logo-file">printed further down</a>. It holds still under the pointer. Drag to turn it.<br>
+The logo: <!--#filesize of="docs/public/es3d-logo.es3d" --><br>
+Triangles drawn so far: <span class="counter" id="tri-counter"><b>0</b><b>0</b><b>0</b><b>0</b><b>0</b><b>0</b><b>0</b><b>0</b><b>0</b><b>0</b></span></p>
+
+<p class="callout">The <a href="convert/">converter</a> turns SVG, OBJ, STL, STEP and glTF into ES3D in the browser. <a href="studio/">ES3D Studio</a> shows the scene as you type.</p>
+
+<h1>A 3D scene you can read</h1>
+
+<p><b>ES3D</b> (Extensible Scalable 3D) is a file format for 3D scenes. It does for a scene what SVG does for a drawing. The file describes the objects. A rounded box here. An outline extruded into a solid there. Two thousand trees on a hill. The viewer builds the triangles, at the detail the screen actually needs. A forest fits in under a kilobyte, and a text editor is enough to write it.</p>
+
+<p>You can try that here without installing a plugin. There is a converter for files you already have, an editor that runs in the browser, and the specification.</p>
+
+<h2>What can I do here?</h2>
+<ul>
+  <li><a href="convert/"><b>Convert a file</b></a>. SVG, OBJ, STL, STEP or glTF to ES3D, and ES3D back to glTF, OBJ, STL or STEP. The work happens in your browser. Nothing is uploaded.</li>
+  <li><a href="studio/"><b>Open ES3D Studio</b></a>. Write on the left, watch the scene on the right, as you type.</li>
+  <li><a href="modeller/"><b>Model something low-poly</b></a>. Type points in 3D, join them into flat planes and paint each one. The ES3D Modeller saves the model as polygons.</li>
+  <li><a href="examples/"><b>Look at the examples</b></a>. Thirteen scenes, from a rotating cube to a city of 7,300 buildings.</li>
+  <li><a href="demo/"><b>Open the Demo Sites</b></a>. Ashby, Parcel, Spoke and Helio are small sites built with the library. Each one shows the size of its file.</li>
+  <li><a href="spec/"><b>Read the specification</b></a> and the <a href="reference/">element reference</a>. <a href="media/">Papers and posts</a> include <a href="media/why-es3d-came-to-be/">Why ES3D came to be</a> and <a href="media/making-the-web-3d/">Making the Web 3D</a>, both from the founder.</li>
+  <li><a href="download/"><b>Get the code</b></a>. A JavaScript library, a command-line tool and the source, under the Apache License 2.0.</li>
+</ul>
+
+<h2>A tiny example</h2>
+<div class="two-col">
+<div>
+<pre><code>&lt;es3d version="1"&gt;
+  &lt;defs&gt;
+    &lt;group id="tree"&gt;
+      &lt;cylinder radius="0.15" height="1.2"
+        position="0,0.6,0" color="#6d4c41"/&gt;
+      &lt;cone radius="1" height="2.4"
+        position="0,2.4,0" color="#2e7d32"/&gt;
+    &lt;/group&gt;
+  &lt;/defs&gt;
+  &lt;scatter count="2000" radius="60"
+           seed="7" randomScale="0.7..1.3"
+           randomRotation="0,0..360,0"&gt;
+    &lt;use ref="tree"/&gt;
+  &lt;/scatter&gt;
+&lt;/es3d&gt;</code></pre>
+</div>
+<div>
+<p>That is 2,000 trees. The trunk and the cone are defined once. <code>&lt;scatter&gt;</code> places the copies with a seeded generator, so every viewer puts every tree in the same spot.</p>
+<p>About 400 bytes. The same forest as OBJ is tens of megabytes, because OBJ has to list every triangle of every tree.</p>
+<p>The renderer turns each shape into triangles at four levels of detail, then draws the copies with a handful of instanced calls.</p>
+<p><a class="button" href="studio/?example=forest">Open a forest like this in ES3D Studio</a></p>
+</div>
+</div>
+
+<h2 id="size">Does it actually save space?</h2>
+<p>Measured with <code>npm run bench</code>. Each format holds the same triangles. Sizes are gzip-compressed.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Scene</th><th class="num">Triangles</th><th class="num">ES3D</th><th class="num">glTF (GLB)</th><th class="num">OBJ</th></tr></thead>
+<tbody>
+<tr><td>Primitive test scene</td><td class="num">44,936</td><td class="num">1.2 kB</td><td class="num">654 kB</td><td class="num">653 kB</td></tr>
+<tr><td>Forest (7,401 instances)</td><td class="num">1.94 M</td><td class="num">0.6 kB</td><td class="num">187 kB</td><td class="num">24 MB</td></tr>
+<tr><td>City (10,926 instances)</td><td class="num">8.7 M</td><td class="num">0.7 kB</td><td class="num">174 kB</td><td class="num">not written</td></tr>
+<tr><td>Scanned mesh (no structure)</td><td class="num">81,920</td><td class="num">704 kB</td><td class="num">744 kB *</td><td class="num">1.31 MB</td></tr>
+</tbody>
+</table></div>
+<p class="small">* quantized glTF. ES3D is smallest when a scene is built from shapes, paths and repetition. A scan is stored as a mesh, so it lands near the size of glTF.</p>
+
+<h2 id="speed">How fast does it draw?</h2>
+<p>Median frame time, in milliseconds, while the camera orbits. three.js loads the glTF the way most pages do. Every device drew the same 960×540 picture.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr><th rowspan="2" style="vertical-align:bottom">Scene</th><th class="num">PC build</th><th class="num">Phone</th><th class="num">Phone</th></tr>
+<tr><th class="num">RTX 5060 Ti</th><th class="num">Galaxy S25+<br>Adreno 830</th><th class="num">moto g54 5G<br>PowerVR</th></tr>
+</thead>
+<tbody>
+<tr><td>Forest, ES3D</td><td class="num">1.36</td><td class="num">4.96</td><td class="num">12.6</td></tr>
+<tr><td>Forest, three.js</td><td class="num">8.18</td><td class="num">68.0</td><td class="num">50.7</td></tr>
+<tr><td>City, ES3D</td><td class="num">0.71</td><td class="num">9.28</td><td class="num">11.8</td></tr>
+<tr><td>City, three.js</td><td class="num">10.1</td><td class="num">68.2</td><td class="num">55.5</td></tr>
+</tbody>
+</table></div>
+<p class="small">WebGL2, Chrome. A scan has no shapes to simplify: on the PC, ES3D took 24.4 ms to become ready and instanced glTF in three.js took 9.70 ms. <a href="benchmark-devices/">Full tables</a>.</p>
+
+<h2 id="logo-file">The logo file</h2>
+<p>This is the whole file behind the spinning logo (<a href="studio/?file=es3d-logo.es3d">open it in ES3D Studio</a>). <!--#filesize of="docs/public/es3d-logo.es3d" --></p>
+<pre id="logo-source"><!--#include file="docs/public/es3d-logo.es3d" escape --></pre>
+
+<h2>One minute, if you want the source</h2>
+<pre class="terminal">git clone https://github.com/bitilia/es3d.git
+cd es3d
+npm install
+npm run dev        # this site, ES3D Studio and the converter, at http://localhost:5173</pre>
+<p>More on the <a href="download/">download page</a>. If you only want to look, you already are.</p>
+
+<!--#include virtual="bottom.html" -->
+<script type="module" src="./site/home.js"></script>
+</body>
+</html>

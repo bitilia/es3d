@@ -1,0 +1,32 @@
+# Tests and a production build on every push and pull request.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # the maintained Node.js lines: 22 (maintenance) and 24 (active)
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      # the file sizes the site quotes are recorded in docs/site/sizes.json;
+      # fail if a scene changed and they were not re-measured (npm run sizes)
+      - run: npm run sizes -- --check
+      - run: npm run build
+      # packs the package like npm publish would and bundles the entry from it,
+      # which fails if a file the package needs is missing from "files"
+      - run: npm run pack:check

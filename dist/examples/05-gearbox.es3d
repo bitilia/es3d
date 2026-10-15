@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  A procedural mechanism. Each gear is ~10 parameters (teeth, module, pressure
+  angle...) instead of ~10,000 triangles; the involute tooth profile is
+  generated, then extruded with a bevel. The gear ratios are expressed by the
+  animation durations: 24 : 12 : 36 teeth turn at 1 : -2 : -2/3.
+  Bolt circles and corner bolts use <repeat>, springs are swept along a helix.
+-->
+<es3d version="1">
+  <title>Gearbox</title>
+  <environment background="#101318" sky="#d4e2f4" ground="#30291f" intensity="0.55"/>
+  <camera position="1.2,2.6,9.5" target="-0.4,0,0" fov="42"/>
+  <light type="directional" direction="-0.3,-0.6,-1" intensity="1.2"/>
+  <light type="point" position="4,3,4" color="#ffe0b2" intensity="12"/>
+  <light type="spot" position="-4,4,5" direction="0.6,-0.6,-0.8" angle="50" penumbra="0.4" color="#b3e5fc" intensity="30"/>
+
+  <defs>
+    <material id="brass" color="#d4a537" metallic="1" roughness="0.32"/>
+    <material id="steel" color="#b6c2cc" metallic="1" roughness="0.25"/>
+    <material id="dark" color="#2f3a45" roughness="0.6"/>
+    <material id="copper" color="#c8733a" metallic="1" roughness="0.35"/>
+    <material id="rubber" color="#1c1c1c" roughness="0.9"/>
+
+    <group id="bolt">
+      <cylinder radius="0.12" height="0.08" segments="6" rotation="90,0,0" position="0,0,0.04" material="steel"/>
+      <cylinder radius="0.05" height="0.3" rotation="90,0,0" position="0,0,-0.1" material="steel"/>
+    </group>
+    <group id="shaft">
+      <cylinder radius="0.12" height="1.2" rotation="90,0,0" material="steel"/>
+      <cylinder radius="0.2" height="0.12" rotation="90,0,0" position="0,0,0.32" material="dark"/>
+    </group>
+  </defs>
+
+  <!-- housing -->
+  <box size="7.6,4.6,0.3" radius="0.08" position="-0.8,0,-0.45" material="dark"/>
+  <repeat count="2" step="translate(6.8,0,0)">
+    <repeat count="2" step="translate(0,3.8,0)">
+      <use ref="bolt" position="-4.2,-1.9,-0.3"/>
+    </repeat>
+  </repeat>
+
+  <!-- gear A: 24 teeth, module 0.1 (pitch radius 1.2) -->
+  <group>
+    <animate attr="rotation" from="0,0,0" to="0,0,360" dur="12s"/>
+    <gear teeth="24" module="0.1" depth="0.3" bore="0.12" bevel="0.02" material="brass"/>
+    <repeat count="6" step="rotateZ(60)">
+      <cylinder radius="0.07" height="0.36" segments="6" position="0.6,0,0" rotation="90,0,0" material="steel"/>
+    </repeat>
+  </group>
+  <use ref="shaft"/>
+
+  <!-- gear B: 12 teeth, offset by half a tooth so the teeth interlock -->
+  <group position="1.8,0,0">
+    <animate attr="rotation" from="0,0,15" to="0,0,-705" dur="12s"/>
+    <gear teeth="12" module="0.1" depth="0.3" bore="0.12" bevel="0.02" material="copper"/>
+  </group>
+  <use ref="shaft" position="1.8,0,0"/>
+
+  <!-- gear C: 36 teeth, five hub bosses and a crank handle -->
+  <group position="-3,0,0">
+    <animate attr="rotation" from="0,0,5" to="0,0,-235" dur="12s"/>
+    <gear teeth="36" module="0.1" depth="0.24" bore="0.12" bevel="0.015" material="brass"/>
+    <repeat count="5" step="rotateZ(72)">
+      <cylinder radius="0.22" height="0.26" position="0.95,0,0" rotation="90,0,0" material="dark"/>
+    </repeat>
+    <!-- crank handle: a lathed knob on an arm -->
+    <box size="1,0.16,0.1" position="0.5,0,0.25" material="steel"/>
+    <revolve d="M0,0 L0.09,0 C0.14,0.08 0.14,0.22 0.08,0.3 C0.1,0.36 0.08,0.42 0,0.44" position="1,0,0.3" rotation="90,0,0" material="rubber"/>
+  </group>
+  <use ref="shaft" position="-3,0,0"/>
+
+  <!-- suspension springs: circles swept along helices -->
+  <repeat count="3" step="translate(2.4,0,0)">
+    <sweep radius="0.045" along="helix(0.22,0.11,9)" position="-3.2,-3.25,-0.45" material="steel"/>
+    <cylinder radius="0.32" height="0.08" position="-3.2,-3.29,-0.45" material="dark"/>
+  </repeat>
+  <box size="7.2,0.1,0.8" position="-0.8,-3.35,-0.45" material="dark"/>
+</es3d>
