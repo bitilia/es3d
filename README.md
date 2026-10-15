@@ -210,3 +210,7 @@ The renderer uses WebGPU where `navigator.gpu` is available and falls back to We
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE).
+
+## Generative AI Use Disclaimer
+
+Generative AI was used throughout this project including documentation. 
