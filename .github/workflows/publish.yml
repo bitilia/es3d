@@ -1,4 +1,5 @@
-# Publishes the npm package when a GitHub release is published.
+# Stages the npm package when a GitHub release is published.
+# A maintainer approves it with 2FA before it goes live.
 # Trusted publishing (OpenID Connect): no npm token is stored in GitHub.
 name: Publish to npm
 
@@ -22,11 +23,11 @@ jobs:
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
-      # trusted publishing needs npm 11.5.1 or newer; pinned to that major
+      # staged publishing needs npm 11.15.0 or newer; pinned to that major
       # so a new npm major cannot change a release without a review
-      - run: npm install -g npm@^11.5.1
+      - run: npm install -g npm@^11.15.0
       - run: npm ci
       - run: npm test
       - run: npm run stage:prepare
-      - run: npm publish --access public
+      - run: npm stage publish
         working-directory: staging/package
