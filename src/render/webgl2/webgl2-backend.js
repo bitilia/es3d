@@ -70,6 +70,7 @@ export class WebGL2Backend {
     this.overlayUbos = new Map();
     this.gpuBytes = 0;
     this.lost = false;
+    this.resourceEpoch = 0;
     this.info = '';
   }
 
@@ -84,7 +85,48 @@ export class WebGL2Backend {
     });
     if (!gl) throw new Error('WebGL2 is not available in this browser.');
     this.gl = gl;
-    // colours are written already encoded as sRGB; say so, so wide-gamut screens do not stretch them
+    if (gl.isContextLost()) {
+      const ext = gl.getExtension('WEBGL_lose_context');
+      if (!ext) throw new Error('WebGL2 context is lost.');
+      await new Promise((resolve, reject) => {
+        const done = (err) => {
+          this.canvas.removeEventListener('webglcontextrestored', ok);
+          this.canvas.removeEventListener('webglcontextlost', fail);
+          if (err) reject(err);
+          else resolve();
+        };
+        const ok = () => done();
+        const fail = () => done(new Error('WebGL2 context is lost.'));
+        this.canvas.addEventListener('webglcontextrestored', ok);
+        this.canvas.addEventListener('webglcontextlost', fail);
+        try {
+          ext.restoreContext();
+        } catch (e) {
+          done(e);
+        }
+      });
+      if (gl.isContextLost()) throw new Error('WebGL2 context is lost.');
+    }
+    this._onLost = (e) => {
+      e.preventDefault();
+      this.lost = true;
+    };
+    this._onRestored = () => {
+      try {
+        this.rebuildResources();
+        this.lost = false;
+        this.resourceEpoch++;
+      } catch {
+        this.lost = true;
+      }
+    };
+    this.canvas.addEventListener('webglcontextlost', this._onLost);
+    this.canvas.addEventListener('webglcontextrestored', this._onRestored);
+    this.rebuildResources();
+  }
+
+  rebuildResources() {
+    const gl = this.gl;
     if ('drawingBufferColorSpace' in gl) gl.drawingBufferColorSpace = 'srgb';
     const granted = gl.getParameter(gl.SAMPLES) || 0;
     this.direct = granted >= MSAA_SAMPLES;
@@ -99,17 +141,23 @@ export class WebGL2Backend {
       // that is copied to the canvas (a single-sample copy may convert formats).
       this.resolveFbo = gl.createFramebuffer();
       this.resolveRb = gl.createRenderbuffer();
+    } else {
+      this.fbo = this.colorRb = this.depthRb = this.resolveFbo = this.resolveRb = null;
     }
     this.targetSize = [0, 0];
-    this.canvas.addEventListener('webglcontextlost', (e) => {
-      e.preventDefault();
-      this.lost = true;
-    });
     const dbg = gl.getExtension('WEBGL_debug_renderer_info');
     this.info = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
     this.aniso = gl.getExtension('EXT_texture_filter_anisotropic');
 
+    this.poolGeneration = -1;
+    this.vertexCapacity = 0;
+    this.indexCapacity = 0;
+    this.instanceCapacity = 0;
+    this.materialUbos = new Map();
+    this.overlayUbos = new Map();
     this.meshPrograms = new Map();
+    this.gpuBytes = 0;
+
     this.lineProgram = program(gl, LINE_VS, LINE_FS, 'line');
     this.normalProgram = program(gl, NORMAL_VS, LINE_FS, 'normals');
 
@@ -508,6 +556,10 @@ export class WebGL2Backend {
   dispose() {
     const gl = this.gl;
     if (!gl) return;
+    if (this._onLost) this.canvas.removeEventListener('webglcontextlost', this._onLost);
+    if (this._onRestored) this.canvas.removeEventListener('webglcontextrestored', this._onRestored);
+    this._onLost = this._onRestored = null;
+    if (gl.isContextLost()) return;
     gl.deleteBuffer(this.vertexBuffer);
     gl.deleteBuffer(this.indexBuffer);
     gl.deleteBuffer(this.instanceBuffer);
@@ -518,6 +570,10 @@ export class WebGL2Backend {
     }
     for (const u of this.overlayUbos.values()) gl.deleteBuffer(u);
     for (const p of this.meshPrograms.values()) gl.deleteProgram(p);
+    if (this.lineProgram) gl.deleteProgram(this.lineProgram);
+    if (this.normalProgram) gl.deleteProgram(this.normalProgram);
+    if (this.whiteTex) gl.deleteTexture(this.whiteTex);
+    if (this.flatNormalTex) gl.deleteTexture(this.flatNormalTex);
     gl.deleteVertexArray(this.vao);
     if (!this.direct) {
       gl.deleteFramebuffer(this.fbo);
@@ -526,7 +582,5 @@ export class WebGL2Backend {
       gl.deleteFramebuffer(this.resolveFbo);
       gl.deleteRenderbuffer(this.resolveRb);
     }
-    const ext = gl.getExtension('WEBGL_lose_context');
-    if (ext) ext.loseContext();
   }
 }

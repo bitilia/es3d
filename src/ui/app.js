@@ -111,6 +111,8 @@ export class App {
     }
     if (this.renderer.canvas) canvas = this.renderer.canvas;
     this.canvas = canvas;
+    this.seenDpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.gpuEpoch = this.renderer.backend.resourceEpoch || 0;
     const label = this.renderer.kind === 'webgpu' ? 'WebGPU' : 'WebGL2';
     $('#backend-label').textContent = label;
     $('#backend-label').title = `${label}: ${this.renderer.info}${this.renderer.fallbackReason ? `\nWebGPU unavailable: ${this.renderer.fallbackReason}` : ''}`;
@@ -757,6 +759,18 @@ export class App {
     if (c && c.scene && c.scene.animation.time && this.playing) {
       this.time += dt;
       this.updateAnimation();
+    }
+    if (this.renderer) {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      if (this.seenDpr !== dpr) {
+        this.seenDpr = dpr;
+        this.dirty = true;
+      }
+      const epoch = this.renderer.backend.resourceEpoch || 0;
+      if (this.gpuEpoch !== epoch) {
+        this.gpuEpoch = epoch;
+        this.dirty = true;
+      }
     }
     if (this.renderer && (this.dirty || this.params.has('continuous')) && !(this.holdUntil && t < this.holdUntil)) {
       this.dirty = false;

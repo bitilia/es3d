@@ -74,8 +74,8 @@ export async function createStage(canvas, opts = {}) {
   const persist = persistGeometry(opts.geometryStore === false ? null : opts.geometryStore || openGeometryStore());
   const renderer = await createRenderer(canvas, { backend: opts.backend });
   renderer.options.tessellationBudget = PROGRESSIVE_BUDGET_MS;
-  const parent = canvas.parentElement;
   const target = renderer.canvas || canvas;
+  const parent = target.parentElement;
   target.style.display = 'block';
   const camera = new Camera();
   const controls = new OrbitControls(target, camera);
@@ -97,6 +97,8 @@ export async function createStage(canvas, opts = {}) {
     sceneProgress: NaN,
     width: 0,
     height: 0,
+    dpr: renderer.pixelRatio(typeof devicePixelRatio === 'number' ? devicePixelRatio : 1),
+    gpuEpoch: renderer.backend.resourceEpoch || 0,
     timeline: null,
     generation: 0, // bumps on show(), to cancel stale idle work
     holdUntil: 0, // no drawing before this time: a new document's stored meshes are on their way
@@ -340,6 +342,16 @@ export async function createStage(canvas, opts = {}) {
       state.dirty = true;
     }
     if (cameraMoved()) state.dirty = true;
+    const dpr = renderer.pixelRatio(typeof devicePixelRatio === 'number' ? devicePixelRatio : 1);
+    if (dpr !== state.dpr) {
+      state.dpr = dpr;
+      state.dirty = true;
+    }
+    const epoch = renderer.backend.resourceEpoch || 0;
+    if (epoch !== state.gpuEpoch) {
+      state.gpuEpoch = epoch;
+      state.dirty = true;
+    }
     if (!state.dirty || (state.holdUntil && now < state.holdUntil)) return;
     state.dirty = false;
     renderer.render(camera, { ...view(), time: state.time });

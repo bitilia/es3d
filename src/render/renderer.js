@@ -78,6 +78,7 @@ export class Renderer {
     this.lastDraw = null;
     this.lightInfo = { truncated: 0, usedDefaults: false };
     this.stats = { cpuMs: 0, uploadBytes: 0, totalUploadBytes: 0, drawCalls: 0, triangles: 0, visible: 0, instances: 0 };
+    this.gpuEpoch = 0;
   }
 
   get info() {
@@ -147,6 +148,11 @@ export class Renderer {
       viewportHeight: h,
     });
     const uploaded = this.backend.syncPool(this.pool);
+    const epoch = this.backend.resourceEpoch || 0;
+    if (epoch !== this.gpuEpoch) {
+      this.gpuEpoch = epoch;
+      for (const entry of this.textures.entries.values()) entry.gpu = null;
+    }
     this.backend.render(draw, this.frameData, {
       background: env.background,
       textures: this.textures,
@@ -222,6 +228,7 @@ export class Renderer {
 export async function createRenderer(canvas, opts = {}) {
   const want = opts.backend || 'auto';
   const errors = [];
+  let canvasUsed = false;
   if ((want === 'auto' || want === 'webgpu') && typeof navigator !== 'undefined' && navigator.gpu) {
     const b = new WebGPUBackend(canvas, { present: opts.present });
     try {
@@ -229,6 +236,8 @@ export async function createRenderer(canvas, opts = {}) {
       return new Renderer(b);
     } catch (e) {
       errors.push(e.message);
+      canvasUsed = !!b.canvasUsed;
+      try { b.dispose(); } catch {}
       if (want === 'webgpu') throw e;
     }
   } else if (want === 'webgpu') {
@@ -236,7 +245,7 @@ export async function createRenderer(canvas, opts = {}) {
   }
   // A canvas that already has a WebGPU context cannot create a WebGL2 context.
   let target = canvas;
-  if (errors.length && canvas.getContext && canvas.parentNode) {
+  if (canvasUsed && canvas.getContext && canvas.parentNode) {
     target = canvas.cloneNode(false);
     canvas.parentNode.replaceChild(target, canvas);
   }

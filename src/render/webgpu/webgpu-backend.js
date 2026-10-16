@@ -86,9 +86,11 @@ export class WebGPUBackend {
       this.format = 'rgba8unorm';
       this.ctx2d = this.canvas.getContext('2d');
       if (!this.ctx2d) throw new Error('Cannot create a 2D context for WebGPU readback presentation.');
+      this.canvasUsed = true;
     } else {
       const ctx = this.canvas.getContext('webgpu');
       if (!ctx) throw new Error('Cannot create a WebGPU canvas context.');
+      this.canvasUsed = true;
       this.context = ctx;
       this.format = navigator.gpu.getPreferredCanvasFormat();
       // colours are written already encoded as sRGB and tone mapped to 0..1: pin the

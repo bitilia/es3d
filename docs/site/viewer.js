@@ -35,6 +35,8 @@ export async function createViewer(container, { interactive = true, backend = 'a
   let disposed = false;
   let trianglesDrawn = 0;
   let playing = autoplay;
+  let seenDpr = Math.min(window.devicePixelRatio || 1, 2);
+  let gpuEpoch = renderer.backend.resourceEpoch || 0;
 
   const controls = interactive ? new OrbitControls(el, camera) : null;
   if (controls) controls.onChange = () => (dirty = true);
@@ -54,6 +56,16 @@ export async function createViewer(container, { interactive = true, backend = 'a
     if (playing && result.scene.animation.time) {
       time += dt;
       updateDynamic(result.scene, result.graph, time);
+      dirty = true;
+    }
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (dpr !== seenDpr) {
+      seenDpr = dpr;
+      dirty = true;
+    }
+    const epoch = renderer.backend.resourceEpoch || 0;
+    if (epoch !== gpuEpoch) {
+      gpuEpoch = epoch;
       dirty = true;
     }
     if (!dirty || (holdUntil && t < holdUntil)) return;
