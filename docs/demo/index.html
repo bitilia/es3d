@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ES3D Demo Sites</title>
-  <meta name="description" content="Four small sites built with the ES3D library: a medieval village, a CAD gift box, a bicycle and a lamp room, each drawn live from one small ES3D file.">
+  <meta name="description" content="Five sites built with the ES3D library. Pick one to walk through it. Castle then asks whether to draw the flight from ES3D or from glTF.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23241c16' width='32' height='32'/%3E%3Crect fill='%23e7b4a8' x='8' y='10' width='16' height='12'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./fonts.css">
   <link rel="stylesheet" href="./index.css">
@@ -12,67 +12,90 @@
 <body>
   <header><a class="site" href="../">ES3D</a></header>
   <main>
-  <h1 class="sr-only">Demo Sites</h1>
-  <!-- size lines: recorded in docs/site/sizes.json (npm run sizes), written in by the site plugin -->
-  <a class="band ashby" href="./ashby/">
-    <div class="view">
-      <canvas id="ashby-view" aria-hidden="true"></canvas>
-      <p class="stage-status">Starting the renderer…</p>
-      <pre class="stage-error" hidden></pre>
+    <div class="intro">
+      <p class="kicker">ES3D</p>
+      <h1>Demo sites</h1>
+      <p>Pick a project. Each one is drawn live. Castle asks which renderer to fly with.</p>
     </div>
-    <div class="copy">
-      <p class="kicker">ES3D · 01</p>
-      <h2>Ashby</h2>
-      <p>A medieval village in one file. Scroll, and the camera flies you in through the gate.</p>
-      <span class="size"><!--#filesize of="demo/ashby" --></span>
-      <span class="go">Walk in</span>
-    </div>
-  </a>
-
-  <a class="band parcel" href="./parcel/">
-    <div class="copy">
-      <p class="kicker">ES3D · 02</p>
-      <h2>Parcel</h2>
-      <p>A CAD gift box with a hinged lid, a ribbon, and a bow.</p>
-      <span class="size"><!--#filesize of="demo/parcel" --></span>
-      <span class="go">Open the site</span>
-    </div>
-    <div class="view">
-      <canvas id="parcel-view" aria-hidden="true"></canvas>
-      <p class="stage-status">Starting the renderer…</p>
-      <pre class="stage-error" hidden></pre>
-    </div>
-  </a>
-
-  <a class="band spoke" href="./spoke/">
-    <div class="view">
-      <canvas id="spoke-view" aria-hidden="true"></canvas>
-      <p class="stage-status">Starting the renderer…</p>
-      <pre class="stage-error" hidden></pre>
-    </div>
-    <div class="copy">
-      <p class="kicker">ES3D · 03</p>
-      <h2>Spoke</h2>
-      <p>A bicycle. Eight spokes, two gears, and the frame is one tube per joint.</p>
-      <span class="size"><!--#filesize of="demo/spoke" --></span>
-      <span class="go">See the works</span>
-    </div>
-  </a>
-
-  <a class="band helio" href="./helio/">
-    <div class="view">
-      <canvas id="helio-view" aria-hidden="true"></canvas>
-      <p class="stage-status">Starting the renderer…</p>
-      <pre class="stage-error" hidden></pre>
-    </div>
-    <div class="copy">
-      <p class="kicker">ES3D · 04</p>
-      <h2>Helio</h2>
-      <p>Three lamps on a table. Each shade has a light inside it.</p>
-      <span class="size"><!--#filesize of="demo/helio" --></span>
-      <span class="go">Step inside</span>
-    </div>
-  </a>
+    <ul class="tiles">
+      <li>
+        <a class="tile ashby" href="./ashby/">
+          <span class="view">
+            <canvas id="ashby-view" aria-hidden="true"></canvas>
+            <p class="stage-status">Starting the renderer…</p>
+            <pre class="stage-error" hidden></pre>
+          </span>
+          <span class="copy">
+            <span class="kicker">01</span>
+            <h2>Ashby</h2>
+            <p>A medieval village in one file. The camera flies in through the gate.</p>
+            <span class="size"><!--#filesize of="demo/ashby" --></span>
+            <span class="go">Walk in</span>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a class="tile parcel" href="./parcel/">
+          <span class="view">
+            <canvas id="parcel-view" aria-hidden="true"></canvas>
+            <p class="stage-status">Starting the renderer…</p>
+            <pre class="stage-error" hidden></pre>
+          </span>
+          <span class="copy">
+            <span class="kicker">02</span>
+            <h2>Parcel</h2>
+            <p>A CAD gift box with a hinged lid, a ribbon, and a bow.</p>
+            <span class="size"><!--#filesize of="demo/parcel" --></span>
+            <span class="go">Open the site</span>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a class="tile spoke" href="./spoke/">
+          <span class="view">
+            <canvas id="spoke-view" aria-hidden="true"></canvas>
+            <p class="stage-status">Starting the renderer…</p>
+            <pre class="stage-error" hidden></pre>
+          </span>
+          <span class="copy">
+            <span class="kicker">03</span>
+            <h2>Spoke</h2>
+            <p>A bicycle. Eight spokes, two gears, and one tube per joint.</p>
+            <span class="size"><!--#filesize of="demo/spoke" --></span>
+            <span class="go">See the works</span>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a class="tile helio" href="./helio/">
+          <span class="view">
+            <canvas id="helio-view" aria-hidden="true"></canvas>
+            <p class="stage-status">Starting the renderer…</p>
+            <pre class="stage-error" hidden></pre>
+          </span>
+          <span class="copy">
+            <span class="kicker">04</span>
+            <h2>Helio</h2>
+            <p>Three lamps on a table. Each shade has a light inside it.</p>
+            <span class="size"><!--#filesize of="demo/helio" --></span>
+            <span class="go">Step inside</span>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a class="tile castle" href="./castle/">
+          <span class="view">
+            <img src="./castle/poster.jpg" alt="" width="1600" height="900">
+          </span>
+          <span class="copy">
+            <span class="kicker">05 · two renderers</span>
+            <h2>Castle</h2>
+            <p>A flight over a moonlit lake, through the gate, and up the tower.</p>
+            <span class="go">Choose how it’s drawn</span>
+          </span>
+        </a>
+      </li>
+    </ul>
   </main>
   <script type="module" src="./index.js"></script>
 </body>

@@ -17,6 +17,7 @@ export const PREVIEW_IMAGES = {
   'demo-parcel.jpg': { width: 1600, height: 1000, alt: 'Parcel: a red gift box with an ivory ribbon and bow' },
   'demo-spoke.jpg': { width: 1600, height: 1000, alt: 'Spoke: a red bicycle with eight-spoke wheels' },
   'demo-helio.jpg': { width: 1600, height: 1000, alt: 'Helio: a dark room with three lamps lighting a table' },
+  'demo-castle.jpg': { width: 1600, height: 900, alt: 'A moonlit flight toward a wizard’s castle on a floating island' },
 };
 
 const DEFAULT_IMAGE = 'studio-primitives.jpg';
@@ -34,6 +35,9 @@ export const PAGES = [
   { file: 'demo/parcel/index.html', name: 'Parcel', image: 'demo-parcel.jpg' },
   { file: 'demo/spoke/index.html', name: 'Spoke', image: 'demo-spoke.jpg' },
   { file: 'demo/helio/index.html', name: 'Helio', image: 'demo-helio.jpg' },
+  { file: 'demo/castle/index.html', name: 'Castle', image: 'demo-castle.jpg' },
+  { file: 'demo/castle/es3d/index.html', name: 'Castle, ES3D', image: 'demo-castle.jpg' },
+  { file: 'demo/castle/glTF/index.html', name: 'Castle, glTF', image: 'demo-castle.jpg' },
   { file: 'spec/index.html', name: 'Specification', image: 'studio-errors.jpg' },
   { file: 'reference/index.html', name: 'Element reference', image: 'studio-errors.jpg' },
   { file: 'media/index.html', name: 'Media' },

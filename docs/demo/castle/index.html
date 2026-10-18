@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script>
+      // without its trailing slash this page's relative URLs would miss, so add it
+      if (!/(\/|\.html)$/.test(location.pathname)) location.replace(location.pathname + '/' + location.search + location.hash);
+    </script>
+    <title>Moon Spire — Choose how the castle is drawn</title>
+    <meta name="description" content="One scroll-driven flight through a floating wizard's castle, built two ways: from a hand-written ES3D file, or from an optimised glTF binary with three.js." />
+    <meta name="theme-color" content="#05061a" />
+    <meta name="color-scheme" content="dark" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Moon Spire — Choose how the castle is drawn" />
+    <meta property="og:description" content="One flight through a wizard's castle, drawn from ES3D or from glTF." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../fonts.css" />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./choose.css" />
+    <!-- fetch a version's page while the pointer rests on its tile -->
+    <script type="speculationrules">
+      { "prefetch": [{ "where": { "selector_matches": ".tile-cta" }, "eagerness": "moderate" }] }
+    </script>
+  </head>
+  <body class="choose">
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-sigil" viewBox="-50 -50 100 100"><circle r="45" fill="none" stroke="currentColor" stroke-width="3.5"/><circle r="38.5" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".55"/><polygon points="0,-38.5 -27.2,27.2 38.5,0 -27.2,-27.2 0,38.5 27.2,-27.2 -38.5,0 27.2,27.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path fill="currentColor" d="M0 -16 L-2.6 -6.2 L-11.3 -11.3 L-6.2 -2.6 L-16 0 L-6.2 2.6 L-11.3 11.3 L-2.6 6.2 L0 16 L2.6 6.2 L11.3 11.3 L6.2 2.6 L16 0 L6.2 -2.6 L11.3 -11.3 L2.6 -6.2 Z"/></symbol>
+      <!-- a page of text: ES3D is written by hand -->
+      <symbol id="i-scroll" viewBox="0 0 24 24"><path d="M7 3.5h9.5a2 2 0 0 1 2 2V18a2.5 2.5 0 0 1-2.5 2.5H7.5A2.5 2.5 0 0 1 5 18V5.5a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+      <!-- a cube of triangles: glTF carries built meshes -->
+      <symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M4 7.5 12 12l8-4.5M12 12v9M4 7.5l8 9 8-9" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" opacity=".6"/></symbol>
+    </svg>
+
+    <img class="choose-backdrop" src="./poster.jpg" alt="" width="1600" height="900" fetchpriority="high" decoding="async" />
+    <div class="atmosphere" aria-hidden="true"></div>
+
+    <header class="choose-header">
+      <a class="brand" href="./" aria-label="Moon Spire, choose how the castle is drawn">
+        <svg class="brand-sigil" aria-hidden="true"><use href="#i-sigil" /></svg>
+        <span class="brand-word">Moon<span>Spire</span></span>
+      </a>
+      <a class="choose-back" href="../">Demo sites</a>
+    </header>
+
+    <main class="choose-main" id="content">
+      <div class="choose-intro">
+        <p class="eyebrow"><svg class="ico" aria-hidden="true"><use href="#i-sigil" /></svg>One castle, two formats</p>
+        <h1>Choose how the castle is <em>drawn</em></h1>
+        <p class="lede">The same flight through the same world, built two ways: from a hand-written ES3D file, or from an optimised glTF binary drawn by three.js.</p>
+      </div>
+
+      <ul class="tiles" role="list">
+        <li>
+          <article class="tile tile-es3d" aria-labelledby="es3d-name">
+            <p class="tile-kind"><svg class="ico" aria-hidden="true"><use href="#i-scroll" /></svg>Written by hand</p>
+            <h2 class="tile-name" id="es3d-name">ES3D</h2>
+            <p class="tile-tagline">A text file that describes the world. The browser builds it to fit your screen.</p>
+            <pre class="tile-specimen" aria-hidden="true"><code><span class="t">&lt;scatter</span> <span class="a">count</span>=<span class="v">"700"</span> <span class="a">seed</span>=<span class="v">"101"</span> <span class="o">…</span><span class="t">&gt;</span>
+  <span class="t">&lt;use</span> <span class="a">ref</span>=<span class="v">"tree"</span><span class="t">/&gt;</span>
+<span class="t">&lt;/scatter&gt;</span></code></pre>
+            <dl class="tile-facts">
+              <div><dt>Scene file</dt><dd>74 KB of text</dd></div>
+              <div><dt>First visit</dt><dd>247 KB</dd></div>
+              <div><dt>Drawn with</dt><dd>WebGPU or WebGL2</dd></div>
+            </dl>
+            <a class="tile-cta" href="es3d/">Fly with ES3D<svg class="ico" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+          </article>
+        </li>
+        <li>
+          <article class="tile tile-gltf" aria-labelledby="gltf-name">
+            <p class="tile-kind"><svg class="ico" aria-hidden="true"><use href="#i-cube" /></svg>Exported and optimised</p>
+            <h2 class="tile-name" id="gltf-name">glTF</h2>
+            <p class="tile-tagline">A binary of finished meshes, instanced and compressed. It opens in any 3D tool.</p>
+            <pre class="tile-specimen" aria-hidden="true"><code><span class="o">0000</span>  67 6c 54 46 02 00 00 00  <span class="v">glTF····</span>
+<span class="o">0008</span>  70 ca 31 00 1c ec 07 00  <span class="v">p·1·····</span>
+<span class="o">0010</span>  4a 53 4f 4e 7b 22 61 73  <span class="v">JSON{"as</span></code></pre>
+            <dl class="tile-facts">
+              <div><dt>Scene file</dt><dd>3,263 KB binary</dd></div>
+              <div><dt>First visit</dt><dd>1,558 KB</dd></div>
+              <div><dt>Drawn with</dt><dd>three.js, WebGL2</dd></div>
+            </dl>
+            <a class="tile-cta" href="glTF/">Fly with glTF<svg class="ico" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+          </article>
+        </li>
+      </ul>
+
+      <p class="choose-note">Both draw the same 54,787 objects, lights and animations along the same path, and each links to the other at its foot. A first visit counts everything the page sends, compressed as a browser downloads it: script, scene and textures.</p>
+    </main>
+
+    <script type="module" src="./choose.js"></script>
+  </body>
+</html>

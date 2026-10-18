@@ -1,0 +1,498 @@
+/* The format chooser at castle/: two tiles over a still of the opening view,
+   one to each version of the page. Tokens, type, the brand and the plaque
+   keyframes come from style.css. */
+
+.choose {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
+.choose-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 62% 50%;
+  scale: 1.04;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .choose-backdrop {
+    animation: drift 48s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes drift {
+  to {
+    scale: 1.1;
+    translate: -1.2% -0.8%;
+  }
+}
+
+/* darker than on the pages, so the tiles read over the castle; a hovered
+   tile warms or cools the night on its side */
+.choose .atmosphere {
+  background:
+    linear-gradient(to bottom, rgb(5 6 26 / 0.7), rgb(5 6 26 / 0.25) 40%, rgb(5 6 26 / 0.6)),
+    radial-gradient(140% 110% at 50% 45%, transparent 45%, rgb(3 3 14 / 0.7) 100%);
+}
+
+.choose .atmosphere::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(55% 70% at var(--tint-x, 50%) 72%, var(--tint, transparent), transparent 72%);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.choose:has(.tile-es3d:hover, .tile-es3d:focus-within) .atmosphere::before {
+  --tint: rgb(242 202 127 / 0.16);
+  --tint-x: 28%;
+  opacity: 1;
+}
+
+.choose:has(.tile-gltf:hover, .tile-gltf:focus-within) .atmosphere::before {
+  --tint: rgb(142 238 255 / 0.13);
+  --tint-x: 72%;
+  opacity: 1;
+}
+
+.choose-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-h);
+  padding: env(safe-area-inset-top) var(--gutter) 0;
+}
+
+.choose-back {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.choose-back:hover { color: var(--text); }
+
+.choose-main {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  padding: clamp(8px, 2vh, 32px) var(--gutter) clamp(28px, 5vh, 56px);
+}
+
+.choose-intro {
+  margin-bottom: clamp(22px, 4vh, 44px);
+}
+
+.choose-intro .eyebrow {
+  margin-bottom: 16px;
+}
+
+.choose-intro h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2rem, 3.4vw, 3.1rem);
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  font-size-adjust: cap-height from-font;
+  text-shadow: 0 4px 40px rgb(5 6 26 / 0.7);
+}
+
+.choose-intro .lede {
+  max-width: 36em;
+  margin-top: 16px;
+  font-size: clamp(1.08rem, 1.4vw, 1.28rem);
+}
+
+.choose-note {
+  max-width: 46rem;
+  margin: clamp(20px, 3.5vh, 32px) 0 0;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--text-dim);
+  text-shadow: 0 1px 14px rgb(5 6 26 / 0.95), 0 0 4px rgb(5 6 26 / 0.8);
+}
+
+/* ------------------------------------------------------------------
+   Tiles: a large spell plaque per format. The whole tile is the link:
+   its "Fly with" label stretches an invisible layer over the tile.
+   ------------------------------------------------------------------ */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
+  gap: clamp(16px, 2.2vw, 28px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* each tile lays itself out by its own width */
+.tiles > li {
+  display: flex;
+  container-type: inline-size;
+}
+
+.tile {
+  --mx: 50%;
+  --my: 50%;
+  --halo: 0 26px 60px -32px rgb(0 0 0 / 0.95), inset 0 1px 0 rgb(255 255 255 / 0.06);
+  --halo-hover: 0 0 56px -20px var(--glow), 0 32px 70px -30px rgb(0 0 0 / 0.95), inset 0 1px 0 rgb(255 255 255 / 0.08);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "kind kind" "name name" "tag tag" "spec spec" "facts facts" "cta cta";
+  align-content: start;
+  padding: clamp(22px, 2.2vw, 28px);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(120% 80% at 0% 0%, var(--wash), transparent 60%),
+    var(--glass-strong);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: var(--halo);
+  transition:
+    translate 0.45s var(--ease-out),
+    box-shadow 0.5s ease;
+}
+
+/* the gilded edge, as on the buttons */
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--edge-turn), var(--edge));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  opacity: 0.6;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+/* the light under the pointer, and the ring a press casts (wider than a button's) */
+.tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at var(--mx) var(--my), transparent calc(var(--cast-r) * 2.6 - 24px), rgb(255 238 196 / calc(var(--cast-a) * 0.7)) calc(var(--cast-r) * 2.6), transparent calc(var(--cast-r) * 2.6 + 3px)),
+    radial-gradient(320px circle at var(--mx) var(--my), var(--glow), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+
+.tile:hover,
+.tile:focus-within {
+  box-shadow: var(--halo-hover);
+}
+
+.tile:hover::before,
+.tile:focus-within::before {
+  opacity: 1;
+}
+
+.tile:hover::after,
+.tile:focus-within::after,
+.tile.is-casting::after {
+  opacity: 1;
+}
+
+.tile.is-casting::after {
+  transition-duration: 0s;
+}
+
+.tile:has(.tile-cta:focus-visible) {
+  outline: 2px solid var(--gold);
+  outline-offset: 5px;
+}
+
+@media (hover: hover) {
+  .tile:hover {
+    translate: 0 -3px;
+  }
+
+  .tile:hover .tile-cta .ico {
+    translate: 4px 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tile:hover::before,
+  .tile:focus-within::before {
+    animation: edge-turn 6s linear infinite;
+  }
+
+  .tile.is-casting::after {
+    animation: cast 1.1s linear;
+  }
+}
+
+.tile-kind {
+  grid-area: kind;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.tile-kind .ico {
+  width: 18px;
+  height: 18px;
+}
+
+.tile-name {
+  grid-area: name;
+  margin: 14px 0 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.4rem, 3.6vw, 3rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  background: var(--name-ink);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* keeps the glyphs' painted edges inside the clipped background */
+  padding-block: 0.06em;
+  filter: drop-shadow(0 0 22px var(--glow));
+}
+
+.tile-tagline {
+  grid-area: tag;
+  max-width: 28em;
+  margin: 8px 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.16rem;
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
+/* a few real lines of each file: text to read, or bytes to decode */
+.tile-specimen {
+  grid-area: spec;
+  margin: 16px 0 0;
+  padding: 12px 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgb(4 4 18 / 0.55);
+  font-family: var(--font-mono);
+  font-size: clamp(0.64rem, 2.6vw, 0.74rem);
+  line-height: 1.6;
+  color: var(--text-dim);
+  white-space: pre;
+}
+
+.tile-specimen code {
+  font-size: inherit;
+}
+
+.tile-specimen .t {
+  color: var(--violet-2);
+}
+
+.tile-specimen .a {
+  color: var(--cyan);
+}
+
+.tile-specimen .v {
+  color: var(--accent);
+}
+
+.tile-specimen .o {
+  color: var(--text-faint);
+}
+
+.tile-facts {
+  grid-area: facts;
+  margin: 16px 0 0;
+}
+
+.tile-facts div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+
+.tile-facts div:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.tile-facts dt {
+  font-size: 0.84rem;
+  color: var(--text-faint);
+}
+
+.tile-facts dd {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.tile-cta {
+  grid-area: cta;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-block-size: 48px;
+  margin-top: 24px;
+  padding: 0 calc(24px - 0.16em) 0 24px;
+  border-radius: 999px;
+  background: var(--cta-fill);
+  box-shadow:
+    inset 0 0 0 1px var(--cta-line),
+    inset 0 1px 0 rgb(255 255 255 / 0.14),
+    0 14px 30px -16px rgb(0 0 0 / 0.9);
+  color: var(--cta-ink);
+  font: 600 0.76rem/1 var(--font-display);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-shadow: 0 0 14px var(--glow);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tile-cta .ico {
+  width: 1.3em;
+  height: 1.3em;
+  transition: translate 0.4s var(--ease-out);
+}
+
+/* the whole tile takes the click */
+.tile-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: var(--radius);
+}
+
+/* the tile shows focus instead, where :has() can tell it */
+@supports selector(:has(*)) {
+  .tile-cta:focus-visible {
+    outline: none;
+  }
+}
+
+.tile:active {
+  scale: 0.99;
+}
+
+/* ES3D: gilded, like the pages' main actions */
+.tile-es3d {
+  --accent: var(--gold);
+  --edge: #fde7b0, #b97b2f, #fff3d1, #c98c3c, #f2c97c, #a86a24, #fde7b0;
+  --wash: rgb(242 202 127 / 0.12);
+  --glow: rgb(255 206 128 / 0.26);
+  --name-ink: linear-gradient(180deg, #fff1cc, var(--gold) 55%, #c98d35);
+  --cta-fill: radial-gradient(130% 170% at 50% -10%, #43338e 0%, #241b5c 46%, #140f37 100%);
+  --cta-ink: #fbe6b4;
+  --cta-line: rgb(242 202 127 / 0.55);
+}
+
+/* glTF: moonlit silver */
+.tile-gltf {
+  --accent: var(--cyan);
+  --edge: #e8f7ff, #6aaed0, #ffffff, #8eeeff, #c9b6ff, #5b88b8, #e8f7ff;
+  --wash: rgb(142 238 255 / 0.1);
+  --glow: rgb(142 238 255 / 0.22);
+  --name-ink: linear-gradient(180deg, #ffffff, #cdefff 50%, #7fb6d6);
+  --cta-fill: radial-gradient(130% 170% at 50% -10%, #1f4a72 0%, #142a55 46%, #0b1433 100%);
+  --cta-ink: #dcf7ff;
+  --cta-line: rgb(142 238 255 / 0.5);
+}
+
+/* a wide tile: the action beside the name, the facts in one row */
+@container (min-width: 440px) {
+  .tile {
+    grid-template-areas: "kind kind" "name cta" "tag tag" "spec spec" "facts facts";
+  }
+
+  .tile-cta {
+    align-self: center;
+    margin-top: 14px;
+  }
+
+  .tile-facts {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+
+  .tile-facts div,
+  .tile-facts div:last-child {
+    display: block;
+    padding: 0;
+    border: 0;
+  }
+
+  .tile-facts dt {
+    font-size: 0.76rem;
+  }
+
+  .tile-facts dd {
+    margin-top: 2px;
+    text-align: left;
+  }
+}
+
+/* High contrast: plain borders, as on the buttons */
+@media (forced-colors: active) {
+  .tile {
+    border: 1px solid CanvasText;
+  }
+
+  .tile::before,
+  .tile::after {
+    display: none;
+  }
+
+  .tile-name {
+    color: CanvasText;
+  }
+
+  .tile-cta {
+    border: 1px solid LinkText;
+  }
+}

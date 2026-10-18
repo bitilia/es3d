@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script>
+      // without its trailing slash this page's relative URLs would miss, so add it
+      if (!/(\/|\.html)$/.test(location.pathname)) location.replace(location.pathname + '/' + location.search + location.hash);
+    </script>
+    <title>Moon Spire — A castle written in one file (glTF)</title>
+    <meta name="description" content="A moonlit flight through a wizard's castle. ES3D writes the world as text and the browser builds it. The glTF of the same castle is that file exported into a 3,263 KB binary." />
+    <meta name="theme-color" content="#05061a" />
+    <meta name="color-scheme" content="dark" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Moon Spire — A castle written in one file (glTF)" />
+    <meta property="og:description" content="A moonlit flight through a wizard's castle. ES3D writes the world as text and the browser builds it. The glTF of the same castle is that file exported into a 3,263 KB binary." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../../fonts.css" />
+    <link rel="stylesheet" href="../style.css" />
+    <noscript><style>.loader { display: none; }</style></noscript>
+    <script>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <!-- icon sprite -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <symbol id="i-rune" viewBox="0 0 24 24"><path d="M12 2.5 19.5 12 12 21.5 4.5 12Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 7.5v9M9 10.5l3-3 3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m15.5 8.5-2 5-5 2 2-5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+      <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4.5l-3 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+      <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 20V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-sigil" viewBox="-50 -50 100 100"><circle r="45" fill="none" stroke="currentColor" stroke-width="3.5"/><circle r="38.5" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".55"/><polygon points="0,-38.5 -27.2,27.2 38.5,0 -27.2,-27.2 0,38.5 27.2,-27.2 -38.5,0 27.2,27.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path fill="currentColor" d="M0 -16 L-2.6 -6.2 L-11.3 -11.3 L-6.2 -2.6 L-16 0 L-6.2 2.6 L-11.3 11.3 L-2.6 6.2 L0 16 L2.6 6.2 L11.3 11.3 L6.2 2.6 L16 0 L6.2 -2.6 L11.3 -11.3 L2.6 -6.2 Z"/></symbol>
+    </svg>
+
+    <a class="skip-link" href="#content">Skip to content</a>
+
+    <!-- the 3D world, behind everything -->
+    <div class="stage" role="img" aria-label="A wizard's castle on a floating island above a moonlit lake, ringed by forest and snow-capped mountains. As the page scrolls, the view flies over the lake, along a bridge of floating stones, through the gate and up the wizard's tower to its glowing orb."><canvas id="world" aria-hidden="true"></canvas></div>
+    <div class="atmosphere" aria-hidden="true"></div>
+
+    <!-- loading veil -->
+    <div class="loader" id="loader" role="status">
+      <svg class="loader-sigil" viewBox="-50 -50 100 100" aria-hidden="true">
+        <circle class="draw" r="45" pathLength="1" />
+        <circle class="draw d2" r="38.5" pathLength="1" />
+        <polygon class="draw d3" pathLength="1" points="0,-38.5 -27.2,27.2 38.5,0 -27.2,-27.2 0,38.5 27.2,-27.2 -38.5,0 27.2,27.2" />
+        <path class="star" d="M0 -16 L-2.6 -6.2 L-11.3 -11.3 L-6.2 -2.6 L-16 0 L-6.2 2.6 L-11.3 11.3 L-2.6 6.2 L0 16 L2.6 6.2 L11.3 11.3 L6.2 2.6 L16 0 L6.2 -2.6 L11.3 -11.3 L2.6 -6.2 Z" />
+      </svg>
+      <p class="loader-title">Moon Spire</p>
+      <p class="loader-note" id="loader-note">Summoning the castle</p>
+      <progress class="loader-bar" aria-label="Loading the 3D scene"></progress>
+    </div>
+
+    <div class="progress-line" aria-hidden="true"><span></span></div>
+
+    <header class="site-header" id="site-header">
+      <a class="brand" href="../" aria-label="Moon Spire, choose how the castle is drawn">
+        <svg class="brand-sigil" aria-hidden="true"><use href="#i-sigil" /></svg>
+        <span class="brand-word">Moon<span>Spire</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <ul>
+          <li><a href="#lacus">Lake</a></li>
+          <li><a href="#pons">Bridge</a></li>
+          <li><a href="#atrium">Court</a></li>
+          <li><a href="#observatorium">Orb</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <button class="btn btn-ghost btn-sm" type="button" data-explore>
+          <svg class="ico ico-turn" aria-hidden="true"><use href="#i-compass" /></svg>
+          Explore the castle
+        </button>
+        <button class="btn btn-ghost btn-icon menu-button" type="button" popovertarget="mobile-menu" aria-label="Open menu">
+          <svg class="ico" aria-hidden="true"><use href="#i-menu" /></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="mobile-menu" id="mobile-menu" popover>
+      <div class="mobile-menu-head">
+        <span class="brand-word">Moon<span>Spire</span></span>
+        <button class="btn btn-ghost btn-icon btn-sm" type="button" popovertarget="mobile-menu" popovertargetaction="hide" aria-label="Close menu">
+          <svg class="ico" aria-hidden="true"><use href="#i-close" /></svg>
+        </button>
+      </div>
+      <ol class="mobile-menu-list">
+        <li><a href="#top"><span>·</span>Opening</a></li>
+        <li><a href="#lacus"><span>I</span>Lake</a></li>
+        <li><a href="#pons"><span>II</span>Bridge</a></li>
+        <li><a href="#porta"><span>III</span>Gate</a></li>
+        <li><a href="#atrium"><span>IV</span>Court</a></li>
+        <li><a href="#ascensio"><span>V</span>Stair</a></li>
+        <li><a href="#observatorium"><span>VI</span>Orb</a></li>
+        <li><a href="#finis"><span>·</span>Seal</a></li>
+      </ol>
+      <button class="btn btn-primary btn-lg mobile-menu-cta" type="button" data-explore><svg class="ico ico-turn" aria-hidden="true"><use href="#i-compass" /></svg>Explore the castle</button>
+    </div>
+
+    <nav class="rail" aria-label="Chapters">
+      <ol>
+        <li><a href="#top" data-stop="0"><span class="rail-num">·</span><span class="rail-label">Opening</span></a></li>
+        <li><a href="#lacus" data-stop="0.15"><span class="rail-num">I</span><span class="rail-label">Lake</span></a></li>
+        <li><a href="#pons" data-stop="0.3"><span class="rail-num">II</span><span class="rail-label">Bridge</span></a></li>
+        <li><a href="#porta" data-stop="0.43"><span class="rail-num">III</span><span class="rail-label">Gate</span></a></li>
+        <li><a href="#atrium" data-stop="0.56"><span class="rail-num">IV</span><span class="rail-label">Court</span></a></li>
+        <li><a href="#ascensio" data-stop="0.68"><span class="rail-num">V</span><span class="rail-label">Stair</span></a></li>
+        <li><a href="#observatorium" data-stop="0.86"><span class="rail-num">VI</span><span class="rail-label">Orb</span></a></li>
+        <li><a href="#finis" data-stop="1"><span class="rail-num">·</span><span class="rail-label">Seal</span></a></li>
+      </ol>
+      <span class="rail-track" aria-hidden="true"><span></span></span>
+    </nav>
+
+    <main id="content" tabindex="-1">
+      <!-- Every [data-es3d-stop] pins a key view of the camera flight to this
+           page: the view is reached when the marker crosses the middle of
+           the viewport. The values match the keyTimes in castle.es3d,
+           which castle.glb's Scroll animation keeps. -->
+      <div id="tour">
+        <section class="hero" id="top" aria-labelledby="hero-title">
+          <span class="stop" data-es3d-stop="0" aria-hidden="true"></span>
+          <div class="hero-content">
+            <p class="eyebrow"><svg class="ico" aria-hidden="true"><use href="#i-sigil" /></svg>Moon Spire <span aria-hidden="true">·</span> MMXXVI</p>
+            <h1 id="hero-title"><span class="line">A keep written</span> <span class="line">in one <em>file</em></span></h1>
+            <p class="lede">This castle is a text file. ES3D names the trees, the stairs and the flight, and the browser builds them for your screen. The glTF of the same world is those meshes already carved, 3,263 KB beside 74 KB of text.</p>
+            <div class="cta-row">
+              <a class="btn btn-primary btn-lg" href="#lacus"><span>Begin<span class="more"> the ascent</span></span><svg class="ico ico-nudge" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+              <button class="btn btn-ghost btn-lg" type="button" data-explore><svg class="ico ico-turn" aria-hidden="true"><use href="#i-compass" /></svg><span>Explore<span class="more"> freely</span></span></button>
+            </div>
+            <ul class="hero-meta" aria-label="The file">
+              <li><strong>XII</strong><span>Stones, one shape</span></li>
+              <li><strong>LXVI</strong><span>Steps, one line</span></li>
+              <li><strong>74 KB</strong><span>Beside 3,263 KB</span></li>
+            </ul>
+          </div>
+          <a class="scroll-cue" href="#lacus"><span>Scroll to enter</span><i aria-hidden="true"></i></a>
+        </section>
+
+        <section class="chapter" id="lacus" data-side="right" aria-labelledby="lacus-title">
+          <span class="stop" data-es3d-stop="0.15" aria-hidden="true"></span>
+          <article class="card">
+            <p class="kicker"><span class="numeral">I</span>Lake</p>
+            <h2 id="lacus-title">The lake is written, then drawn</h2>
+            <p>The waterfall is one sweep along a path, and the spray is a loop. ES3D keeps those words in the file. glTF keeps the triangles they become, frozen at the detail chosen when the file was exported.</p>
+            <ul class="features">
+              <li><svg class="ico" aria-hidden="true"><use href="#i-rune" /></svg><span><strong>One description</strong> places every tree. glTF stores the mesh that description becomes.</span></li>
+              <li><svg class="ico" aria-hidden="true"><use href="#i-rune" /></svg><span><strong>Detail follows the screen.</strong> Come closer and ES3D cuts a finer shape. A glTF mesh stays at the triangles it shipped with.</span></li>
+              <li><svg class="ico" aria-hidden="true"><use href="#i-rune" /></svg><span><strong>The same flight.</strong> Both pages draw 54,787 objects, the same lights and the same path.</span></li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="chapter" id="pons" data-side="left" aria-labelledby="pons-title">
+          <span class="stop" data-es3d-stop="0.3" aria-hidden="true"></span>
+          <article class="card">
+            <p class="kicker"><span class="numeral">II</span>Bridge</p>
+            <h2 id="pons-title">Twelve stones, named once</h2>
+            <p>Each slab is the same body, set down again, with a lantern beside it. ES3D says “use this” in the text. glTF packs an instance of that mesh for every stone, inside a binary.</p>
+            <dl class="stats">
+              <div><dt>Stones</dt><dd>12</dd></div>
+              <div><dt>Lanterns</dt><dd>12</dd></div>
+              <div><dt>New meshes</dt><dd>0</dd></div>
+            </dl>
+          </article>
+        </section>
+
+        <section class="chapter" id="porta" data-side="right" aria-labelledby="porta-title">
+          <span class="stop" data-es3d-stop="0.43" aria-hidden="true"></span>
+          <article class="card">
+            <p class="kicker"><span class="numeral">III</span>Gate</p>
+            <h2 id="porta-title">The portcullis rises with the page</h2>
+            <p>Its motion is tied to your scroll. In the ES3D file that is one attribute you can read. In the glTF file the same rise is an animation curve packed into the binary.</p>
+            <blockquote class="quote">
+              <p>“Write the gate, and the page will raise it. Bake the gate into glTF, and you are left with a curve.”</p>
+              <footer>— The keeper, <cite>in the ES3D file</cite></footer>
+            </blockquote>
+          </article>
+        </section>
+
+        <section class="chapter" id="atrium" data-side="left" aria-labelledby="atrium-title">
+          <span class="stop" data-es3d-stop="0.56" aria-hidden="true"></span>
+          <article class="card">
+            <p class="kicker"><span class="numeral">IV</span>Court</p>
+            <h2 id="atrium-title">A forest from a single seed</h2>
+            <p>The violet tree is swept boughs and a canopy scattered by a seed. The wood around the court is that idea, repeated. Export it to glTF and the seed is gone: only one forest of finished leaves remains.</p>
+            <ul class="features">
+              <li><svg class="ico" aria-hidden="true"><use href="#i-rune" /></svg><span><strong>Change the seed</strong> and the wood moves. The arrangement is a number in the ES3D file.</span></li>
+              <li><svg class="ico" aria-hidden="true"><use href="#i-rune" /></svg><span><strong>Shapes, until you draw them.</strong> Roofs and boughs stay descriptions. Triangles appear when the browser needs them.</span></li>
+              <li><svg class="ico" aria-hidden="true"><use href="#i-rune" /></svg><span><strong>A smaller file.</strong> This world is 74 KB of text. The glTF binary of the same castle is 3,263 KB.</span></li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="chapter" id="ascensio" data-side="right" aria-labelledby="ascensio-title">
+          <span class="stop" data-es3d-stop="0.68" aria-hidden="true"></span>
+          <article class="card">
+            <p class="kicker"><span class="numeral">V</span>Stair</p>
+            <h2 id="ascensio-title">Sixty-six steps, one instruction</h2>
+            <p>The stair is a repeat and the rail is one helix. ES3D writes the rule, and the tower climbs as far as the count says. glTF writes out every tread that rule produced.</p>
+            <ul class="features">
+              <li><svg class="ico" aria-hidden="true"><use href="#i-rune" /></svg><span><strong>Repeat, rather than copy.</strong> Sixty-six steps are one step and a number in the file.</span></li>
+              <li><svg class="ico" aria-hidden="true"><use href="#i-rune" /></svg><span><strong>A curve, kept as a curve.</strong> The rail is swept along a helix. glTF stores the segments that sweep produced.</span></li>
+              <li><svg class="ico" aria-hidden="true"><use href="#i-rune" /></svg><span><strong>The flight is in the file.</strong> The camera path sits beside the castle, and both pages follow it.</span></li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="chapter" id="observatorium" data-side="left" aria-labelledby="observatorium-title">
+          <span class="stop" data-es3d-stop="0.86" aria-hidden="true"></span>
+          <article class="card">
+            <p class="kicker"><span class="numeral">VI</span>Orb</p>
+            <h2 id="observatorium-title">Three rings, turned by the text</h2>
+            <p>Nested shells, and three rings at three speeds. ES3D states that nesting in the file. The glTF export flattens it into animation channels, which still play, and which you can no longer read as a sentence.</p>
+            <dl class="stats">
+              <div><dt>Rings</dt><dd>III</dd></div>
+              <div><dt>Pillars</dt><dd>XII</dd></div>
+              <div><dt>Stars</dt><dd class="is-long">MMDCLXXX</dd></div>
+            </dl>
+          </article>
+        </section>
+
+        <section class="finale" id="finis" aria-labelledby="finis-title">
+          <span class="stop" data-es3d-stop="1" aria-hidden="true"></span>
+          <article class="card card-finale">
+            <p class="kicker"><span class="numeral">◆</span>Seal</p>
+            <h2 id="finis-title">You have flown through a document</h2>
+            <p>The lake, the bridge and the stair were a text file. ES3D is that document. glTF is the same castle after the document has been compiled into meshes and packed away.</p>
+            <div class="finale-actions">
+              <button class="btn btn-primary btn-lg" type="button" data-explore><svg class="ico ico-turn" aria-hidden="true"><use href="#i-compass" /></svg>Explore the castle</button>
+              <a class="btn btn-ghost btn-lg" href="#top"><svg class="ico ico-lift" aria-hidden="true"><use href="#i-arrow-up" /></svg>Fly back to the start</a>
+            </div>
+            <div class="finale-foot">
+              <a class="text-link" href="#" id="download-scene" download="castle.glb"><svg class="ico" aria-hidden="true"><use href="#i-download" /></svg>Download the scene</a>
+              <span>One file, exported from the ES3D one</span>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <section class="made-of" aria-labelledby="made-of-title">
+        <div class="made-of-inner">
+          <p class="kicker"><span class="numeral">∴</span>From one book</p>
+          <h2 id="made-of-title">Everything you flew through is one hand-written file</h2>
+          <p class="made-of-lede">The forest, the stairs, the roofs and this flight are a few hundred lines of ES3D. The browser tessellates them as you scroll. The glTF of this castle is the export of that file: the same 54,787 objects, packed as finished meshes, 3,263 KB beside 74 KB of text.</p>
+          <dl class="ledger" id="ledger">
+            <div><dt>Scene file, gzipped</dt><dd data-stat="gzip">—</dd></div>
+            <div><dt>Objects placed</dt><dd data-stat="instances">—</dd></div>
+            <div><dt>Meshes in the file</dt><dd data-stat="geometries">—</dd></div>
+            <div><dt>Triangles drawn</dt><dd data-stat="triangles">—</dd></div>
+            <div><dt>Decoded in</dt><dd data-stat="compile">—</dd></div>
+            <div><dt>Drawn with</dt><dd data-stat="backend">—</dd></div>
+          </dl>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a class="brand" href="#top" aria-label="Moon Spire, back to the top">
+            <svg class="brand-sigil" aria-hidden="true"><use href="#i-sigil" /></svg>
+            <span class="brand-word">Moon<span>Spire</span></span>
+          </a>
+          <p>The castle is kept as words. ES3D is that text. The glTF is the same castle after the words have been packed into meshes.</p>
+        </div>
+        <nav class="footer-cols" aria-label="Footer">
+          <div>
+            <h3>Lake</h3>
+            <ul><li><a href="#lacus">Lake</a></li><li><a href="#pons">Bridge</a></li><li><a href="#porta">Gate</a></li></ul>
+          </div>
+          <div>
+            <h3>Stair</h3>
+            <ul><li><a href="#atrium">Court</a></li><li><a href="#ascensio">Stair</a></li><li><a href="#observatorium">Orb</a></li></ul>
+          </div>
+          <div>
+            <h3>File</h3>
+            <ul><li><a href="#finis">Seal</a></li><li><a href="https://www.khronos.org/gltf/" rel="noopener">glTF format</a></li><li><a href="https://threejs.org" rel="noopener">three.js</a></li></ul>
+          </div>
+        </nav>
+      </div>
+      <div class="footer-base">
+        <p>© MMXXVI Moon Spire. One text file, drawn as you scroll.</p>
+        <p>Rendered live from <code>castle.glb</code> with <a href="https://threejs.org" rel="noopener">three.js</a>. <a href="../es3d/">See the ES3D version</a>, <a href="../">choose a format</a>, or <a href="../../">all demo sites</a>.</p>
+      </div>
+    </footer>
+
+    <!-- free exploration: orbit the castle, click anything to name it -->
+    <div class="explore-hud" id="explore-hud" hidden>
+      <p class="explore-hint"><strong>Drag</strong> to orbit · <strong>Scroll</strong> or pinch to zoom · <strong>Click</strong> anything to name it</p>
+      <button class="btn btn-primary btn-sm" type="button" id="explore-exit">
+        <svg class="ico ico-turn" aria-hidden="true"><use href="#i-close" /></svg>Return to the tour
+      </button>
+    </div>
+    <p class="pick-label" id="pick-label" role="status" aria-live="polite"></p>
+
+    <div class="no-3d-note" id="no-3d-note" hidden role="note">
+      <p>This browser cannot draw the 3D castle (it needs WebGL2), so this is a still of it.</p>
+      <button class="btn btn-ghost btn-icon btn-sm" type="button" aria-label="Dismiss"><svg class="ico" aria-hidden="true"><use href="#i-close" /></svg></button>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

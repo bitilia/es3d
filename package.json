@@ -68,6 +68,7 @@
   "devDependencies": {
     "playwright": "^1.64.0",
     "three": "^0.186.1",
+    "three-mesh-bvh": "^0.9.15",
     "vite": "^8.3.4"
   },
   "engines": {
