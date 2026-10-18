@@ -3,7 +3,7 @@
 <head>
 <!--#include virtual="head.html" -->
 <title>Media - ES3D</title>
-<meta name="description" content="Papers, talks and posts about ES3D, including the ES3D white paper, Why ES3D came to be and Making the Web 3D, from the founder.">
+<meta name="description" content="Papers, talks and posts about ES3D, including the ES3D white paper, Why ES3D came to be, Making the Web 3D, and Pavel Kostromin's post on DEV Community.">
 <link rel="canonical" href="https://es3d.org/media/">
 <script type="application/ld+json">
 {
@@ -12,7 +12,7 @@
   "@id": "https://es3d.org/media/#webpage",
   "url": "https://es3d.org/media/",
   "name": "Media",
-  "description": "Papers, talks and posts about ES3D, including the ES3D white paper, Why ES3D came to be and Making the Web 3D, from the founder.",
+  "description": "Papers, talks and posts about ES3D, including the ES3D white paper, Why ES3D came to be, Making the Web 3D, and Pavel Kostromin's post on DEV Community.",
   "isPartOf": { "@id": "https://es3d.org/#website" },
   "inLanguage": "en",
   "dateModified": "<!--#echo var="LAST_MODIFIED" -->",
@@ -35,8 +35,20 @@
           "license": "https://creativecommons.org/licenses/by/4.0/"
         }
       },
-      { "@type": "ListItem", "position": 2, "url": "https://es3d.org/media/why-es3d-came-to-be/", "name": "Why ES3D came to be" },
-      { "@type": "ListItem", "position": 3, "url": "https://es3d.org/media/making-the-web-3d/", "name": "Making the Web 3D" }
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "item": {
+          "@type": "BlogPosting",
+          "url": "https://dev.to/pavkode/optimizing-3d-file-formats-for-web-performance-by-reducing-precision-and-complexity-2i8i",
+          "name": "Optimizing 3D File Formats for Web Performance by Reducing Precision and Complexity",
+          "author": { "@type": "Person", "name": "Pavel Kostromin", "url": "https://dev.to/pavkode" },
+          "datePublished": "2026-10-17",
+          "publisher": { "@type": "Organization", "name": "DEV Community", "url": "https://dev.to" }
+        }
+      },
+      { "@type": "ListItem", "position": 3, "url": "https://es3d.org/media/why-es3d-came-to-be/", "name": "Why ES3D came to be" },
+      { "@type": "ListItem", "position": 4, "url": "https://es3d.org/media/making-the-web-3d/", "name": "Making the Web 3D" }
     ]
   }
 }
@@ -54,6 +66,11 @@
     <h2><a href="https://zenodo.org/records/23403919">Extensible Scalable 3D: describing three-dimensional web scenes by parameters</a></h2>
     <p class="media-by">Ilia Kalina, 15 October 2026. Preprint on Zenodo, <a href="https://doi.org/10.5281/zenodo.23403919">doi:10.5281/zenodo.23403919</a></p>
     <p>The white paper: the ES3D format and its reference implementation (PDF, CC BY 4.0).</p>
+  </article>
+  <article class="media-item">
+    <h2><a href="https://dev.to/pavkode/optimizing-3d-file-formats-for-web-performance-by-reducing-precision-and-complexity-2i8i">Optimizing 3D File Formats for Web Performance by Reducing Precision and Complexity</a></h2>
+    <p class="media-by">Pavel Kostromin, 17 October 2026. Post on DEV Community</p>
+    <p>The first piece about ES3D written outside the project: trading precision for speed, and when the format is the right tool for the web.</p>
   </article>
   <article class="media-item">
     <h2><a href="why-es3d-came-to-be/">Why ES3D came to be</a></h2>
