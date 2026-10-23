@@ -97,6 +97,113 @@ function dequantMatrix(center, half) {
   return m;
 }
 
+function transpose3(a) {
+  return [a[0], a[3], a[6], a[1], a[4], a[7], a[2], a[5], a[8]];
+}
+function mul3(a, b) {
+  const o = new Array(9);
+  for (let col = 0; col < 3; col++) {
+    for (let row = 0; row < 3; row++) {
+      let s = 0;
+      for (let k = 0; k < 3; k++) s += a[k * 3 + row] * b[col * 3 + k];
+      o[col * 3 + row] = s;
+    }
+  }
+  return o;
+    const tt = Math.sign(tau) / (Math.abs(tau) + Math.sqrt(1 + tau * tau));
+    const c = 1 / Math.sqrt(1 + tt * tt);
+    const s = tt * c;
+    a[p][p] = app - tt * apq;
+    a[q][q] = aqq + tt * apq;
+    a[p][q] = a[q][p] = 0;
+    for (let k = 0; k < 3; k++) {
+      if (k === p || k === q) continue;
+      const aik = a[k][p], aiq = a[k][q];
+      a[k][p] = a[p][k] = c * aik - s * aiq;
+      a[k][q] = a[q][k] = s * aik + c * aiq;
+    }
+    for (let k = 0; k < 3; k++) {
+      const vip = v[k][p], viq = v[k][q];
+      v[k][p] = c * vip - s * viq;
+      v[k][q] = s * vip + c * viq;
+    }
+  }
+  return {
+    values: [a[0][0], a[1][1], a[2][2]],
+    vectors: [v[0][0], v[1][0], v[2][0], v[0][1], v[1][1], v[2][1], v[0][2], v[1][2], v[2][2]],
+  };
+}
+
+// A = U * diag(sigma) * V^T, both rotations proper after the caller flips a column.
+function svd3(A) {
+  const eig = jacobi3(mul3(transpose3(A), A));
+  const order = [0, 1, 2].sort((i, j) => Math.abs(eig.values[j]) - Math.abs(eig.values[i]));
+  const V = new Array(9);
+  const sigma = [0, 0, 0];
+  for (let col = 0; col < 3; col++) {
+    const src = order[col];
+    sigma[col] = Math.sqrt(Math.max(0, eig.values[src]));
+    V[col * 3] = eig.vectors[src * 3];
+    V[col * 3 + 1] = eig.vectors[src * 3 + 1];
+    V[col * 3 + 2] = eig.vectors[src * 3 + 2];
+  }
+  const AV = mul3(A, V);
+  const U = new Array(9).fill(0);
+  for (let col = 0; col < 3; col++) {
+    const s = sigma[col];
+    if (s > 1e-12) {
+      U[col * 3] = AV[col * 3] / s;
+      U[col * 3 + 1] = AV[col * 3 + 1] / s;
+      U[col * 3 + 2] = AV[col * 3 + 2] / s;
+    }
+  }
+  const column = (M, i) => [M[i * 3], M[i * 3 + 1], M[i * 3 + 2]];
+  const missing = [0, 1, 2].filter((i) => sigma[i] <= 1e-12);
+  if (missing.length === 1) {
+    const i = missing[0];
+    const a = column(U, (i + 1) % 3);
+    const b = column(U, (i + 2) % 3);
+    const c = [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+    const l = Math.hypot(c[0], c[1], c[2]) || 1;
+    U[i * 3] = c[0] / l;
+    U[i * 3 + 1] = c[1] / l;
+    U[i * 3 + 2] = c[2] / l;
+  }
+  return { U, sigma, V };
+}
+
+// M = T * R1 * S * R2. glTF instancing is one TRS, which cannot hold this,
+// but two ordinary nodes can, and every viewer composes them exactly.
+function factorAffine(m) {
+  const A = [m[0], m[1], m[2], m[4], m[5], m[6], m[8], m[9], m[10]];
+  const { U, sigma, V } = svd3(A);
+  const R1 = U.slice();
+  const R2 = transpose3(V);
+  const scale = sigma.slice();
+  if (det3(R1) < 0) {
+    R1[6] *= -1; R1[7] *= -1; R1[8] *= -1;
+    scale[2] *= -1;
+  }
+  if (det3(R2) < 0) {
+    R2[2] *= -1; R2[5] *= -1; R2[8] *= -1;
+    scale[2] *= -1;
+  }
+  return {
+    translation: [m[12], m[13], m[14]],
+    rotation: mat4.quatFromRotationMatrix(R1),
+    scale,
+    rotation2: mat4.quatFromRotationMatrix(R2),
+  };
+}
+
+function trsParts(translation, rotation, scale) {
+  const t = {};
+  if (translation.some((v) => Math.abs(v) > 1e-8)) t.translation = translation.map(r7);
+  if (rotation.some((v, i) => Math.abs(v - (i === 3 ? 1 : 0)) > 1e-8)) t.rotation = rotation.map(r7);
+  if (scale.some((v) => Math.abs(v - 1) > 1e-8)) t.scale = scale.map(r7);
+  return t;
+}
+
 function quantizeMesh(mesh) {
   const p = mesh.positions;
   const n = mesh.normals;
@@ -302,16 +409,25 @@ class Bin {
     this.parts.push(encoded);
     this.length += encoded.byteLength;
     const ext = { buffer: 0, byteOffset: offset, byteLength: encoded.byteLength, byteStride: stride, count, mode };
-    this.views.push({
+    // Three.js reads the decoded buffer with bufferView.byteStride. The
+    // extension stride alone is not enough, so a padded attribute (an int16
+    // vec3 is 8 bytes, not 6) was being read across the padding and every
+    // mesh came out scrambled. Index views stay tightly packed.
+    const view = {
       buffer: 1,
       byteOffset: 0,
       byteLength: raw.byteLength,
       extensions: { EXT_meshopt_compression: ext },
-    });
+    };
+    if (mode === 'ATTRIBUTES') view.byteStride = stride;
+    this.views.push(view);
     return this.views.length - 1;
   }
   accessor(view, componentType, type, count, extra = {}) {
     const a = { bufferView: view, componentType, count, type, ...extra };
+    const bv = this.views[view];
+    const width = { SCALAR: 1, VEC2: 2, VEC3: 3, VEC4: 4 }[type] * { 5120: 1, 5121: 1, 5122: 2, 5123: 2, 5125: 4, 5126: 4 }[componentType];
+    if (bv && bv.byteStride === width) delete bv.byteStride;
     this.accessors.push(a);
     return this.accessors.length - 1;
   }
@@ -697,6 +813,18 @@ export async function exportPackedGLB(text, { baseDir = '', sourceName = 'scene.
   const covered = new Uint8Array(scene.count);
   for (const seg of scene.dynamic) for (let i = seg.start; i < seg.end; i++) covered[i] = 1;
 
+  let identityAttrs = null;
+  function identityInstancing() {
+    if (!identityAttrs) {
+      identityAttrs = {
+        TRANSLATION: vecAccessor(new Float32Array(3), 1, 'VEC3', 5126, 3),
+        ROTATION: vecAccessor(new Float32Array([0, 0, 0, 1]), 1, 'VEC4', 5126, 4),
+        SCALE: vecAccessor(new Float32Array([1, 1, 1]), 1, 'VEC3', 5126, 3),
+      };
+    }
+    return identityAttrs;
+  }
+
   function geomUnit(entry) {
     const u = entry.desc && entry.desc.unit;
     if (!u) return 1;
@@ -729,49 +857,38 @@ export async function exportPackedGLB(text, { baseDir = '', sourceName = 'scene.
       const ids = rows.map((i) => nameId(scene.uid[i]));
       const sameName = ids.every((id) => id === ids[0]);
       const collide = (scene.flags[i0] & 2) === 0;
-      const T = new Float32Array(rows.length * 3);
-      const R = new Float32Array(rows.length * 4);
-      const S = new Float32Array(rows.length * 3);
-      const detail = new Float32Array(rows.length);
-      const idAttr = new Float32Array(rows.length);
       const dq = gmesh.dequant ? dequantMatrix(gmesh.dequant.center, gmesh.dequant.half) : null;
-      let lodIds = null;
+      // Instancing stores one TRS. A non-uniform scale with a rotation on
+      // either side is two rotations and a scale, so those copies become
+      // two nodes that share this mesh instead of a flattened instance.
+      const placed = [];
+      const shear = [];
       for (let k = 0; k < rows.length; k++) {
         const i = rows[k];
         const world = worldAt(i);
         let local = invP ? mul(invP, world) : world;
         if (dq && !gmesh.lines) local = mul(local, dq);
-        const d = mat4.decompose(local) || { translation: [local[12], local[13], local[14]], rotation: [0, 0, 0, 1], scale: [1, 1, 1] };
+        const d = mat4.decompose(local);
+        if (d) placed.push({ i, d, id: ids[k] });
+        else shear.push({ local, id: ids[k] });
+      }
+      const T = new Float32Array(placed.length * 3);
+      const R = new Float32Array(placed.length * 4);
+      const S = new Float32Array(placed.length * 3);
+      const detail = new Float32Array(placed.length);
+      const idAttr = new Float32Array(placed.length);
+      let lodIds = null;
+      for (let k = 0; k < placed.length; k++) {
+        const { i, d } = placed[k];
         T.set(d.translation, k * 3);
         R.set(d.rotation, k * 4);
         S.set(d.scale, k * 3);
         detail[k] = hash01(k + i);
-        idAttr[k] = ids[k];
+        idAttr[k] = placed[k].id;
       }
-      const attrs = {
-        TRANSLATION: vecAccessor(T, rows.length, 'VEC3', 5126, 3),
-        ROTATION: vecAccessor(R, rows.length, 'VEC4', 5126, 4),
-        SCALE: vecAccessor(S, rows.length, 'VEC3', 5126, 3),
-      };
-      const extras = {};
-      if (sameName) extras.id = ids[0];
-      else attrs._ID = vecAccessor(idAttr, rows.length, 'SCALAR', 5126, 1);
-      if (!collide) extras.collide = false;
-      if (scene.materials[mi].transparent) extras.sort = true;
+      const matName = json.materials[mi].name || 'mesh';
       const lodNode = scene.lodNode[i0];
-      if (lodNode >= 0) {
-        const sw = scene.lodSwitches[lodNode];
-        const unit = geomUnit(entry);
-        const world = worldAt(i0);
-        const scale = Math.cbrt(Math.abs(mat4.determinant3(world)) || 1) / unit || 1;
-        const qScale = gmesh.dequant ? gmesh.dequant.scale : 1;
-        extras.lod = {
-          distances: sw.distances.map((d) => r7(d / scale)),
-          child: scene.lodChild[i0],
-          unit: r7(unit * qScale),
-        };
-        attrs._DETAIL = vecAccessor(detail, rows.length, 'SCALAR', 5126, 1);
-      }
+      let tess = null;
       if (entry.lods > 1 && scene.lodChild[i0] === 0) {
         const levels = [];
         const deviation = entry.lodDeviation || [0];
@@ -783,18 +900,18 @@ export async function exportPackedGLB(text, { baseDir = '', sourceName = 'scene.
           const half = lm.dequant ? lm.dequant.half : [1, 1, 1];
           const center = lm.dequant ? lm.dequant.center : [0, 0, 0];
           const lower = addNode({
-            name: `${json.materials[mi].name || 'mesh'} level ${l}`,
+            name: `${matName} level ${l}`,
             mesh: lm.index,
             ...trsOf(dequantMatrix(center, half)),
           }, false);
           levels.push(lower);
-          map[l] = levels.length; // 1.. 
+          map[l] = levels.length; // 1..
         }
         map[0] = 0;
         for (let l = 1; l < entry.lods; l++) if (map[l] == null) map[l] = map[l - 1] || 0;
         if (levels.length) {
           const dqScale = gmesh.dequant ? gmesh.dequant.scale : 1;
-          extras.tess = {
+          tess = {
             map,
             deviation: deviation.map((d) => r7(d)),
             unit: r7(dqScale),
@@ -806,23 +923,86 @@ export async function exportPackedGLB(text, { baseDir = '', sourceName = 'scene.
           lodIds = levels;
         }
       }
-      const count = rows.length;
-      const matName = json.materials[mi].name || 'mesh';
-      const node = {
-        name: label || (count > 1 ? `${matName} ×${count}` : matName),
-        mesh: gmesh.index,
-        extras,
-        extensions: { EXT_mesh_gpu_instancing: { attributes: attrs } },
-      };
-      if (lodIds) {
-        node.extensions.MSFT_lod = { ids: lodIds };
-        used.add('MSFT_lod');
-      }
-      const idx = addNode(node, parentIndex == null);
-      if (parentIndex != null) {
-        const p = json.nodes[parentIndex];
+      const link = (parent, child) => {
+        const p = json.nodes[parent];
         p.children = p.children || [];
-        p.children.push(idx);
+        p.children.push(child);
+      };
+      if (placed.length) {
+        const attrs = {
+          TRANSLATION: vecAccessor(T, placed.length, 'VEC3', 5126, 3),
+          ROTATION: vecAccessor(R, placed.length, 'VEC4', 5126, 4),
+          SCALE: vecAccessor(S, placed.length, 'VEC3', 5126, 3),
+        };
+        const extras = {};
+        if (sameName) extras.id = ids[0];
+        else attrs._ID = vecAccessor(idAttr, placed.length, 'SCALAR', 5126, 1);
+        if (!collide) extras.collide = false;
+        if (scene.materials[mi].transparent) extras.sort = true;
+        if (lodNode >= 0) {
+          const sw = scene.lodSwitches[lodNode];
+          const unit = geomUnit(entry);
+          const world = worldAt(i0);
+          const scale = Math.cbrt(Math.abs(mat4.determinant3(world)) || 1) / unit || 1;
+          const qScale = gmesh.dequant ? gmesh.dequant.scale : 1;
+          extras.lod = {
+            distances: sw.distances.map((d) => r7(d / scale)),
+            child: scene.lodChild[i0],
+            unit: r7(unit * qScale),
+          };
+          attrs._DETAIL = vecAccessor(detail, placed.length, 'SCALAR', 5126, 1);
+        }
+        if (tess) extras.tess = tess;
+        const count = placed.length;
+        const node = {
+          name: label || (count > 1 ? `${matName} ×${count}` : matName),
+          mesh: gmesh.index,
+          extras,
+          extensions: { EXT_mesh_gpu_instancing: { attributes: attrs } },
+        };
+        if (lodIds) {
+          node.extensions.MSFT_lod = { ids: lodIds };
+          used.add('MSFT_lod');
+        }
+        const idx = addNode(node, parentIndex == null);
+        if (parentIndex != null) link(parentIndex, idx);
+      }
+      const qScale = gmesh.dequant ? gmesh.dequant.scale : 1;
+      for (const s of shear) {
+        const fact = factorAffine(s.local);
+        const extras = { id: s.id };
+        if (!collide) extras.collide = false;
+        if (scene.materials[mi].transparent) extras.sort = true;
+        if (tess) {
+          // The mesh node carries only the second rotation, so the stage's
+          // instance axis is 1. Fold this copy's longest axis into the unit
+          // the tessellation test divides by, which is how ES3D measures it.
+          let max = 0;
+          for (let c = 0; c < 3; c++) {
+            const len = Math.hypot(s.local[c * 4], s.local[c * 4 + 1], s.local[c * 4 + 2]);
+            if (len > max) max = len;
+          }
+          const det = Math.abs(mat4.determinant3(s.local)) || 1;
+          extras.tess = { ...tess, unit: r7(Math.cbrt(det) * qScale / (max || 1)) };
+        }
+        const holder = addNode(trsParts(fact.translation, fact.rotation, fact.scale), parentIndex == null);
+        if (parentIndex != null) link(parentIndex, holder);
+        const meshNode = {
+          name: label || matName,
+          mesh: gmesh.index,
+          ...trsParts([0, 0, 0], fact.rotation2, [1, 1, 1]),
+          extras,
+        };
+        // Lines cannot be GPU-instanced. A single instance keeps the curved
+        // shapes on the same level-of-detail path as the instanced ones.
+        if (!gmesh.lines) {
+          meshNode.extensions = { EXT_mesh_gpu_instancing: { attributes: identityInstancing() } };
+          if (lodIds) {
+            meshNode.extensions.MSFT_lod = { ids: lodIds };
+            used.add('MSFT_lod');
+          }
+        }
+        link(holder, addNode(meshNode, false));
       }
     }
   }
