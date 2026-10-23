@@ -1,7 +1,7 @@
 // Lorem Ipsum, the glTF version: the same page around the same flight, drawn
 // from castle.glb with three.js instead of from castle.es3d with ES3D.
 //
-// castle.glb is exported from castle.es3d by scripts/export-gltf.mjs, and
+// castle.glb is exported from castle.es3d with es3d glb, and
 // ./stage.js draws it. The page chrome below is src/main.js's, less what only
 // a text format offers (the source drawers, compiling for numbers without a
 // GPU), so the two pages can be compared side by side.

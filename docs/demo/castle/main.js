@@ -1,8 +1,8 @@
 // Lorem Ipsum: the page around the flight.
 //
-// The castle is one ES3D document (src/scene/castle.es3d). Its first camera is
-// driven by page scroll: <controls mode="scroll"/> plus animations with
-// timeline="scroll", whose keyTimes match the [data-es3d-stop] markers in
+// The castle is one ES3D document (scene/castle.es3d). Its first camera is
+// driven by page scroll: controls mode=scroll plus animations with
+// timeline=scroll, whose keyTimes match the [data-es3d-stop] markers in
 // castle/es3d/index.html. This file starts the stage, keeps the page chrome in step with
 // the flight, and adds what a page needs around it: a loader, chapter
 // navigation, a free-orbit mode with picking, the source drawers and a still
@@ -31,14 +31,28 @@ const stops = $$('[data-es3d-stop]').map((el) => Number(el.dataset.es3dStop));
  * Phones and low-memory devices get a thinner forest: every scatter inside the
  * "Forest" group places fewer trees. The rest of the document is untouched.
  */
+function blockEnd(src, from) {
+  let i = src.indexOf('{', from);
+  if (i < 0) return -1;
+  let depth = 0;
+  for (; i < src.length; i++) {
+    const c = src[i];
+    if (c === '{') depth++;
+    else if (c === '}') {
+      if (--depth === 0) return i + 1;
+    }
+  }
+  return -1;
+}
+
 function adaptToDevice(src) {
   const lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 4;
   const factor = params.has('detail') ? Number(params.get('detail')) : phone.matches || lowMemory ? 0.45 : 1;
   if (!(factor > 0 && factor < 1)) return src;
-  const start = src.indexOf('<group name="Forest">');
-  const end = src.indexOf('</group>', start);
+  const start = src.indexOf('group name=Forest {');
+  const end = blockEnd(src, start);
   if (start < 0 || end < 0) return src;
-  const forest = src.slice(start, end).replace(/count="(\d+)"/g, (_, n) => `count="${Math.max(1, Math.round(n * factor))}"`);
+  const forest = src.slice(start, end).replace(/\bcount=(\d+)/g, (_, n) => `count=${Math.max(1, Math.round(Number(n) * factor))}`);
   return src.slice(0, start) + forest + src.slice(end);
 }
 
@@ -49,18 +63,20 @@ function adaptToDevice(src) {
  */
 function framedFor(src, tall) {
   if (!tall) return src;
-  const land = src.indexOf('  <camera name="Flight" ');
-  const port = src.indexOf('  <camera name="Flight portrait"');
+  const land = src.search(/^camera name=Flight /m);
+  const port = src.indexOf('camera name="Flight portrait"');
   if (land < 0 || port < land) return src;
-  const portEnd = src.indexOf('</camera>', port) + '</camera>\n'.length;
-  return src.slice(0, land) + src.slice(port, portEnd) + src.slice(land, port) + src.slice(portEnd);
+  const landEnd = blockEnd(src, land);
+  const portEnd = blockEnd(src, port);
+  if (landEnd < 0 || portEnd < 0) return src;
+  return src.slice(0, land) + src.slice(port, portEnd) + src.slice(landEnd, port) + src.slice(land, landEnd) + src.slice(portEnd);
 }
 
 /** The same world for free exploration: orbit with limits, and the camera stops at walls. */
 function exploreVersion(src) {
-  const scroll = '<controls mode="scroll"/>';
-  if (!src.includes(scroll)) throw new Error('castle.es3d: expected <controls mode="scroll"/>');
-  return src.replace(scroll, '<controls mode="orbit" minDistance="16" maxDistance="780" maxPolar="88" collide="true" targetMin="-170,10,-170" targetMax="170,230,170"/>');
+  const scroll = 'controls mode=scroll';
+  if (!src.includes(scroll)) throw new Error('castle.es3d: expected controls mode=scroll');
+  return src.replace(scroll, 'controls mode=orbit minDistance=16 maxDistance=780 maxPolar=88 collide=true targetMin=-170,10,-170 targetMax=170,230,170');
 }
 
 const adapted = adaptToDevice(sceneSource);

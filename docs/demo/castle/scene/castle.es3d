@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
   Aetherhold: a wizard's castle on a floating island, at dusk.
 
   One hand-written ES3D document. Everything below is described, not
@@ -12,1053 +11,1070 @@
   so its gate and bridge face the approach. The landing page drives
   the first camera from page scroll; everything else that moves runs on the
   clock.
--->
-<es3d version="1" unit="m" name="Aetherhold">
-  <title>Aetherhold</title>
-  <desc>A floating wizard's castle above a moonlit lake: forest, mountains, waterfalls, an observatory and a scroll-driven camera that flies through it all.</desc>
-
-  <environment background="#05071a" sky="#4f5596" ground="#36345c" intensity="0.62" exposure="1.05"/>
-
-  <!-- ===================================================================
+*/
+es3d version=1 unit=m name=Aetherhold
+title "Aetherhold"
+desc "A floating wizard's castle above a moonlit lake: forest, mountains, waterfalls, an observatory and a scroll-driven camera that flies through it all."
+environment background=#05071a sky=#4f5596 ground=#36345c intensity=0.62 exposure=1.05
+/* ===================================================================
        Materials
-       =================================================================== -->
-
-  <!-- sky and celestial -->
-  <material id="sky" map="textures/sky.png" unlit="true" doubleSided="true"/>
-  <material id="moon" color="#fbf8ff" map="noise(5,#ffffff,#b9bbd6,9)" unlit="true"/>
-  <material id="star" color="#fff7ea" unlit="true"/>
-  <material id="starBlue" color="#c3d3ff" unlit="true"/>
-  <material id="starWarm" color="#ffd9a8" unlit="true"/>
-  <material id="moonGlow" color="#c8d2ff" map="textures/glow.png" unlit="true" opacity="0.55" alphaMode="blend" doubleSided="true"/>
-
-  <!-- land -->
-  <!-- the valley floor is seen at grazing angles against the moon, where any
-       lit surface turns into a sheet of glare: it is drawn unlit instead -->
-  <material id="grass" color="#0b1211" map="noise(48,#ffffff,#58665f,3)" uvScale="40,40" unlit="true"/>
-  <!-- grass on the island: a dark base and some metal keep the moon's grazing
-       glare off it while the torches still pool light on it -->
-  <material id="meadow" color="#16251d" map="noise(24,#ffffff,#7f908a,5)" uvScale="4,4" roughness="1" metallic="0.55"/>
-  <material id="shore" color="#121119" map="noise(32,#ffffff,#8a8796,8)" uvScale="8,8" unlit="true"/>
-  <material id="water" color="#070f26" roughness="0.1" normalMap="noise(24,0.55,3)" normalScale="0.7" uvScale="5,5"/>
-  <material id="rock" color="#5d5876" map="noise(10,#ffffff,#77748e,21)" normalMap="noise(12,1.2,4)" normalScale="1.4" roughness="0.92"/>
-  <material id="cliff" color="#3a3752" map="noise(10,#ffffff,#77748c,19)" normalMap="noise(10,1.4,6)" normalScale="1.4" roughness="1" metallic="0.45"/>
-  <material id="rockDark" color="#34324a" map="noise(8,#ffffff,#77748c,17)" normalMap="noise(10,1.4,6)" normalScale="1.4" roughness="0.95"/>
-  <material id="mountainNear" color="#1d2140" map="noise(6,#ffffff,#9a9cbc,2)" normalMap="noise(8,1.5,2)" roughness="0.95"/>
-  <material id="mountainFar" color="#2c3159" map="noise(6,#ffffff,#a4a8cc,12)" roughness="0.95"/>
-  <material id="mountainFarthest" color="#3b4071" roughness="1"/>
-  <material id="snow" color="#9aa1c4" map="noise(9,#ffffff,#a9b0cc,4)" roughness="0.7"/>
-
-  <!-- forest -->
-  <material id="pineA" color="#17322f" roughness="1" normalMap="noise(6,1,3)"/>
-  <material id="pineB" color="#1b3628" roughness="1" normalMap="noise(6,1,5)"/>
-  <material id="pineC" color="#132a2a" roughness="1" normalMap="noise(6,1,8)"/>
-  <material id="pineD" color="#203a34" roughness="1" normalMap="noise(6,1,9)"/>
-  <material id="bark" color="#35261f" roughness="0.9"/>
-  <!-- distant trees are silhouettes: unlit, so the moon behind them cannot glaze them -->
-  <material id="pineSilhouette" color="#0a1514" unlit="true"/>
-  <material id="pineSilhouetteB" color="#0c1712" unlit="true"/>
-
-  <!-- stone and roofs -->
-  <material id="stoneWall" color="#aaa6a3" map="bricks(20,#bdb9b4,#7d7976)" normalMap="bricks(20,0.7)" normalScale="0.6" uvScale="4.4,2" roughness="0.88"/>
-  <material id="stoneTower" color="#aaa6a3" map="bricks(20,#bdb9b4,#7d7976)" normalMap="bricks(20,0.7)" normalScale="0.6" uvScale="5.2,2.7" roughness="0.88"/>
-  <material id="stoneTurret" color="#aaa6a3" map="bricks(20,#bdb9b4,#7d7976)" normalMap="bricks(20,0.7)" normalScale="0.6" uvScale="3,4.4" roughness="0.88"/>
-  <material id="stoneDrum" color="#aaa6a3" map="bricks(20,#bdb9b4,#7d7976)" normalMap="bricks(20,0.7)" normalScale="0.6" uvScale="4.4,3.5" roughness="0.88"/>
-  <material id="stoneSpire1" color="#aaa6a3" map="bricks(20,#bdb9b4,#7d7976)" normalMap="bricks(20,0.7)" normalScale="0.6" uvScale="8.4,5.4" roughness="0.88"/>
-  <material id="stoneSpire2" color="#aaa6a3" map="bricks(20,#bdb9b4,#7d7976)" normalMap="bricks(20,0.7)" normalScale="0.6" uvScale="7.2,4.8" roughness="0.88"/>
-  <material id="stoneSpire3" color="#aaa6a3" map="bricks(20,#bdb9b4,#7d7976)" normalMap="bricks(20,0.7)" normalScale="0.6" uvScale="6,3" roughness="0.88"/>
-  <material id="stoneGate" color="#aaa6a3" map="bricks(20,#bdb9b4,#7d7976)" normalMap="bricks(20,0.7)" normalScale="0.6" uvScale="3,3" roughness="0.88"/>
-  <material id="stoneKeep" color="#aaa6a3" map="bricks(20,#bdb9b4,#7d7976)" normalMap="bricks(20,0.7)" normalScale="0.6" uvScale="3.8,1.6" roughness="0.88"/>
-  <material id="stoneDark" color="#6a6680" map="noise(14,#ffffff,#8c88a0,23)" normalMap="noise(14,1,23)" roughness="0.9"/>
-  <material id="stoneTrim" color="#c8c3c8" map="noise(20,#ffffff,#b8b3b8,29)" roughness="0.7"/>
-  <material id="slate" color="#24223a" map="noise(12,#ffffff,#8f8ba6,35)" roughness="0.3" metallic="0.1"/>
-  <material id="flagstone" color="#807c7a" map="noise(30,#ffffff,#9d9996,33)" normalMap="tiles(12,0.8,0.06)" uvScale="3,3" roughness="0.8"/>
-  <material id="roof" color="#33418a" normalMap="tiles(14,0.7,0.1)" uvScale="8,5" roughness="0.5" metallic="0.15"/>
-  <material id="roofViolet" color="#4a3384" normalMap="tiles(14,0.7,0.1)" uvScale="8,5" roughness="0.5" metallic="0.15"/>
-  <material id="gold" color="#e7b85e" emissive="#3d2606" metallic="0.85" roughness="0.35"/>
-  <material id="iron" color="#2a2933" metallic="0.8" roughness="0.45"/>
-  <material id="wood" color="#4a2f22" roughness="0.85"/>
-
-  <!-- light and magic -->
-  <material id="window" color="#2b1405" emissive="#ffb35a" emissiveIntensity="2.3"/>
-  <material id="windowDim" color="#1d0e04" emissive="#ff9a3c" emissiveIntensity="1.1"/>
-  <material id="windowMagic" color="#0d1a2a" emissive="#8fd8ff" emissiveIntensity="2"/>
-  <material id="flame" color="#ff8a2a" emissive="#ffb347" emissiveIntensity="3.2"/>
-  <material id="fire" map="textures/flame.png" unlit="true" opacity="0.98" alphaMode="blend" doubleSided="true"/>
-  <material id="crystal" color="#12385a" emissive="#55e1ff" emissiveIntensity="1.6" roughness="0.12" metallic="0.2"/>
-  <material id="crystalViolet" color="#2a1257" emissive="#b48cff" emissiveIntensity="1.7" roughness="0.12" metallic="0.2"/>
-  <material id="orb" color="#2a1450" emissive="#b98cff" emissiveIntensity="2.2"/>
-  <material id="orbShell" color="#8f6cff" unlit="true" opacity="0.16" alphaMode="blend"/>
-  <material id="orbHalo" color="#7d5cff" unlit="true" opacity="0.07" alphaMode="blend"/>
-  <material id="rune" color="#8ff0ff" unlit="true"/>
-  <material id="runeViolet" color="#d0a8ff" unlit="true"/>
-  <material id="ribbonViolet" color="#b48cff" unlit="true" opacity="0.42" alphaMode="blend" doubleSided="true"/>
-  <material id="ribbonCyan" color="#7fe7ff" unlit="true" opacity="0.42" alphaMode="blend" doubleSided="true"/>
-  <material id="mote" color="#ffd88a" unlit="true" opacity="0.85" alphaMode="blend"/>
-  <material id="firefly" color="#c8ff9a" unlit="true"/>
-  <material id="raven" color="#151327" roughness="0.85"/>
-  <material id="moteCyan" color="#a8f4ff" unlit="true"/>
-  <material id="glowWarm" color="#ffbf7a" map="textures/glow.png" unlit="true" opacity="0.7" alphaMode="blend" doubleSided="true"/>
-  <material id="glowCyan" color="#7fe7ff" map="textures/glow.png" unlit="true" opacity="0.6" alphaMode="blend" doubleSided="true"/>
-  <material id="glowViolet" color="#b994ff" map="textures/glow.png" unlit="true" opacity="0.75" alphaMode="blend" doubleSided="true"/>
-  <material id="banner" color="#55278a" roughness="0.8" doubleSided="true"/>
-  <material id="bannerTrim" color="#e7b85e" emissive="#5a3a0a" metallic="0.6" roughness="0.4" doubleSided="true"/>
-  <material id="falls" color="#eef5ff" map="textures/falls.png" emissive="#1a2f4c" opacity="0.9" alphaMode="blend" roughness="0.25" doubleSided="true"/>
-  <material id="fallsVeil" color="#dde9ff" map="textures/falls.png" uvScale="0.55,1" emissive="#122640" opacity="0.4" alphaMode="blend" roughness="0.3" doubleSided="true"/>
-  <material id="spray" color="#f4f8ff" unlit="true" opacity="0.5" alphaMode="blend"/>
-  <material id="foam" color="#e6f3ff" unlit="true" opacity="0.3" alphaMode="blend" doubleSided="true"/>
-  <material id="sprayMist" color="#dfe9ff" map="textures/mist.png" unlit="true" opacity="0.55" alphaMode="blend" doubleSided="true"/>
-  <material id="magicWater" color="#0c3044" emissive="#4fd8ff" emissiveIntensity="1.2" roughness="0.1"/>
-  <material id="leaves" color="#4b2f73" emissive="#1a0b2c" roughness="0.8" normalMap="noise(6,1.5,4)"/>
-  <material id="leavesLight" color="#6a3f96" emissive="#22103a" roughness="0.8" normalMap="noise(6,1.5,7)"/>
-  <material id="blossom" color="#ffb5e6" emissive="#ff73cf" emissiveIntensity="1.4"/>
-
-  <!-- atmosphere -->
-  <material id="mist" color="#4b4d88" map="textures/mist.png" unlit="true" opacity="0.18" alphaMode="blend" doubleSided="true"/>
-  <material id="mistLow" color="#8a90cc" map="textures/mist.png" unlit="true" opacity="0.14" alphaMode="blend" doubleSided="true"/>
-  <material id="cloud" color="#6f6aa8" map="textures/mist.png" unlit="true" opacity="0.5" alphaMode="blend" doubleSided="true"/>
-  <material id="cloudLit" color="#d58aa6" map="textures/mist.png" unlit="true" opacity="0.38" alphaMode="blend" doubleSided="true"/>
-
-  <!-- ===================================================================
+       =================================================================== */
+// sky and celestial
+material#sky map=textures/sky.png unlit=true doubleSided=true
+material#moon color=#fbf8ff map=noise(5,#ffffff,#b9bbd6,9) unlit=true
+material#star color=#fff7ea unlit=true
+material#starBlue color=#c3d3ff unlit=true
+material#starWarm color=#ffd9a8 unlit=true
+material#moonGlow color=#c8d2ff map=textures/glow.png unlit=true opacity=0.55 alphaMode=blend doubleSided=true
+// land
+/* the valley floor is seen at grazing angles against the moon, where any
+       lit surface turns into a sheet of glare: it is drawn unlit instead */
+material#grass color=#0b1211 map=noise(48,#ffffff,#58665f,3) uvScale=40,40 unlit=true
+/* grass on the island: a dark base and some metal keep the moon's grazing
+       glare off it while the torches still pool light on it */
+material#meadow color=#16251d map=noise(24,#ffffff,#7f908a,5) uvScale=4,4 roughness=1 metallic=0.55
+material#shore color=#121119 map=noise(32,#ffffff,#8a8796,8) uvScale=8,8 unlit=true
+material#water color=#070f26 roughness=0.1 normalMap=noise(24,0.55,3) normalScale=0.7 uvScale=5,5
+material#rock color=#5d5876 map=noise(10,#ffffff,#77748e,21) normalMap=noise(12,1.2,4) normalScale=1.4 roughness=0.92
+material#cliff color=#3a3752 map=noise(10,#ffffff,#77748c,19) normalMap=noise(10,1.4,6) normalScale=1.4 roughness=1 metallic=0.45
+material#rockDark color=#34324a map=noise(8,#ffffff,#77748c,17) normalMap=noise(10,1.4,6) normalScale=1.4 roughness=0.95
+material#mountainNear color=#1d2140 map=noise(6,#ffffff,#9a9cbc,2) normalMap=noise(8,1.5,2) roughness=0.95
+material#mountainFar color=#2c3159 map=noise(6,#ffffff,#a4a8cc,12) roughness=0.95
+material#mountainFarthest color=#3b4071 roughness=1
+material#snow color=#9aa1c4 map=noise(9,#ffffff,#a9b0cc,4) roughness=0.7
+// forest
+material#pineA color=#17322f roughness=1 normalMap=noise(6,1,3)
+material#pineB color=#1b3628 roughness=1 normalMap=noise(6,1,5)
+material#pineC color=#132a2a roughness=1 normalMap=noise(6,1,8)
+material#pineD color=#203a34 roughness=1 normalMap=noise(6,1,9)
+material#bark color=#35261f roughness=0.9
+// distant trees are silhouettes: unlit, so the moon behind them cannot glaze them
+material#pineSilhouette color=#0a1514 unlit=true
+material#pineSilhouetteB color=#0c1712 unlit=true
+// stone and roofs
+material#stoneWall color=#aaa6a3 map=bricks(20,#bdb9b4,#7d7976) normalMap=bricks(20,0.7) normalScale=0.6 uvScale=4.4,2 roughness=0.88
+material#stoneTower color=#aaa6a3 map=bricks(20,#bdb9b4,#7d7976) normalMap=bricks(20,0.7) normalScale=0.6 uvScale=5.2,2.7 roughness=0.88
+material#stoneTurret color=#aaa6a3 map=bricks(20,#bdb9b4,#7d7976) normalMap=bricks(20,0.7) normalScale=0.6 uvScale=3,4.4 roughness=0.88
+material#stoneDrum color=#aaa6a3 map=bricks(20,#bdb9b4,#7d7976) normalMap=bricks(20,0.7) normalScale=0.6 uvScale=4.4,3.5 roughness=0.88
+material#stoneSpire1 color=#aaa6a3 map=bricks(20,#bdb9b4,#7d7976) normalMap=bricks(20,0.7) normalScale=0.6 uvScale=8.4,5.4 roughness=0.88
+material#stoneSpire2 color=#aaa6a3 map=bricks(20,#bdb9b4,#7d7976) normalMap=bricks(20,0.7) normalScale=0.6 uvScale=7.2,4.8 roughness=0.88
+material#stoneSpire3 color=#aaa6a3 map=bricks(20,#bdb9b4,#7d7976) normalMap=bricks(20,0.7) normalScale=0.6 uvScale=6,3 roughness=0.88
+material#stoneGate color=#aaa6a3 map=bricks(20,#bdb9b4,#7d7976) normalMap=bricks(20,0.7) normalScale=0.6 uvScale=3,3 roughness=0.88
+material#stoneKeep color=#aaa6a3 map=bricks(20,#bdb9b4,#7d7976) normalMap=bricks(20,0.7) normalScale=0.6 uvScale=3.8,1.6 roughness=0.88
+material#stoneDark color=#6a6680 map=noise(14,#ffffff,#8c88a0,23) normalMap=noise(14,1,23) roughness=0.9
+material#stoneTrim color=#c8c3c8 map=noise(20,#ffffff,#b8b3b8,29) roughness=0.7
+material#slate color=#24223a map=noise(12,#ffffff,#8f8ba6,35) roughness=0.3 metallic=0.1
+material#flagstone color=#807c7a map=noise(30,#ffffff,#9d9996,33) normalMap=tiles(12,0.8,0.06) uvScale=3,3 roughness=0.8
+material#roof color=#33418a normalMap=tiles(14,0.7,0.1) uvScale=8,5 roughness=0.5 metallic=0.15
+material#roofViolet color=#4a3384 normalMap=tiles(14,0.7,0.1) uvScale=8,5 roughness=0.5 metallic=0.15
+material#gold color=#e7b85e emissive=#3d2606 metallic=0.85 roughness=0.35
+material#iron color=#2a2933 metallic=0.8 roughness=0.45
+material#wood color=#4a2f22 roughness=0.85
+// light and magic
+material#window color=#2b1405 emissive=#ffb35a emissiveIntensity=2.3
+material#windowDim color=#1d0e04 emissive=#ff9a3c emissiveIntensity=1.1
+material#windowMagic color=#0d1a2a emissive=#8fd8ff emissiveIntensity=2
+material#flame color=#ff8a2a emissive=#ffb347 emissiveIntensity=3.2
+material#fire map=textures/flame.png unlit=true opacity=0.98 alphaMode=blend doubleSided=true
+material#crystal color=#12385a emissive=#55e1ff emissiveIntensity=1.6 roughness=0.12 metallic=0.2
+material#crystalViolet color=#2a1257 emissive=#b48cff emissiveIntensity=1.7 roughness=0.12 metallic=0.2
+material#orb color=#2a1450 emissive=#b98cff emissiveIntensity=2.2
+material#orbShell color=#8f6cff unlit=true opacity=0.16 alphaMode=blend
+material#orbHalo color=#7d5cff unlit=true opacity=0.07 alphaMode=blend
+material#rune color=#8ff0ff unlit=true
+material#runeViolet color=#d0a8ff unlit=true
+material#ribbonViolet color=#b48cff unlit=true opacity=0.42 alphaMode=blend doubleSided=true
+material#ribbonCyan color=#7fe7ff unlit=true opacity=0.42 alphaMode=blend doubleSided=true
+material#mote color=#ffd88a unlit=true opacity=0.85 alphaMode=blend
+material#firefly color=#c8ff9a unlit=true
+material#raven color=#151327 roughness=0.85
+material#moteCyan color=#a8f4ff unlit=true
+material#glowWarm color=#ffbf7a map=textures/glow.png unlit=true opacity=0.7 alphaMode=blend doubleSided=true
+material#glowCyan color=#7fe7ff map=textures/glow.png unlit=true opacity=0.6 alphaMode=blend doubleSided=true
+material#glowViolet color=#b994ff map=textures/glow.png unlit=true opacity=0.75 alphaMode=blend doubleSided=true
+material#banner color=#55278a roughness=0.8 doubleSided=true
+material#bannerTrim color=#e7b85e emissive=#5a3a0a metallic=0.6 roughness=0.4 doubleSided=true
+material#falls color=#eef5ff map=textures/falls.png emissive=#1a2f4c opacity=0.9 alphaMode=blend roughness=0.25 doubleSided=true
+material#fallsVeil color=#dde9ff map=textures/falls.png uvScale=0.55,1 emissive=#122640 opacity=0.4 alphaMode=blend roughness=0.3 doubleSided=true
+material#spray color=#f4f8ff unlit=true opacity=0.5 alphaMode=blend
+material#foam color=#e6f3ff unlit=true opacity=0.3 alphaMode=blend doubleSided=true
+material#sprayMist color=#dfe9ff map=textures/mist.png unlit=true opacity=0.55 alphaMode=blend doubleSided=true
+material#magicWater color=#0c3044 emissive=#4fd8ff emissiveIntensity=1.2 roughness=0.1
+material#leaves color=#4b2f73 emissive=#1a0b2c roughness=0.8 normalMap=noise(6,1.5,4)
+material#leavesLight color=#6a3f96 emissive=#22103a roughness=0.8 normalMap=noise(6,1.5,7)
+material#blossom color=#ffb5e6 emissive=#ff73cf emissiveIntensity=1.4
+// atmosphere
+material#mist color=#4b4d88 map=textures/mist.png unlit=true opacity=0.18 alphaMode=blend doubleSided=true
+material#mistLow color=#8a90cc map=textures/mist.png unlit=true opacity=0.14 alphaMode=blend doubleSided=true
+material#cloud color=#6f6aa8 map=textures/mist.png unlit=true opacity=0.5 alphaMode=blend doubleSided=true
+material#cloudLit color=#d58aa6 map=textures/mist.png unlit=true opacity=0.38 alphaMode=blend doubleSided=true
+/* ===================================================================
        Global lights (the castle adds its own lamps further down)
-       =================================================================== -->
-
-  <!-- moonlight from behind and to the right of the castle, as seen from the approach -->
-  <light type="directional" name="Moonlight" color="#b7c4ff" intensity="1.2" direction="-0.382,-0.342,0.858"/>
-  <!-- the last of the sunset, low and warm from the far right -->
-  <light type="directional" name="Afterglow" color="#ff9c73" intensity="0.5" direction="-0.776,-0.18,0.605"/>
-  <!-- a cool lift from the viewer's side so walls facing the approach read -->
-  <light type="directional" name="Skyfill" color="#6a74c8" intensity="0.32" direction="0.15,-0.4,-0.9"/>
-
-  <!-- ===================================================================
+       =================================================================== */
+// moonlight from behind and to the right of the castle, as seen from the approach
+light type=directional name=Moonlight color=#b7c4ff intensity=1.2 direction=-0.382,-0.342,0.858
+// the last of the sunset, low and warm from the far right
+light type=directional name=Afterglow color=#ff9c73 intensity=0.5 direction=-0.776,-0.18,0.605
+// a cool lift from the viewer's side so walls facing the approach read
+light type=directional name=Skyfill color=#6a74c8 intensity=0.32 direction=0.15,-0.4,-0.9
+/* ===================================================================
        Reusable parts
-       =================================================================== -->
-
-  <defs>
-    <!-- mountains. One unit peak: a concave profile revolved with seven
+       =================================================================== */
+defs {
+  /* mountains. One unit peak: a concave profile revolved with seven
          facets. Its snow is the top of the same profile, a little wider,
-         turned and tilted about the summit so the snow line wanders.
-         Massifs lean and overlap several of them. -->
-    <group id="mtn">
-      <revolve segments="7" d="M 0 1 L 0.06 0.965 L 0.14 0.9 L 0.24 0.78 L 0.36 0.62 L 0.5 0.44 L 0.66 0.27 L 0.82 0.12 L 1 0 L 0 0 Z"/>
-      <revolve segments="7" position="0,1,0" rotation="3,25,0" scale="1.06,1,1.06" material="snow" d="M 0 0 L 0.06 -0.035 L 0.14 -0.1 L 0.2 -0.17 L 0 -0.17 Z"/>
-    </group>
-    <group id="massif">
-      <use ref="mtn" scale="270,300,240" rotation="6,0,9"/>
-      <use ref="mtn" position="-200,-10,60" scale="230,230,200" rotation="8,40,-12"/>
-      <use ref="mtn" position="210,-10,-40" scale="220,190,210" rotation="-7,70,13"/>
-      <use ref="mtn" position="40,-10,-180" scale="250,260,220" rotation="4,20,-8"/>
-      <use ref="mtn" position="-120,-20,-130" scale="200,160,200" rotation="-10,55,5"/>
-    </group>
-    <group id="range">
-      <use ref="mtn" scale="320,200,250" rotation="5,10,-7"/>
-      <use ref="mtn" position="270,-5,30" scale="240,165,210" rotation="6,45,10"/>
-      <use ref="mtn" position="-250,-5,-20" scale="220,145,200" rotation="-6,80,-9"/>
-    </group>
-
-    <!-- pines at three levels of detail -->
-    <group id="pine">
-      <cylinder radius="0.45" height="4" position="0,2,0" material="bark" segments="6"/>
-      <cone radius="4.2" height="7" position="0,5.6,0" segments="8"/>
-      <cone radius="3.3" height="6.2" position="0,8.6,0" segments="8"/>
-      <cone radius="2.3" height="5.2" position="0,11.6,0" segments="8"/>
-    </group>
-    <group id="pineMid">
-      <cone radius="4.2" height="9" position="0,6,0" segments="6"/>
-      <cone radius="2.8" height="7" position="0,10.4,0" segments="6"/>
-    </group>
-    <group id="pineFar">
-      <cone radius="4" height="14" position="0,7,0" segments="5"/>
-    </group>
-    <lod id="tree" distances="140,420">
-      <use ref="pine"/>
-      <use ref="pineMid" material="pineSilhouette"/>
-      <use ref="pineFar" material="pineSilhouetteB"/>
-    </lod>
-
-    <sphere id="boulder" radius="1" segments="6" scale="1,0.62,0.85"/>
-
-    <!-- a hexagonal crystal, base at the origin, pointing up -->
-    <group id="shard">
-      <cylinder radius="1" height="4" position="0,2,0" segments="6"/>
-      <cone radius="1" height="2.2" position="0,5.1,0" segments="6"/>
-    </group>
-    <group id="crystalCluster">
-      <use ref="shard" scale="1.2,1.6,1.2"/>
-      <use ref="shard" position="1.4,0,0.4" rotation="0,20,-24" scale="0.8,1.1,0.8"/>
-      <use ref="shard" position="-1.2,0,0.6" rotation="10,0,26" scale="0.7,1,0.7"/>
-      <use ref="shard" position="0.2,0,-1.3" rotation="-28,0,4" scale="0.6,0.9,0.6"/>
-    </group>
-
-    <!-- outlines -->
-    <path id="gothicArch" d="M -0.5 0 L 0.5 0 L 0.5 1.4 C 0.5 1.8 0.26 2.05 0 2.2 C -0.26 2.05 -0.5 1.8 -0.5 1.4 Z"/>
-    <path id="gateOutline" d="M -5.5 0 L -2.6 0 L -2.6 5.2 C -2.6 6.9 -1.3 8.4 0 8.9 C 1.3 8.4 2.6 6.9 2.6 5.2 L 2.6 0 L 5.5 0 L 5.5 15 L -5.5 15 Z"/>
-    <path id="bannerOutline" d="M -1 0 L 1 0 L 1 -6 L 0 -4.8 L -1 -6 Z"/>
-    <path id="sigilStar" d="M 0 1 L -0.161 0.388 L -0.707 0.707 L -0.388 0.161 L -1 0 L -0.388 -0.161 L -0.707 -0.707 L -0.161 -0.388 L 0 -1 L 0.161 -0.388 L 0.707 -0.707 L 0.388 -0.161 L 1 0 L 0.388 0.161 L 0.707 0.707 L 0.161 0.388 Z"/>
-    <path id="roofProfile" d="M 0 0 L 5.6 0 L 5.25 0.5 C 3.6 2.6 1.4 7.5 0 14 Z"/>
-    <path id="spireProfile" d="M 0 0 L 3.2 0 L 3 0.4 C 2 2.5 0.8 8 0 13 Z"/>
-
-    <!-- a glowing gothic window, 1.4 x 3.1 m, facing +Z -->
-    <group id="archWindow">
-      <extrude path="gothicArch" depth="0.5" center="true" scale="1.7,1.7,1" material="stoneTrim"/>
-      <extrude path="gothicArch" depth="0.6" center="true" scale="1.4,1.4,1" material="window"/>
-    </group>
-    <group id="archWindowSmall">
-      <extrude path="gothicArch" depth="0.5" center="true" scale="1.15,1.15,1" material="stoneTrim"/>
-      <extrude path="gothicArch" depth="0.6" center="true" scale="0.9,0.9,1" material="window"/>
-    </group>
-
-    <!-- a swallow-tailed banner with the house sigil, hanging from y = 0 -->
-    <group id="hangingBanner">
-      <cylinder radius="0.07" height="2.6" rotation="0,0,90" position="0,0.05,0" material="gold"/>
-      <extrude path="bannerOutline" depth="0.06" center="true" material="banner"/>
-      <extrude path="sigilStar" depth="0.1" center="true" position="0,-2.2,0" scale="0.62" material="bannerTrim"/>
-      <animate attr="rotation" values="0,-6,0; 0,6,0" dur="3.7s" alternate="true" easing="ease-in-out"/>
-    </group>
-
-    <!-- a pennant on a pole, base at y = 0 -->
-    <group id="pennant">
-      <cylinder radius="0.08" height="4" position="0,2,0" material="gold"/>
-      <group position="0,3.8,0">
-        <extrude d="M 0 0 L 3.2 -0.55 L 0 -1.1 Z" depth="0.05" center="true" material="banner"/>
-        <animate attr="rotation" values="0,-14,0; 0,10,0" dur="2.3s" alternate="true" easing="ease-in-out"/>
-      </group>
-    </group>
-
-    <!-- a curtain wall segment, 23 m long along X, outer face +Z, base at y = 0 -->
-    <group id="wall" material="stoneWall">
-      <box size="23,2.2,3.4" position="0,1.1,0" material="stoneDark"/>
-      <box size="23,11,2.4" position="0,6.5,0"/>
-      <box size="23,0.6,3" position="0,12.2,0.1" material="stoneTrim"/>
-      <repeat count="9" step="translate(2.5,0,0)" position="-10,13.25,1.05">
-        <box size="1.4,1.5,0.7"/>
-      </repeat>
-      <repeat count="9" step="translate(2.5,0,0)" position="-10,12.95,-1.05">
-        <box size="1.4,0.9,0.5"/>
-      </repeat>
-      <repeat count="3" step="translate(7,0,0)" position="-7,7,1.2">
-        <box size="0.32,1.7,0.2" material="windowDim"/>
-      </repeat>
-    </group>
-
-    <!-- a round wall tower with a conical slate roof, base at y = 0 -->
-    <group id="tower" material="stoneTower">
-      <cylinder radius="4.9" radiusTop="4.3" height="3" position="0,1.5,0" material="stoneDark"/>
-      <cylinder radius="4.3" height="15" position="0,10.5,0"/>
-      <repeat count="16" step="rotateY(22.5)" position="0,17.55,0">
-        <box size="0.6,0.9,0.8" position="0,0,4.5" material="stoneTrim"/>
-      </repeat>
-      <cylinder radius="4.85" height="2.6" position="0,19.3,0"/>
-      <cylinder radius="4.95" height="0.35" position="0,20.75,0" material="stoneTrim"/>
-      <revolve path="roofProfile" segments="20" position="0,20.9,0" material="roof"/>
-      <sphere radius="0.42" position="0,35.1,0" material="gold"/>
-      <cylinder radius="0.09" height="3" position="0,36.5,0" material="gold"/>
-      <repeat count="4" step="rotateY(90)" rotation="0,45,0">
-        <box size="0.36,1.8,0.4" position="0,11.5,4.15" material="window"/>
-      </repeat>
-      <repeat count="3" step="rotateY(120)" rotation="0,15,0">
-        <box size="0.5,1.2,0.4" position="0,19.4,4.7" material="windowDim"/>
-      </repeat>
-    </group>
-
-    <!-- a slender inner turret with a tall spire, base at y = 0, body 24 m -->
-    <group id="turret" material="stoneTurret">
-      <cylinder radius="2.5" height="24" position="0,12,0"/>
-      <cylinder radius="2.9" height="0.5" position="0,24.25,0" material="stoneTrim"/>
-      <revolve path="spireProfile" segments="16" position="0,24.5,0" material="roofViolet"/>
-      <sphere radius="0.3" position="0,37.6,0" material="gold"/>
-      <repeat count="3" step="rotateY(120)">
-        <use ref="archWindowSmall" position="0,19,2.45" scale="0.8"/>
-      </repeat>
-      <repeat count="2" step="rotateY(180)" rotation="0,60,0">
-        <use ref="archWindowSmall" position="0,11,2.45" scale="0.8"/>
-      </repeat>
-    </group>
-
-    <!-- a floating bridge slab with a rock keel -->
-    <group id="slab">
-      <box size="5.4,0.9,8.6" radius="0.15" material="stoneTrim"/>
-      <box size="4.6,0.12,8" position="0,0.48,0" material="flagstone"/>
-      <cone radius="3.4" height="7" rotation="180,0,0" position="0,-3.9,0" segments="5" material="rockDark"/>
-      <cone radius="1.6" height="4" rotation="180,25,0" position="1.3,-2.5,2.2" segments="5" material="rockDark"/>
-      <box size="0.25,0.25,8.6" position="2.55,0.55,0" material="gold"/>
-      <box size="0.25,0.25,8.6" position="-2.55,0.55,0" material="gold"/>
-    </group>
-    <group id="slabLit">
-      <use ref="slab"/>
-      <use ref="lamppost" position="2.3,0.45,-3.2"/>
-      <use ref="lamppost" position="-2.3,0.45,-3.2"/>
-    </group>
-    <group id="lamppost">
-      <cylinder radius="0.11" height="2.8" position="0,1.4,0" material="iron"/>
-      <box size="0.55,0.7,0.55" position="0,3.05,0" material="flame"/>
-      <cone radius="0.5" height="0.5" position="0,3.65,0" segments="4" rotation="0,45,0" material="iron"/>
-      <plane size="2.4" rotation="90,0,0" position="0,3.05,0" material="glowWarm"/>
-    </group>
-
-    <!-- a flame: three crossed cards with a soft flame texture, flickering -->
-    <group id="flameCards">
-      <repeat count="3" step="rotateY(60)">
-        <plane size="1,2" rotation="90,0,0" position="0,1,0" material="fire"/>
-      </repeat>
-      <animate attr="scale" values="1,1,1; 0.9,1.18,0.9; 1.08,0.88,1.08; 0.95,1.1,0.95; 1,1,1" dur="0.8s" smooth="true"/>
-    </group>
-    <!-- a torch: sconce, flame and a warm halo -->
-    <group id="torch">
-      <cylinder radius="0.12" radiusTop="0.25" height="0.9" position="0,0.45,0" material="iron"/>
-      <use ref="flameCards" position="0,0.85,0" scale="0.55"/>
-      <plane size="2.6" rotation="90,0,0" position="0,1.35,0.25" material="glowWarm"/>
-    </group>
-
-    <!-- a waterfall: a stream runs to the rim, curls over it and drops 94 m.
+         its seven sides lined up with the rock's and tilted a little about the
+         summit so the snow line wanders; its lower edge tucks into the slope.
+         Massifs lean and overlap several of them. */
+  group#mtn {
+    revolve segments=7 d="M 0 1 L 0.06 0.965 L 0.14 0.9 L 0.24 0.78 L 0.36 0.62 L 0.5 0.44 L 0.66 0.27 L 0.82 0.12 L 1 0 L 0 0 Z"
+    revolve segments=7 position=0,1,0 rotation=1.5,0,0 scale=1.07,1,1.07 material=snow d="M 0 0 L 0.06 -0.035 L 0.14 -0.1 L 0.2 -0.17 L 0.18 -0.2 L 0 -0.2 Z"
+  }
+  group#massif {
+    use @mtn scale=270,300,240 rotation=6,0,9
+    use @mtn position=-200,-10,60 scale=230,230,200 rotation=8,40,-12
+    use @mtn position=210,-10,-40 scale=220,190,210 rotation=-7,70,13
+    use @mtn position=40,-10,-180 scale=250,260,220 rotation=4,20,-8
+    use @mtn position=-120,-20,-130 scale=200,160,200 rotation=-10,55,5
+  }
+  group#range {
+    use @mtn scale=320,200,250 rotation=5,10,-7
+    use @mtn position=270,-5,30 scale=240,165,210 rotation=6,45,10
+    use @mtn position=-250,-5,-20 scale=220,145,200 rotation=-6,80,-9
+  }
+  // pines at three levels of detail
+  group#pine {
+    cylinder radius=0.45 height=4 position=0,2,0 material=bark segments=6
+    cone radius=4.2 height=7 position=0,5.6,0 segments=8
+    cone radius=3.3 height=6.2 position=0,8.6,0 segments=8
+    cone radius=2.3 height=5.2 position=0,11.6,0 segments=8
+  }
+  group#pineMid {
+    cone radius=4.2 height=9 position=0,6,0 segments=6
+    cone radius=2.8 height=7 position=0,10.4,0 segments=6
+  }
+  group#pineFar {
+    cone radius=4 height=14 position=0,7,0 segments=5
+  }
+  lod#tree distances=140,420 {
+    use @pine
+    use @pineMid material=pineSilhouette
+    use @pineFar material=pineSilhouetteB
+  }
+  sphere#boulder radius=1 segments=6 scale=1,0.62,0.85
+  // a hexagonal crystal, base at the origin, pointing up
+  group#shard {
+    cylinder radius=1 height=4 position=0,2,0 segments=6
+    cone radius=1 height=2.2 position=0,5.1,0 segments=6
+  }
+  group#crystalCluster {
+    use @shard scale=1.2,1.6,1.2
+    use @shard position=1.4,0,0.4 rotation=0,20,-24 scale=0.8,1.1,0.8
+    use @shard position=-1.2,0,0.6 rotation=10,0,26 scale=0.7,1,0.7
+    use @shard position=0.2,0,-1.3 rotation=-28,0,4 scale=0.6,0.9,0.6
+  }
+  // outlines
+  path#gothicArch d="M -0.5 0 L 0.5 0 L 0.5 1.4 C 0.5 1.8 0.26 2.05 0 2.2 C -0.26 2.05 -0.5 1.8 -0.5 1.4 Z"
+  path#gateOutline d="M -5.5 0 L -2.6 0 L -2.6 5.2 C -2.6 6.9 -1.3 8.4 0 8.9 C 1.3 8.4 2.6 6.9 2.6 5.2 L 2.6 0 L 5.5 0 L 5.5 15 L -5.5 15 Z"
+  path#bannerOutline d="M -1 0 L 1 0 L 1 -6 L 0 -4.8 L -1 -6 Z"
+  path#sigilStar d="M 0 1 L -0.161 0.388 L -0.707 0.707 L -0.388 0.161 L -1 0 L -0.388 -0.161 L -0.707 -0.707 L -0.161 -0.388 L 0 -1 L 0.161 -0.388 L 0.707 -0.707 L 0.388 -0.161 L 1 0 L 0.388 0.161 L 0.707 0.707 L 0.161 0.388 Z"
+  path#roofProfile d="M 0 0 L 5.6 0 L 5.25 0.5 C 3.6 2.6 1.4 7.5 0 14 Z"
+  path#spireProfile d="M 0 0 L 3.2 0 L 3 0.4 C 2 2.5 0.8 8 0 13 Z"
+  /* a glowing gothic window, 1.4 x 3.1 m, facing +Z. The origin is the
+       centre of the glass, so a window is placed, turned and scaled about
+       its middle (each extrude is lifted by half its scaled 2.2 m height) */
+  group#archWindow {
+    extrude path=gothicArch depth=0.5 center=true position=0,-1.87,0 scale=1.7,1.7,1 material=stoneTrim
+    extrude path=gothicArch depth=0.6 center=true position=0,-1.54,0 scale=1.4,1.4,1 material=window
+  }
+  group#archWindowSmall {
+    extrude path=gothicArch depth=0.5 center=true position=0,-1.265,0 scale=1.15,1.15,1 material=stoneTrim
+    extrude path=gothicArch depth=0.6 center=true position=0,-0.99,0 scale=0.9,0.9,1 material=window
+  }
+  // a swallow-tailed banner with the house sigil, hanging from y = 0
+  group#hangingBanner {
+    cylinder radius=0.07 height=2.6 rotation=0,0,90 position=0,0.05,0 material=gold
+    extrude path=bannerOutline depth=0.06 center=true material=banner
+    extrude path=sigilStar depth=0.1 center=true position=0,-2.2,0 scale=0.62 material=bannerTrim
+    animate attr=rotation values="0,-6,0; 0,6,0" dur=3.7s alternate=true easing=ease-in-out
+  }
+  // a pennant on a pole, base at y = 0
+  group#pennant {
+    cylinder radius=0.08 height=4 position=0,2,0 material=gold
+    group position=0,3.8,0 {
+      extrude d="M 0 0 L 3.2 -0.55 L 0 -1.1 Z" depth=0.05 center=true material=banner
+      animate attr=rotation values="0,-14,0; 0,10,0" dur=2.3s alternate=true easing=ease-in-out
+    }
+  }
+  // a curtain wall segment, 23 m long along X, outer face +Z, base at y = 0
+  group#wall material=stoneWall {
+    box size=23,2.2,3.4 position=0,1.1,0 material=stoneDark
+    box size=23,11,2.4 position=0,6.5,0
+    box size=23,0.6,3 position=0,12.2,0.1 material=stoneTrim
+    repeat count=9 step=translate(2.5,0,0) position=-10,13.25,1.05 {
+      box size=1.4,1.5,0.7
+    }
+    repeat count=9 step=translate(2.5,0,0) position=-10,12.95,-1.05 {
+      box size=1.4,0.9,0.5
+    }
+    repeat count=3 step=translate(7,0,0) position=-7,7,1.2 {
+      box size=0.32,1.7,0.2 material=windowDim
+    }
+  }
+  // a round wall tower with a conical slate roof, base at y = 0
+  group#tower material=stoneTower {
+    cylinder radius=4.9 radiusTop=4.3 height=3 position=0,1.5,0 material=stoneDark
+    cylinder radius=4.3 height=15 position=0,10.5,0
+    repeat count=16 step=rotateY(22.5) position=0,17.55,0 {
+      box size=0.6,0.9,0.8 position=0,0,4.5 material=stoneTrim
+    }
+    cylinder radius=4.85 height=2.6 position=0,19.3,0
+    cylinder radius=4.95 height=0.35 position=0,20.75,0 material=stoneTrim
+    revolve path=roofProfile segments=20 position=0,20.9,0 material=roof
+    sphere radius=0.42 position=0,35.1,0 material=gold
+    cylinder radius=0.09 height=3 position=0,36.5,0 material=gold
+    repeat count=4 step=rotateY(90) rotation=0,45,0 {
+      box size=0.36,1.8,0.4 position=0,11.5,4.15 material=window
+    }
+    repeat count=3 step=rotateY(120) rotation=0,15,0 {
+      box size=0.5,1.2,0.4 position=0,19.4,4.7 material=windowDim
+    }
+  }
+  // a slender inner turret with a tall spire, base at y = 0, body 24 m
+  group#turret material=stoneTurret {
+    cylinder radius=2.5 height=24 position=0,12,0
+    cylinder radius=2.9 height=0.5 position=0,24.25,0 material=stoneTrim
+    revolve path=spireProfile segments=16 position=0,24.5,0 material=roofViolet
+    sphere radius=0.3 position=0,37.6,0 material=gold
+    repeat count=3 step=rotateY(120) {
+      use @archWindowSmall position=0,19,2.45 scale=0.8
+    }
+    repeat count=2 step=rotateY(180) rotation=0,60,0 {
+      use @archWindowSmall position=0,11,2.45 scale=0.8
+    }
+  }
+  // a floating bridge slab with a rock keel
+  group#slab {
+    box size=5.4,0.9,8.6 radius=0.15 material=stoneTrim
+    box size=4.6,0.12,8 position=0,0.48,0 material=flagstone
+    cone radius=3.4 height=7 rotation=180,0,0 position=0,-3.9,0 segments=5 material=rockDark
+    cone radius=1.6 height=4 rotation=180,25,0 position=1.3,-2.5,2.2 segments=5 material=rockDark
+    box size=0.25,0.25,8.6 position=2.55,0.55,0 material=gold
+    box size=0.25,0.25,8.6 position=-2.55,0.55,0 material=gold
+  }
+  group#slabLit {
+    use @slab
+    use @lamppost position=2.3,0.45,-3.2
+    use @lamppost position=-2.3,0.45,-3.2
+  }
+  group#lamppost {
+    cylinder radius=0.11 height=2.8 position=0,1.4,0 material=iron
+    box size=0.55,0.7,0.55 position=0,3.05,0 material=flame
+    cone radius=0.5 height=0.5 position=0,3.65,0 segments=4 rotation=0,45,0 material=iron
+    plane size=2.4 rotation=90,0,0 position=0,3.05,0 material=glowWarm
+  }
+  // a flame: three crossed cards with a soft flame texture, flickering
+  group#flameCards {
+    repeat count=3 step=rotateY(60) {
+      plane size=1,2 rotation=90,0,0 position=0,1,0 material=fire
+    }
+    animate attr=scale values="1,1,1; 0.9,1.18,0.9; 1.08,0.88,1.08; 0.95,1.1,0.95; 1,1,1" dur=0.8s smooth=true
+  }
+  // a torch: sconce, flame and a warm halo
+  group#torch {
+    cylinder radius=0.12 radiusTop=0.25 height=0.9 position=0,0.45,0 material=iron
+    use @flameCards position=0,0.85,0 scale=0.55
+    plane size=2.6 rotation=90,0,0 position=0,1.35,0.25 material=glowWarm
+  }
+  /* a waterfall: a stream runs to the rim, curls over it and drops 94 m.
          The sheet is one sweep along 3D path data with a streaked texture;
          patches of spray slide down it on a short loop, and the splash
-         churns where it meets the lake. -->
-    <group id="sprayPatch" rotation="90,0,0">
-      <scatter count="18" area="8,8" seed="3" randomScale="1,1,0.4..1.5">
-        <box size="0.14,0.14,3.6" material="spray"/>
-      </scatter>
-    </group>
-    <group id="cascade">
-      <box size="9,0.3,10" position="0,0.75,-4" material="magicWater"/>
-      <box size="2,2.2,12" position="5.4,1,-4" material="rockDark" radius="0.6"/>
-      <box size="2,1.8,12" position="-5.4,0.9,-4" material="rockDark" radius="0.6"/>
-      <sweep d="M -4 -0.2 L 4 -0.2 L 4 0.2 L -4 0.2 Z" along="M 0 0.95 -8 L 0 0.95 0.6 Q 0 0.95 3.8 0 -3 4.2 L 0 -95 4.6" material="falls"/>
-      <sweep d="M -4.8 -0.1 L 4.8 -0.1 L 4.8 0.1 L -4.8 0.1 Z" along="M 0 -2 5 L 0 -95 5.8" material="fallsVeil"/>
-      <group>
-        <repeat count="12" step="translate(0,-8,0)" position="0,-6,5.3">
-          <use ref="sprayPatch"/>
-        </repeat>
-        <animate attr="position" from="0,0,0" to="0,-8,0" dur="0.55s"/>
-      </group>
-      <group position="0,-94.6,5">
-        <plane size="40" material="mistLow"/>
-        <repeat count="3" step="rotateY(60)">
-          <plane size="22,14" rotation="90,0,0" position="0,5,0" material="sprayMist"/>
-        </repeat>
-        <scatter count="18" radius="5.5" seed="9" randomScale="0.6..1.5" material="foam">
-          <sphere radius="1.5" segments="8"><animate attr="scale" values="1;1.4;0.8;1" dur="1.3s" smooth="true"/></sphere>
-        </scatter>
-      </group>
-    </group>
-
-    <!-- a raven: two wings on one definition each, the left one mirrored
-         with a negative scale, so a single rotation makes both beat -->
-    <group id="wingSlow">
-      <extrude d="M 0 0.3 L 1.9 -0.3 L 1.7 -0.62 L 0 -0.42 Z" depth="0.05" center="true" rotation="90,0,0"/>
-      <animate attr="rotation" values="0,0,-30; 0,0,24" dur="0.62s" alternate="true" easing="ease-in-out"/>
-    </group>
-    <group id="wingFast">
-      <extrude d="M 0 0.3 L 1.9 -0.3 L 1.7 -0.62 L 0 -0.42 Z" depth="0.05" center="true" rotation="90,0,0"/>
-      <animate attr="rotation" values="0,0,-28; 0,0,26" dur="0.47s" alternate="true" easing="ease-in-out"/>
-    </group>
-    <group id="ravenSlow" material="raven">
-      <sphere radius="0.2" scale="1,0.85,2.6" segments="8"/>
-      <use ref="wingSlow"/>
-      <use ref="wingSlow" scale="-1,1,1"/>
-    </group>
-    <group id="ravenFast" material="raven">
-      <sphere radius="0.2" scale="1,0.85,2.6" segments="8"/>
-      <use ref="wingFast"/>
-      <use ref="wingFast" scale="-1,1,1"/>
-    </group>
-
-    <!-- rune glyphs, drawn as glowing strokes in the XY plane -->
-    <group id="runeA">
-      <polyline points="0,-1,0 0,1,0" radius="0.07" segments="5"/>
-      <polyline points="0,0.15,0 -0.6,0.9,0" radius="0.07" segments="5"/>
-      <polyline points="0,0.15,0 0.6,0.9,0" radius="0.07" segments="5"/>
-    </group>
-    <group id="runeB">
-      <polyline points="-0.35,-1,0 -0.35,1,0 0.45,0.45,0 -0.35,-0.1,0" radius="0.07" segments="5"/>
-    </group>
-    <group id="runeC">
-      <polyline points="-0.55,1,0 0.55,-1,0" radius="0.07" segments="5"/>
-      <polyline points="0.55,1,0 -0.55,-1,0" radius="0.07" segments="5"/>
-      <polyline points="-0.55,0,0 0.55,0,0" radius="0.07" segments="5"/>
-    </group>
-    <group id="runeD">
-      <polyline points="0,-1,0 0,1,0 0.55,0.55,0 0,0.1,0" radius="0.07" segments="5"/>
-      <polyline points="0,0.1,0 0.55,-0.45,0" radius="0.07" segments="5"/>
-    </group>
-  </defs>
-
-  <!-- ===================================================================
+         churns where it meets the lake. */
+  group#sprayPatch rotation=90,0,0 {
+    scatter count=18 area=8,8 seed=3 randomScale=1,1,0.4..1.5 {
+      box size=0.14,0.14,3.6 material=spray
+    }
+  }
+  group#cascade {
+    box size=9,0.3,10 position=0,0.75,-4 material=magicWater
+    box size=2,2.2,12 position=5.4,1,-4 material=rockDark radius=0.6
+    box size=2,1.8,12 position=-5.4,0.9,-4 material=rockDark radius=0.6
+    sweep d="M -0.2 -4 L 0.2 -4 L 0.2 4 L -0.2 4 Z" along="M 0 0.95 -8 L 0 0.95 0.6 Q 0 0.95 3.8 0 -3 4.2 L 0 -95 4.6" material=falls
+    sweep d="M -4.8 -0.1 L 4.8 -0.1 L 4.8 0.1 L -4.8 0.1 Z" along="M 0 -2 5 L 0 -95 5.8" material=fallsVeil
+    group {
+      repeat count=12 step=translate(0,-8,0) position=0,-6,5.3 {
+        use @sprayPatch
+      }
+      animate attr=position from=0,0,0 to=0,-8,0 dur=0.55s
+    }
+    group position=0,-94.6,5 {
+      plane size=40 position=0,0.3,0 material=mistLow
+      repeat count=3 step=rotateY(60) {
+        plane size=22,14 rotation=90,0,0 position=0,5,0 material=sprayMist
+      }
+      scatter count=18 radius=5.5 seed=9 randomScale=0.6..1.5 material=foam {
+        sphere radius=1.5 segments=8 {
+          animate attr=scale values="1;1.4;0.8;1" dur=1.3s smooth=true
+        }
+      }
+    }
+  }
+  /* a raven: two wings on one definition each, the left one mirrored
+         with a negative scale, so a single rotation makes both beat */
+  group#wingSlow {
+    extrude d="M 0 0.3 L 1.9 -0.3 L 1.7 -0.62 L 0 -0.42 Z" depth=0.05 center=true rotation=90,0,0
+    animate attr=rotation values="0,0,-30; 0,0,24" dur=0.62s alternate=true easing=ease-in-out
+  }
+  group#wingFast {
+    extrude d="M 0 0.3 L 1.9 -0.3 L 1.7 -0.62 L 0 -0.42 Z" depth=0.05 center=true rotation=90,0,0
+    animate attr=rotation values="0,0,-28; 0,0,26" dur=0.47s alternate=true easing=ease-in-out
+  }
+  group#ravenSlow material=raven {
+    sphere radius=0.2 scale=1,0.85,2.6 segments=8
+    use @wingSlow
+    use @wingSlow scale=-1,1,1
+  }
+  group#ravenFast material=raven {
+    sphere radius=0.2 scale=1,0.85,2.6 segments=8
+    use @wingFast
+    use @wingFast scale=-1,1,1
+  }
+  // rune glyphs, drawn as glowing strokes in the XY plane
+  group#runeA {
+    polyline points="0,-1,0 0,1,0" radius=0.07 segments=5
+    polyline points="0,0.15,0 -0.6,0.9,0" radius=0.07 segments=5
+    polyline points="0,0.15,0 0.6,0.9,0" radius=0.07 segments=5
+  }
+  group#runeB {
+    polyline points="-0.35,-1,0 -0.35,1,0 0.45,0.45,0 -0.35,-0.1,0" radius=0.07 segments=5
+  }
+  group#runeC {
+    polyline points="-0.55,1,0 0.55,-1,0" radius=0.07 segments=5
+    polyline points="0.55,1,0 -0.55,-1,0" radius=0.07 segments=5
+    polyline points="-0.55,0,0 0.55,0,0" radius=0.07 segments=5
+  }
+  group#runeD {
+    polyline points="0,-1,0 0,1,0 0.55,0.55,0 0,0.1,0" radius=0.07 segments=5
+    polyline points="0,0.1,0 0.55,-0.45,0" radius=0.07 segments=5
+  }
+}
+/* ===================================================================
        Sky: dome, moon, stars, clouds
-       =================================================================== -->
-
-  <group name="Sky" collide="false">
-    <sphere name="Sky dome" radius="2500" material="sky" segments="64"/>
-
-    <!-- the moon sits on the same ray as the halo painted into the dome -->
-    <group name="Moon" position="909.6,814,-2043.1">
-      <sphere radius="108" material="moon" segments="48"/>
-      <plane size="900" material="moonGlow" rotation="110,-24,0" position="-15,-14,34"/>
-    </group>
-
-    <!-- stars: one disc overhead and four leaning discs, each a few hundred
-         instances of one tiny sphere; two groups pulse to twinkle -->
-    <group name="Stars">
-      <scatter count="900" radius="1650" seed="11" randomScale="0.6..1.6" position="0,1750,0" randomMaterial="star,star,starBlue,starWarm">
-        <sphere radius="2.4" segments="4"/>
-      </scatter>
-      <group transform="rotateX(-62) translate(0,1950,0)">
-        <scatter count="520" radius="1250" seed="12" randomScale="0.5..1.5" randomMaterial="star,starBlue,star">
-          <sphere radius="2.4" segments="4"><animate attr="scale" values="1;0.55;1" dur="3.1s" easing="ease-in-out"/></sphere>
-        </scatter>
-      </group>
-      <group transform="rotateX(62) translate(0,1950,0)">
-        <scatter count="420" radius="1250" seed="13" randomScale="0.5..1.4" randomMaterial="star,starWarm,star">
-          <sphere radius="2.4" segments="4"/>
-        </scatter>
-      </group>
-      <group transform="rotateZ(62) translate(0,1950,0)">
-        <scatter count="420" radius="1250" seed="14" randomScale="0.5..1.4" randomMaterial="star,starBlue">
-          <sphere radius="2.4" segments="4"><animate attr="scale" values="1;0.6;1" dur="4.3s" begin="1s" easing="ease-in-out"/></sphere>
-        </scatter>
-      </group>
-      <group transform="rotateZ(-62) translate(0,1950,0)">
-        <scatter count="420" radius="1250" seed="15" randomScale="0.5..1.4" randomMaterial="star,star,starWarm">
-          <sphere radius="2.4" segments="4"/>
-        </scatter>
-      </group>
-    </group>
-
-    <!-- cloud banks: wide mist cards, the right-hand ones tinted by the afterglow -->
-    <group name="Clouds">
-      <plane size="1400,320" material="cloud" position="-700,420,-1500" rotation="78,-25,0"/>
-      <plane size="1100,260" material="cloud" position="-150,560,-1800" rotation="80,-5,8"/>
-      <plane size="1300,280" material="cloudLit" position="900,300,-1350" rotation="80,35,0"/>
-      <plane size="900,200" material="cloudLit" position="1300,380,-700" rotation="80,62,-6"/>
-      <plane size="1200,300" material="cloud" position="-1500,380,-300" rotation="82,-80,0"/>
-      <plane size="1300,280" material="cloud" position="-1200,320,900" rotation="82,-130,0"/>
-      <plane size="1300,300" material="cloud" position="1300,360,900" rotation="82,125,0"/>
-    </group>
-  </group>
-
-  <!-- ===================================================================
+       =================================================================== */
+group name=Sky collide=false {
+  sphere name="Sky dome" radius=2500 material=sky segments=64
+  // the moon sits on the same ray as the halo painted into the dome
+  group name=Moon position=909.6,814,-2043.1 {
+    sphere radius=108 material=moon segments=48
+    plane size=900 material=moonGlow rotation=110,-24,0 position=-15,-14,34
+  }
+  /* stars: one disc overhead and four leaning discs, each a few hundred
+         instances of one tiny sphere; two groups pulse to twinkle */
+  group name=Stars {
+    scatter count=900 radius=1650 seed=11 randomScale=0.6..1.6 position=0,1750,0 randomMaterial=star,star,starBlue,starWarm {
+      sphere radius=2.4 segments=4
+    }
+    group transform="rotateX(-62) translate(0,1950,0)" {
+      scatter count=520 radius=1250 seed=12 randomScale=0.5..1.5 randomMaterial=star,starBlue,star {
+        sphere radius=2.4 segments=4 {
+          animate attr=scale values="1;0.55;1" dur=3.1s easing=ease-in-out
+        }
+      }
+    }
+    group transform="rotateX(62) translate(0,1950,0)" {
+      scatter count=420 radius=1250 seed=13 randomScale=0.5..1.4 randomMaterial=star,starWarm,star {
+        sphere radius=2.4 segments=4
+      }
+    }
+    group transform="rotateZ(62) translate(0,1950,0)" {
+      scatter count=420 radius=1250 seed=14 randomScale=0.5..1.4 randomMaterial=star,starBlue {
+        sphere radius=2.4 segments=4 {
+          animate attr=scale values="1;0.6;1" dur=4.3s begin=1s easing=ease-in-out
+        }
+      }
+    }
+    group transform="rotateZ(-62) translate(0,1950,0)" {
+      scatter count=420 radius=1250 seed=15 randomScale=0.5..1.4 randomMaterial=star,star,starWarm {
+        sphere radius=2.4 segments=4
+      }
+    }
+  }
+  // cloud banks: wide mist cards, the right-hand ones tinted by the afterglow
+  group name=Clouds {
+    plane size=1400,320 material=cloud position=-700,420,-1500 rotation=78,-25,0
+    plane size=1100,260 material=cloud position=-150,560,-1800 rotation=80,-5,8
+    plane size=1300,280 material=cloudLit position=900,300,-1350 rotation=80,35,0
+    plane size=900,200 material=cloudLit position=1300,380,-700 rotation=80,62,-6
+    plane size=1200,300 material=cloud position=-1500,380,-300 rotation=82,-80,0
+    plane size=1300,280 material=cloud position=-1200,320,900 rotation=82,-130,0
+    plane size=1300,300 material=cloud position=1300,360,900 rotation=82,125,0
+  }
+}
+/* ===================================================================
        Valley: floor, lake, mountains, forest, mist
-       =================================================================== -->
-
-  <group name="Valley">
-    <plane name="Valley floor" size="5000" material="grass"/>
-
-    <group name="Lake" rotation="-90,0,0">
-      <path name="Shore" material="shore" position="0,0,0.15" scale="1.07,1.07,1" d="M 190 0 C 190 80 140 170 40 190 C -60 210 -170 150 -195 60 C -215 -20 -170 -140 -80 -180 C 10 -215 120 -190 165 -110 C 195 -60 190 -30 190 0 Z"/>
-      <path name="Water" material="water" position="0,0,0.4" d="M 190 0 C 190 80 140 170 40 190 C -60 210 -170 150 -195 60 C -215 -20 -170 -140 -80 -180 C 10 -215 120 -190 165 -110 C 195 -60 190 -30 190 0 Z"/>
-    </group>
-
-    <group name="Islets" material="rockDark">
-      <use ref="boulder" position="-120,0,60" scale="14,9,11" rotation="0,30,0"/>
-      <use ref="boulder" position="-108,0,72" scale="6,4,5" rotation="0,80,0"/>
-      <use ref="boulder" position="96,0,-118" scale="11,7,9" rotation="0,70,0"/>
-      <use ref="boulder" position="150,0,40" scale="9,6,8"/>
-      <use ref="boulder" position="-40,0,-150" scale="8,5,7" rotation="0,15,0"/>
-    </group>
-
-    <!-- three rings, paler with distance: a pass is left open behind the
-         castle so its towers stand against the sky from the approach -->
-    <group name="Mountains" collide="false">
-      <group material="mountainNear">
-        <use ref="range" position="-760,-10,-980" scale="1.1,0.8,1" rotation="0,10,0"/>
-        <use ref="range" position="-1120,-10,-300" scale="1,0.8,1" rotation="0,95,0"/>
-        <use ref="massif" position="640,-10,-1000" scale="0.9,0.75,0.9" rotation="0,75,0"/>
-        <use ref="range" position="1120,-10,-220" scale="1,0.8,1" rotation="0,40,0"/>
-        <use ref="massif" position="1140,-10,460" scale="0.9,0.7,1" rotation="0,145,0"/>
-        <use ref="massif" position="-1120,-10,500" scale="0.9,0.7,1" rotation="0,200,0"/>
-        <use ref="range" position="-660,-10,1080" rotation="0,160,0"/>
-        <use ref="range" position="680,-10,1100" rotation="0,-40,0"/>
-      </group>
-      <group material="mountainFar">
-        <use ref="massif" position="-1250,-10,-1350" scale="1.5,1.25,1.4" rotation="0,25,0"/>
-        <use ref="range" position="-260,-10,-1700" scale="1.6,1.1,1.3" rotation="0,5,0"/>
-        <use ref="massif" position="1150,-10,-1380" scale="1.6,1.3,1.4" rotation="0,45,0"/>
-        <use ref="massif" position="1750,-10,-280" scale="1.5,1.2,1.4" rotation="0,80,0"/>
-        <use ref="massif" position="-1750,-10,-360" scale="1.5,1.2,1.4" rotation="0,35,0"/>
-        <use ref="range" position="-1500,-10,1100" scale="1.5,1.2,1.4" rotation="0,65,0"/>
-        <use ref="range" position="1500,-10,1150" scale="1.5,1.2,1.4" rotation="0,10,0"/>
-        <use ref="massif" position="60,-10,1780" scale="1.5,1.1,1.4" rotation="0,40,0"/>
-      </group>
-      <group material="mountainFarthest">
-        <use ref="massif" position="-620,-10,-2150" scale="2,1.3,1.4" rotation="0,15,0"/>
-        <use ref="massif" position="420,-10,-2150" scale="1.8,1.1,1.4" rotation="0,-50,0"/>
-        <use ref="range" position="1950,-10,-1150" scale="2.2,1.3,1.5" rotation="0,70,0"/>
-        <use ref="range" position="-2000,-10,-1050" scale="2.2,1.3,1.5" rotation="0,110,0"/>
-      </group>
-    </group>
-
-    <!-- forest: patches of pines around the lake, four shades of green -->
-    <group name="Forest">
-      <scatter count="700" radius="170" seed="101" position="-430,0,-60" randomScale="0.7..1.35" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <scatter count="620" radius="160" seed="102" position="-300,0,-330" randomScale="0.7..1.35" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <scatter count="560" radius="150" seed="103" position="-20,0,-420" randomScale="0.7..1.35" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <scatter count="620" radius="160" seed="104" position="300,0,-360" randomScale="0.7..1.35" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <scatter count="700" radius="170" seed="105" position="440,0,-40" randomScale="0.7..1.35" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <scatter count="460" radius="140" seed="106" position="420,0,300" randomScale="0.7..1.35" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <scatter count="460" radius="140" seed="107" position="-380,0,300" randomScale="0.7..1.35" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <scatter count="160" radius="90" seed="108" position="-250,0,200" randomScale="0.7..1.3" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <scatter count="120" radius="70" seed="109" position="250,0,190" randomScale="0.7..1.3" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <scatter count="700" area="1500,520" seed="110" position="0,0,-780" randomScale="0.8..1.5" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <!-- framing the approach: dark stands either side of the first view -->
-      <scatter count="260" radius="130" seed="111" position="-250,0,420" randomScale="0.9..1.6" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <scatter count="240" radius="120" seed="112" position="280,0,430" randomScale="0.9..1.6" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <scatter count="400" area="900,500" seed="113" position="0,0,820" randomScale="0.8..1.5" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <scatter count="500" area="420,1200" seed="114" position="-760,0,0" randomScale="0.8..1.5" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-      <scatter count="500" area="420,1200" seed="115" position="760,0,0" randomScale="0.8..1.5" randomRotation="0,0..360,0" randomMaterial="pineA,pineB,pineC,pineD"><use ref="tree"/></scatter>
-    </group>
-
-    <group name="Valley mist" collide="false">
-      <plane size="500,500" material="mist" position="-420,18,-80" rotation="0,40,0"/>
-      <plane size="480,480" material="mist" position="420,16,-60" rotation="0,10,0"/>
-      <plane size="600,400" material="mist" position="0,22,-420"/>
-    </group>
-  </group>
-
-  <!-- ===================================================================
+       =================================================================== */
+group name=Valley {
+  plane name="Valley floor" size=5000 material=grass
+  group name=Lake rotation=-90,0,0 {
+    path name=Shore material=shore position=0,0,0.15 scale=1.07,1.07,1 d="M 190 0 C 190 80 140 170 40 190 C -60 210 -170 150 -195 60 C -215 -20 -170 -140 -80 -180 C 10 -215 120 -190 165 -110 C 195 -60 190 -30 190 0 Z"
+    path name=Water material=water position=0,0,0.4 d="M 190 0 C 190 80 140 170 40 190 C -60 210 -170 150 -195 60 C -215 -20 -170 -140 -80 -180 C 10 -215 120 -190 165 -110 C 195 -60 190 -30 190 0 Z"
+  }
+  group name=Islets material=rockDark {
+    use @boulder position=-120,0,60 scale=14,9,11 rotation=0,30,0
+    use @boulder position=-108,0,72 scale=6,4,5 rotation=0,80,0
+    use @boulder position=96,0,-118 scale=11,7,9 rotation=0,70,0
+    use @boulder position=150,0,40 scale=9,6,8
+    use @boulder position=-40,0,-150 scale=8,5,7 rotation=0,15,0
+  }
+  /* three rings, paler with distance: a pass is left open behind the
+         castle so its towers stand against the sky from the approach */
+  group name=Mountains collide=false {
+    group material=mountainNear {
+      use @range position=-760,-10,-980 scale=1.1,0.8,1 rotation=0,10,0
+      use @range position=-1120,-10,-300 scale=1,0.8,1 rotation=0,95,0
+      use @massif position=640,-10,-1000 scale=0.9,0.75,0.9 rotation=0,75,0
+      use @range position=1120,-10,-220 scale=1,0.8,1 rotation=0,40,0
+      use @massif position=1140,-10,460 scale=0.9,0.7,1 rotation=0,145,0
+      use @massif position=-1120,-10,500 scale=0.9,0.7,1 rotation=0,200,0
+      use @range position=-660,-10,1080 rotation=0,160,0
+      use @range position=680,-10,1100 rotation=0,-40,0
+    }
+    group material=mountainFar {
+      use @massif position=-1250,-10,-1350 scale=1.5,1.25,1.4 rotation=0,25,0
+      use @range position=-260,-10,-1700 scale=1.6,1.1,1.3 rotation=0,5,0
+      use @massif position=1150,-10,-1380 scale=1.6,1.3,1.4 rotation=0,45,0
+      use @massif position=1750,-10,-280 scale=1.5,1.2,1.4 rotation=0,80,0
+      use @massif position=-1750,-10,-360 scale=1.5,1.2,1.4 rotation=0,35,0
+      use @range position=-1500,-10,1100 scale=1.5,1.2,1.4 rotation=0,65,0
+      use @range position=1500,-10,1150 scale=1.5,1.2,1.4 rotation=0,10,0
+      use @massif position=60,-10,1780 scale=1.5,1.1,1.4 rotation=0,40,0
+    }
+    group material=mountainFarthest {
+      use @massif position=-620,-10,-2150 scale=2,1.3,1.4 rotation=0,15,0
+      use @massif position=420,-10,-2150 scale=1.8,1.1,1.4 rotation=0,-50,0
+      use @range position=1950,-10,-1150 scale=2.2,1.3,1.5 rotation=0,70,0
+      use @range position=-2000,-10,-1050 scale=2.2,1.3,1.5 rotation=0,110,0
+    }
+  }
+  // forest: patches of pines around the lake, four shades of green
+  group name=Forest {
+    scatter count=700 radius=170 seed=101 position=-430,0,-60 randomScale=0.7..1.35 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    scatter count=620 radius=160 seed=102 position=-300,0,-330 randomScale=0.7..1.35 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    scatter count=560 radius=150 seed=103 position=-20,0,-420 randomScale=0.7..1.35 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    scatter count=620 radius=160 seed=104 position=300,0,-360 randomScale=0.7..1.35 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    scatter count=700 radius=170 seed=105 position=440,0,-40 randomScale=0.7..1.35 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    scatter count=460 radius=140 seed=106 position=420,0,300 randomScale=0.7..1.35 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    scatter count=460 radius=140 seed=107 position=-380,0,300 randomScale=0.7..1.35 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    scatter count=160 radius=90 seed=108 position=-250,0,200 randomScale=0.7..1.3 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    scatter count=120 radius=70 seed=109 position=250,0,190 randomScale=0.7..1.3 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    scatter count=700 area=1500,520 seed=110 position=0,0,-780 randomScale=0.8..1.5 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    // framing the approach: dark stands either side of the first view
+    scatter count=260 radius=130 seed=111 position=-250,0,420 randomScale=0.9..1.6 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    scatter count=240 radius=120 seed=112 position=280,0,430 randomScale=0.9..1.6 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    scatter count=400 area=900,500 seed=113 position=0,0,820 randomScale=0.8..1.5 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    scatter count=500 area=420,1200 seed=114 position=-760,0,0 randomScale=0.8..1.5 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+    scatter count=500 area=420,1200 seed=115 position=760,0,0 randomScale=0.8..1.5 randomRotation=0,0..360,0 randomMaterial=pineA,pineB,pineC,pineD {
+      use @tree
+    }
+  }
+  group name="Valley mist" collide=false {
+    plane size=500,500 material=mist position=-420,18,-80 rotation=0,40,0
+    plane size=480,480 material=mist position=420,16,-60 rotation=0,10,0
+    plane size=600,400 material=mist position=0,22,-420
+  }
+}
+/* ===================================================================
        The floating island
-       =================================================================== -->
-
-  <group name="Island" position="0,95,0">
-    <!-- the whole island breathes up and down a little -->
-    <revolve name="Island rock" material="rock" segments="13" d="M 0 0.5 L 45 0.5 L 47.5 -2 L 46 -6 L 48 -10 L 43 -16 L 41 -24 L 34 -31 L 31 -40 L 23 -48 L 18 -56 L 10 -64 L 5 -71 L 0 -78 Z"/>
-    <cylinder name="Island meadow" radius="45.6" height="0.6" position="0,0.55,0" segments="13" material="meadow"/>
-
-    <!-- jagged keels under the rock -->
-    <scatter count="18" radius="31" seed="7" position="0,-26,0" randomScale="0.6..1.25" randomRotation="0,0..360,0" material="rockDark">
-      <cone radius="8" height="30" rotation="180,0,0" segments="5"/>
-    </scatter>
-    <scatter count="10" radius="16" seed="8" position="0,-52,0" randomScale="0.6..1.2" randomRotation="0,0..360,0" material="rockDark">
-      <cone radius="6" height="26" rotation="180,0,0" segments="5"/>
-    </scatter>
-
-    <!-- crystals growing out of the underside -->
-    <group name="Undercrystals">
-      <use ref="crystalCluster" material="crystal" position="22,-34,10" rotation="160,0,-30" scale="2.2"/>
-      <use ref="crystalCluster" material="crystalViolet" position="-18,-38,18" rotation="150,40,25" scale="2"/>
-      <use ref="crystalCluster" material="crystal" position="-8,-60,-6" rotation="175,10,10" scale="2.6"/>
-      <use ref="crystalCluster" material="crystalViolet" position="10,-50,-20" rotation="140,-60,-20" scale="1.8"/>
-      <use ref="crystalCluster" material="crystal" position="-30,-26,-16" rotation="130,20,30" scale="1.6"/>
-      <use ref="shard" material="crystal" position="2,-76,2" rotation="180,0,0" scale="2.2,4,2.2"/>
-      <light type="point" name="Crystal glow" color="#59d7ff" intensity="700" range="85" position="0,-62,0"/>
-    </group>
-
-    <!-- roots hanging over the edge -->
-    <!-- ley lines: glowing veins down the ridges of the underside -->
-    <group name="Ley lines" material="rune">
-      <polyline points="-46.46,-2,11.45 -45.00,-6,11.09 -46.95,-10,11.57 -42.09,-16,10.37 -40.15,-24,9.90 -33.35,-31,8.22 -30.44,-40,7.50 -22.67,-48,5.59 -17.82,-56,4.39" radius="0.22" segments="5"/>
-      <polyline points="-35.82,-2,31.73 -34.69,-6,30.74 -36.19,-10,32.06 -32.45,-16,28.75 -30.95,-24,27.42 -25.71,-31,22.78 -23.47,-40,20.79 -17.48,-48,15.48 -13.74,-56,12.17 -7.75,-64,6.86 -4.00,-71,3.55" radius="0.22" segments="5"/>
-      <polyline points="5.77,-2,47.50 5.59,-6,46.01 5.83,-10,48.00 5.23,-16,43.03 4.98,-24,41.05 4.14,-31,34.10 3.78,-40,31.12 2.81,-48,23.18 2.21,-56,18.22 1.25,-64,10.27" radius="0.22" segments="5"/>
-      <polyline points="27.18,-2,39.38 26.33,-6,38.15 27.47,-10,39.79 24.63,-16,35.68 23.49,-24,34.03 19.51,-31,28.27 17.81,-40,25.80 13.26,-48,19.22" radius="0.22" segments="5" material="runeViolet"/>
-      <polyline points="42.37,-2,22.24 41.04,-6,21.54 42.81,-10,22.47 38.38,-16,20.15 36.61,-24,19.22 30.42,-31,15.96 27.76,-40,14.57 20.68,-48,10.85 16.25,-56,8.53 9.16,-64,4.81 4.74,-71,2.49" radius="0.22" segments="5"/>
-      <polyline points="27.18,-2,-39.38 26.33,-6,-38.15 27.47,-10,-39.79 24.63,-16,-35.68 23.49,-24,-34.03 19.51,-31,-28.27 17.81,-40,-25.80 13.26,-48,-19.22 10.42,-56,-15.10" radius="0.22" segments="5"/>
-      <polyline points="-16.97,-2,-44.74 -16.44,-6,-43.34 -17.15,-10,-45.21 -15.37,-16,-40.53 -14.66,-24,-38.66 -12.18,-31,-32.12 -11.12,-40,-29.31 -8.28,-48,-21.83 -6.51,-56,-17.16 -3.67,-64,-9.68" radius="0.22" segments="5" material="runeViolet"/>
-      <polyline points="-35.82,-2,-31.73 -34.69,-6,-30.74 -36.19,-10,-32.06 -32.45,-16,-28.75 -30.95,-24,-27.42 -25.71,-31,-22.78 -23.47,-40,-20.79" radius="0.22" segments="5"/>
-    </group>
-
-    <!-- roots and vines spilling over the rim, tapering as they hang -->
-    <group name="Roots" material="bark">
-      <repeat count="11" step="rotateY(32.7)" rotation="0,8,0">
-        <sweep radius="0.32" taper="0.15" along="45.6,0.4,0 47.6,-1.2,0.3 48.1,-5,-0.4 47.6,-11,0.5 46.9,-17,0" smooth="true" segments="5"/>
-      </repeat>
-      <repeat count="9" step="rotateY(40)" rotation="0,24,0">
-        <sweep radius="0.2" taper="0.2" along="45.8,0.4,0 47.4,-0.8,-0.2 48.4,-4,0.4 48.2,-8.5,0" smooth="true" segments="5"/>
-      </repeat>
-      <repeat count="7" step="rotateY(51.4)" rotation="0,40,0" material="leaves">
-        <sweep radius="0.14" taper="0.3" along="45.7,0.4,0 47.3,-1,0.2 48.6,-6,-0.3 48.3,-13,0.2 47.5,-20,0" smooth="true" segments="4"/>
-      </repeat>
-    </group>
-
-    <!-- waterfalls pouring off the edge into the lake -->
-    <!-- waterfalls: a stream runs to the rim, curls over it and drops 94 m.
+       =================================================================== */
+group name=Island position=0,95,0 {
+  // the whole island breathes up and down a little
+  revolve name="Island rock" material=rock segments=13 d="M 0 0.5 L 45 0.5 L 47.5 -2 L 46 -6 L 48 -10 L 43 -16 L 41 -24 L 34 -31 L 31 -40 L 23 -48 L 18 -56 L 10 -64 L 5 -71 L 0 -78 Z"
+  cylinder name="Island meadow" radius=45.6 height=0.6 position=0,0.55,0 segments=13 material=meadow
+  // jagged keels under the rock
+  scatter count=18 radius=31 seed=7 position=0,-26,0 randomScale=0.6..1.25 randomRotation=0,0..360,0 material=rockDark {
+    cone radius=8 height=30 rotation=180,0,0 segments=5
+  }
+  scatter count=10 radius=16 seed=8 position=0,-52,0 randomScale=0.6..1.2 randomRotation=0,0..360,0 material=rockDark {
+    cone radius=6 height=26 rotation=180,0,0 segments=5
+  }
+  // crystals growing out of the underside
+  group name=Undercrystals {
+    use @crystalCluster material=crystal position=22,-34,10 rotation=160,0,-30 scale=2.2
+    use @crystalCluster material=crystalViolet position=-18,-38,18 rotation=150,40,25 scale=2
+    use @crystalCluster material=crystal position=-8,-60,-6 rotation=175,10,10 scale=2.6
+    use @crystalCluster material=crystalViolet position=10,-50,-20 rotation=140,-60,-20 scale=1.8
+    use @crystalCluster material=crystal position=-30,-26,-16 rotation=130,20,30 scale=1.6
+    use @shard material=crystal position=2,-76,2 rotation=180,0,0 scale=2.2,4,2.2
+    light type=point name="Crystal glow" color=#59d7ff intensity=700 range=85 position=0,-62,0
+  }
+  // roots hanging over the edge
+  // ley lines: glowing veins down the ridges of the underside
+  group name="Ley lines" material=rune {
+    polyline points="-46.46,-2,11.45 -45.00,-6,11.09 -46.95,-10,11.57 -42.09,-16,10.37 -40.15,-24,9.90 -33.35,-31,8.22 -30.44,-40,7.50 -22.67,-48,5.59 -17.82,-56,4.39" radius=0.22 segments=5
+    polyline points="-35.82,-2,31.73 -34.69,-6,30.74 -36.19,-10,32.06 -32.45,-16,28.75 -30.95,-24,27.42 -25.71,-31,22.78 -23.47,-40,20.79 -17.48,-48,15.48 -13.74,-56,12.17 -7.75,-64,6.86 -4.00,-71,3.55" radius=0.22 segments=5
+    polyline points="5.77,-2,47.50 5.59,-6,46.01 5.83,-10,48.00 5.23,-16,43.03 4.98,-24,41.05 4.14,-31,34.10 3.78,-40,31.12 2.81,-48,23.18 2.21,-56,18.22 1.25,-64,10.27" radius=0.22 segments=5
+    polyline points="27.18,-2,39.38 26.33,-6,38.15 27.47,-10,39.79 24.63,-16,35.68 23.49,-24,34.03 19.51,-31,28.27 17.81,-40,25.80 13.26,-48,19.22" radius=0.22 segments=5 material=runeViolet
+    polyline points="42.37,-2,22.24 41.04,-6,21.54 42.81,-10,22.47 38.38,-16,20.15 36.61,-24,19.22 30.42,-31,15.96 27.76,-40,14.57 20.68,-48,10.85 16.25,-56,8.53 9.16,-64,4.81 4.74,-71,2.49" radius=0.22 segments=5
+    polyline points="27.18,-2,-39.38 26.33,-6,-38.15 27.47,-10,-39.79 24.63,-16,-35.68 23.49,-24,-34.03 19.51,-31,-28.27 17.81,-40,-25.80 13.26,-48,-19.22 10.42,-56,-15.10" radius=0.22 segments=5
+    polyline points="-16.97,-2,-44.74 -16.44,-6,-43.34 -17.15,-10,-45.21 -15.37,-16,-40.53 -14.66,-24,-38.66 -12.18,-31,-32.12 -11.12,-40,-29.31 -8.28,-48,-21.83 -6.51,-56,-17.16 -3.67,-64,-9.68" radius=0.22 segments=5 material=runeViolet
+    polyline points="-35.82,-2,-31.73 -34.69,-6,-30.74 -36.19,-10,-32.06 -32.45,-16,-28.75 -30.95,-24,-27.42 -25.71,-31,-22.78 -23.47,-40,-20.79" radius=0.22 segments=5
+  }
+  // roots and vines spilling over the rim, tapering as they hang
+  group name=Roots material=bark {
+    repeat count=11 step=rotateY(32.7) rotation=0,8,0 {
+      sweep radius=0.32 taper=0.15 along="45.6,0.4,0 47.6,-1.2,0.3 48.1,-5,-0.4 47.6,-11,0.5 46.9,-17,0" smooth=true segments=5
+    }
+    repeat count=9 step=rotateY(40) rotation=0,24,0 {
+      sweep radius=0.2 taper=0.2 along="45.8,0.4,0 47.4,-0.8,-0.2 48.4,-4,0.4 48.2,-8.5,0" smooth=true segments=5
+    }
+    repeat count=7 step=rotateY(51.4) rotation=0,40,0 material=leaves {
+      sweep radius=0.14 taper=0.3 along="45.7,0.4,0 47.3,-1,0.2 48.6,-6,-0.3 48.3,-13,0.2 47.5,-20,0" smooth=true segments=4
+    }
+  }
+  // waterfalls pouring off the edge into the lake
+  /* waterfalls: a stream runs to the rim, curls over it and drops 94 m.
          The sheet is one sweep along 3D path data; bands of foam slide down
-         it on a short loop, and the splash churns where it meets the lake. -->
-    <use ref="cascade" name="Great falls" position="-19.4,0,41.5" rotation="0,-25,0" collide="false"/>
-    <use ref="cascade" name="Eastern falls" position="42.6,0,-13.6" rotation="0,108,0" scale="0.62,1,1" collide="false"/>
-    <use ref="cascade" name="Slender falls" position="24.4,0,38.9" rotation="0,32,0" scale="0.4,1,1" collide="false"/>
-
-    <!-- small rocks drifting around the island -->
-    <group name="Drifting rocks" material="rock" collide="false">
-      <group>
-        <use ref="boulder" position="62,-8,10" scale="3.6,4,3"/>
-        <use ref="boulder" position="-58,-20,-24" scale="5,5.5,4"/>
-        <use ref="boulder" position="20,-30,-64" scale="3,3.2,2.6"/>
-        <use ref="boulder" position="-30,4,58" scale="2.4,2.6,2.2"/>
-        <animate attr="rotation" from="0,0,0" to="0,360,0" dur="120s"/>
-      </group>
-      <group>
-        <use ref="boulder" position="-70,-2,10" scale="2.2,2.4,2"/>
-        <use ref="boulder" position="48,-40,46" scale="3.4,3.6,3"/>
-        <use ref="boulder" position="8,-14,-72" scale="2,2.2,1.8"/>
-        <animate attr="rotation" from="0,360,0" to="0,0,0" dur="160s"/>
-      </group>
-    </group>
-
-    <!-- ===============================================================
+         it on a short loop, and the splash churns where it meets the lake. */
+  use @cascade name="Great falls" position=-19.4,0,41.5 rotation=0,-25,0 collide=false
+  use @cascade name="Eastern falls" position=42.6,0,-13.6 rotation=0,108,0 scale=0.62,1,1 collide=false
+  use @cascade name="Slender falls" position=24.4,0,38.9 rotation=0,32,0 scale=0.4,1,1 collide=false
+  // small rocks drifting around the island
+  group name="Drifting rocks" material=rock collide=false {
+    group {
+      use @boulder position=62,-8,10 scale=3.6,4,3
+      use @boulder position=-58,-20,-24 scale=5,5.5,4
+      use @boulder position=20,-30,-64 scale=3,3.2,2.6
+      use @boulder position=-30,4,58 scale=2.4,2.6,2.2
+      animate attr=rotation from=0,0,0 to=0,360,0 dur=120s
+    }
+    group {
+      use @boulder position=-70,-2,10 scale=2.2,2.4,2
+      use @boulder position=48,-40,46 scale=3.4,3.6,3
+      use @boulder position=8,-14,-72 scale=2,2.2,1.8
+      animate attr=rotation from=0,360,0 to=0,0,0 dur=160s
+    }
+  }
+  /* ===============================================================
          The castle (gate towards +Z, turned to face the approach)
-         =============================================================== -->
-
-    <group name="Castle" rotation="0,-70,0" position="0,0.85,0">
-
-      <!-- pines in two rings outside the walls, leaving the gate clear -->
-      <group name="Island pines" material="pineB">
-        <repeat count="10" step="rotateY(32)" rotation="0,24,0">
-          <use ref="pine" position="0,0,37.5" scale="0.75"/>
-        </repeat>
-        <repeat count="9" step="rotateY(35)" rotation="0,40,0">
-          <use ref="pine" position="0,0,42" scale="0.6" material="pineA"/>
-        </repeat>
-        <repeat count="8" step="rotateY(40)" rotation="0,52,0">
-          <use ref="pine" position="0,0,34" scale="0.55" material="pineD"/>
-        </repeat>
-      </group>
-
-      <!-- courtyard floor, octagonal like the walls -->
-      <cylinder name="Courtyard" radius="29" height="0.4" position="0,0.2,0" segments="8" rotation="0,22.5,0" material="flagstone"/>
-
-      <!-- curtain walls (seven; the eighth side is the gatehouse) -->
-      <repeat name="Curtain walls" count="7" step="rotateY(45)" rotation="0,45,0">
-        <use ref="wall" position="0,0,27.72"/>
-      </repeat>
-
-      <!-- eight wall towers on the corners -->
-      <repeat name="Wall towers" count="8" step="rotateY(45)" rotation="0,22.5,0">
-        <use ref="tower" position="0,0,30"/>
-      </repeat>
-      <use ref="pennant" position="-11.48,36.6,27.72"/>
-      <use ref="pennant" position="27.72,36.6,-11.48"/>
-      <use ref="pennant" position="-27.72,36.6,-11.48"/>
-
-      <!-- gatehouse -->
-      <group name="Gatehouse" position="0,0,28.5" material="stoneWall">
-        <extrude name="Gate arch" path="gateOutline" depth="8" center="true" bevel="0.12" material="stoneGate"/>
-        <!-- the passage: floor, vault and side walls -->
-        <box size="5.2,0.3,8" position="0,0.15,0" material="flagstone"/>
-        <!-- crenellated top with machicolations -->
-        <box size="11.6,0.6,9" position="0,15.3,0" material="stoneTrim"/>
-        <repeat count="5" step="translate(2.4,0,0)" position="-4.8,16.35,4.2"><box size="1.3,1.5,0.6"/></repeat>
-        <repeat count="5" step="translate(2.4,0,0)" position="-4.8,16.35,-4.2"><box size="1.3,1.5,0.6"/></repeat>
-        <repeat count="9" step="translate(1.3,0,0)" position="-5.2,14.4,4.35"><box size="0.5,1.2,0.7" material="stoneTrim"/></repeat>
-        <!-- arrow slits and a niche over the arch -->
-        <use ref="archWindowSmall" position="0,11.2,4.05"/>
-        <!-- flanking drum towers -->
-        <group position="-6.9,0,1.8">
-          <cylinder radius="3.7" height="19" position="0,9.5,0" material="stoneDrum"/>
-          <cylinder radius="4.1" height="0.5" position="0,19.25,0" material="stoneTrim"/>
-          <revolve path="roofProfile" segments="20" position="0,19.5,0" scale="0.8,0.95,0.8" material="roof"/>
-          <sphere radius="0.35" position="0,32.9,0" material="gold"/>
-          <box size="0.36,1.6,0.4" position="0,8,3.65" material="window"/>
-          <box size="0.36,1.6,0.4" position="0,13.5,3.65" material="window"/>
-          <use ref="hangingBanner" position="0,17.2,3.85"/>
-        </group>
-        <group position="6.9,0,1.8">
-          <cylinder radius="3.7" height="19" position="0,9.5,0" material="stoneDrum"/>
-          <cylinder radius="4.1" height="0.5" position="0,19.25,0" material="stoneTrim"/>
-          <revolve path="roofProfile" segments="20" position="0,19.5,0" scale="0.8,0.95,0.8" material="roof"/>
-          <sphere radius="0.35" position="0,32.9,0" material="gold"/>
-          <box size="0.36,1.6,0.4" position="0,8,3.65" material="window"/>
-          <box size="0.36,1.6,0.4" position="0,13.5,3.65" material="window"/>
-          <use ref="hangingBanner" position="0,17.2,3.85"/>
-        </group>
-        <!-- portcullis: shut while the gate chapter is read, it lifts as the
-             visitor scrolls on, well before the camera reaches it -->
-        <group name="Portcullis" material="iron">
-          <repeat count="7" step="translate(0.8,0,0)" position="-2.4,4.3,3.2"><box size="0.16,8.6,0.16"/></repeat>
-          <repeat count="9" step="translate(0,0.95,0)" position="0,0.5,3.2"><box size="5.2,0.12,0.12"/></repeat>
-          <animate attr="position" values="0,0,0; 0,0,0; 0,6.4,0; 0,6.4,0" keyTimes="0,0.436,0.462,1" timeline="scroll"/>
-        </group>
-        <!-- torches either side of the arch -->
-        <use ref="torch" position="-3.6,5.2,4.2"/>
-        <use ref="torch" position="3.6,5.2,4.2"/>
-        <light type="point" name="Gate torch left" color="#ffae6b" intensity="12" range="30" position="-3.6,7,6"/>
-        <light type="point" name="Gate torch right" color="#ffae6b" intensity="12" range="30" position="3.6,7,6"/>
-      </group>
-      <!-- short walls between the gatehouse and its neighbouring towers -->
-      <group material="stoneWall">
-        <box size="6.6,11,2.4" position="8.4,6.5,27.72"/>
-        <box size="6.6,11,2.4" position="-8.4,6.5,27.72"/>
-        <box size="6.6,0.6,3" position="8.4,12.2,27.82" material="stoneTrim"/>
-        <box size="6.6,0.6,3" position="-8.4,12.2,27.82" material="stoneTrim"/>
-        <repeat count="3" step="translate(2.4,0,0)" position="6,13.25,28.77"><box size="1.3,1.5,0.7"/></repeat>
-        <repeat count="3" step="translate(-2.4,0,0)" position="-6,13.25,28.77"><box size="1.3,1.5,0.7"/></repeat>
-      </group>
-
-      <!-- great hall, west of the courtyard -->
-      <group name="Great hall" position="-15,0,3" rotation="0,-22,0">
-        <box size="11,9,20" position="0,4.9,0" material="stoneKeep"/>
-        <box size="11.6,0.5,20.6" position="0,9.4,0" material="stoneTrim"/>
-        <extrude name="Hall roof" d="M -6.6 0 L 6.6 0 L 0 7 Z" depth="21.4" center="true" position="0,9.6,0" material="roof"/>
-        <extrude d="M -5.5 0 L 5.5 0 L 0 5.8 Z" depth="0.6" center="true" position="0,9.6,10.1" material="stoneKeep"/>
-        <cylinder name="Rose window" radius="1.5" height="0.5" rotation="90,0,0" position="0,12,10.4" material="window" segments="16"/>
-        <torus radius="1.55" tube="0.16" rotation="90,0,0" position="0,12,10.5" material="stoneTrim"/>
-        <use ref="archWindow" position="0,2.6,10.05" scale="1.2"/>
-        <repeat count="5" step="translate(0,0,4)" position="5.55,3.4,-8">
-          <use ref="archWindow" rotation="0,90,0"/>
-        </repeat>
-        <repeat count="5" step="translate(0,0,4)" position="-5.55,3.4,-8">
-          <use ref="archWindow" rotation="0,-90,0"/>
-        </repeat>
-        <repeat count="6" step="translate(0,0,4)" position="6,3.5,-10" material="stoneDark">
-          <box size="1,7,1"/>
-        </repeat>
-        <repeat count="6" step="translate(0,0,4)" position="-6,3.5,-10" material="stoneDark">
-          <box size="1,7,1"/>
-        </repeat>
-        <box name="Chimney" size="1.6,6,1.6" position="2.6,15,-6" material="stoneDark"/>
-        <light type="point" name="Hall glow" color="#ffa04a" intensity="120" range="38" position="9,5,4"/>
-      </group>
-
-      <!-- library wing with its turret, east of the courtyard -->
-      <group name="Library" position="15,0,-3" rotation="0,24,0">
-        <box size="11,13,12" position="0,6.5,0" material="stoneKeep"/>
-        <box size="11.6,0.5,12.6" position="0,13.2,0" material="stoneTrim"/>
-        <cone radius="8.6" height="7" segments="4" rotation="0,45,0" position="0,16.9,0" scale="1,1,1.09" material="roofViolet"/>
-        <repeat count="3" step="translate(-3.6,0,0)" position="3.6,4,6.05">
-          <use ref="archWindow" scale="0.9"/>
-        </repeat>
-        <repeat count="3" step="translate(-3.6,0,0)" position="3.6,9,6.05">
-          <use ref="archWindowSmall"/>
-        </repeat>
-        <repeat count="3" step="translate(0,0,-3.6)" position="-5.55,6,3.6">
-          <use ref="archWindow" rotation="0,-90,0" scale="0.9"/>
-        </repeat>
-        <use ref="turret" position="5.6,0,-6" scale="1.1,1.25,1.1"/>
-      </group>
-
-      <!-- slender turrets around the keep, different heights -->
-      <use ref="turret" position="-12,0,-15" scale="1,1.4,1"/>
-      <use ref="turret" position="11,0,-17" scale="0.9,1.05,0.9"/>
-      <use ref="turret" position="-21,0,-6" scale="0.8,0.75,0.8"/>
-      <use ref="pennant" position="-12,52.6,-15"/>
-
-      <!-- the courtyard: a glowing fountain, braziers and an old violet tree -->
-      <group name="Fountain" position="0,0,12">
-        <cylinder radius="3.6" height="0.9" segments="8" position="0,0.85,0" material="stoneTrim"/>
-        <cylinder radius="3.1" height="0.2" segments="8" position="0,1.2,0" material="magicWater"/>
-        <revolve d="M 0 0 L 0.7 0 L 0.45 1.6 L 1.3 2.3 L 1.4 2.5 L 0 2.5 Z" position="0,1,0" material="stoneTrim"/>
-        <sphere radius="0.55" position="0,4.4,0" material="crystal">
-          <animate attr="position" values="0,4.2,0; 0,4.7,0" dur="2.6s" alternate="true" easing="ease-in-out"/>
-        </sphere>
-        <plane size="5" rotation="90,0,0" position="0,4.4,0.6" material="glowCyan"/>
-        <light type="point" name="Fountain glow" color="#62dcff" intensity="45" range="22" position="0,3.5,0"/>
-      </group>
-      <group name="Braziers">
-        <group position="-6.5,0,19">
-          <cylinder radius="0.18" height="1.6" position="0,0.8,0" material="iron"/>
-          <revolve d="M 0 0 L 0.9 0.2 L 1.1 0.7 L 0.95 0.7 L 0.8 0.32 L 0 0.2 Z" position="0,1.6,0" material="iron"/>
-          <use ref="flameCards" position="0,2,0" scale="1.1"/>
-          <plane size="4" rotation="90,0,0" position="0,2.8,0.6" material="glowWarm"/>
-        </group>
-        <group position="6.5,0,19">
-          <cylinder radius="0.18" height="1.6" position="0,0.8,0" material="iron"/>
-          <revolve d="M 0 0 L 0.9 0.2 L 1.1 0.7 L 0.95 0.7 L 0.8 0.32 L 0 0.2 Z" position="0,1.6,0" material="iron"/>
-          <use ref="flameCards" position="0,2,0" scale="1.1"/>
-          <plane size="4" rotation="90,0,0" position="0,2.8,0.6" material="glowWarm"/>
-        </group>
-        <light type="point" name="Brazier glow" color="#ff8a3a" intensity="60" range="28" position="0,4,19"/>
-      </group>
-      <group name="Violet tree" position="-9,0,-3">
-        <sweep radius="0.9" taper="0.35" along="0,0,0 0.5,4,0.3 -0.6,8,0.4 0.4,11,-0.5" smooth="true" material="bark"/>
-        <sweep radius="0.45" taper="0.3" along="0,7,0 2.5,9.5,1 4.2,10.6,1.5" smooth="true" material="bark"/>
-        <sweep radius="0.4" taper="0.3" along="-0.4,8,0 -2.6,10.5,-1 -3.8,11.2,-1.8" smooth="true" material="bark"/>
-        <scatter count="16" radius="4.6" seed="41" position="0.3,10.6,0" randomScale="0.7..1.25" randomMaterial="leaves,leavesLight">
-          <sphere radius="1.5" segments="8" scale="1,0.8,1"/>
-        </scatter>
-        <scatter count="12" radius="3.6" seed="42" position="0.3,12.2,0" randomScale="0.7..1.2" randomMaterial="leaves,leavesLight,leavesLight">
-          <sphere radius="1.4" segments="8" scale="1,0.8,1"/>
-        </scatter>
-        <scatter count="7" radius="2.2" seed="43" position="0.3,13.7,0" randomScale="0.7..1.1" randomMaterial="leavesLight,leaves">
-          <sphere radius="1.3" segments="8" scale="1,0.8,1"/>
-        </scatter>
-        <scatter count="90" radius="5" seed="44" position="0.3,11,0" randomScale="0.6..1.3" material="blossom">
-          <sphere radius="0.13" segments="5" position="0,1.6,0"/>
-        </scatter>
-        <scatter count="40" radius="3.4" seed="45" position="0.3,12.8,0" randomScale="0.6..1.3" material="blossom">
-          <sphere radius="0.13" segments="5" position="0,1.4,0"/>
-        </scatter>
-      </group>
-
-      <!-- =============================================================
+         =============================================================== */
+  group name=Castle rotation=0,-70,0 position=0,0.85,0 {
+    // pines in two rings outside the walls, leaving the gate clear
+    group name="Island pines" material=pineB {
+      repeat count=10 step=rotateY(32) rotation=0,24,0 {
+        use @pine position=0,0,37.5 scale=0.75
+      }
+      repeat count=9 step=rotateY(35) rotation=0,40,0 {
+        use @pine position=0,0,42 scale=0.6 material=pineA
+      }
+      repeat count=8 step=rotateY(40) rotation=0,52,0 {
+        use @pine position=0,0,34 scale=0.55 material=pineD
+      }
+    }
+    // courtyard floor, octagonal like the walls
+    cylinder name=Courtyard radius=29 height=0.4 position=0,0.2,0 segments=8 rotation=0,22.5,0 material=flagstone
+    // curtain walls (seven; the eighth side is the gatehouse)
+    repeat name="Curtain walls" count=7 step=rotateY(45) rotation=0,45,0 {
+      use @wall position=0,0,27.72
+    }
+    // eight wall towers on the corners
+    repeat name="Wall towers" count=8 step=rotateY(45) rotation=0,22.5,0 {
+      use @tower position=0,0,30
+    }
+    use @pennant position=-11.48,36.6,27.72
+    use @pennant position=27.72,36.6,-11.48
+    use @pennant position=-27.72,36.6,-11.48
+    // gatehouse
+    group name=Gatehouse position=0,0,28.5 material=stoneWall {
+      extrude name="Gate arch" path=gateOutline depth=8 center=true bevel=0.12 material=stoneGate
+      // the passage: floor, vault and side walls
+      box size=5.2,0.3,8 position=0,0.15,0 material=flagstone
+      // crenellated top with machicolations
+      box size=11.6,0.6,9 position=0,15.3,0 material=stoneTrim
+      repeat count=5 step=translate(2.4,0,0) position=-4.8,16.35,4.2 {
+        box size=1.3,1.5,0.6
+      }
+      repeat count=5 step=translate(2.4,0,0) position=-4.8,16.35,-4.2 {
+        box size=1.3,1.5,0.6
+      }
+      repeat count=9 step=translate(1.3,0,0) position=-5.2,14.4,4.35 {
+        box size=0.5,1.2,0.7 material=stoneTrim
+      }
+      // arrow slits and a niche over the arch
+      use @archWindowSmall position=0,11.2,4.05
+      // flanking drum towers
+      group position=-6.9,0,1.8 {
+        cylinder radius=3.7 height=19 position=0,9.5,0 material=stoneDrum
+        cylinder radius=4.1 height=0.5 position=0,19.25,0 material=stoneTrim
+        revolve path=roofProfile segments=20 position=0,19.5,0 scale=0.8,0.95,0.8 material=roof
+        sphere radius=0.35 position=0,32.9,0 material=gold
+        box size=0.36,1.6,0.4 position=0,8,3.65 material=window
+        box size=0.36,1.6,0.4 position=0,13.5,3.65 material=window
+        use @hangingBanner position=0,17.2,3.85
+      }
+      group position=6.9,0,1.8 {
+        cylinder radius=3.7 height=19 position=0,9.5,0 material=stoneDrum
+        cylinder radius=4.1 height=0.5 position=0,19.25,0 material=stoneTrim
+        revolve path=roofProfile segments=20 position=0,19.5,0 scale=0.8,0.95,0.8 material=roof
+        sphere radius=0.35 position=0,32.9,0 material=gold
+        box size=0.36,1.6,0.4 position=0,8,3.65 material=window
+        box size=0.36,1.6,0.4 position=0,13.5,3.65 material=window
+        use @hangingBanner position=0,17.2,3.85
+      }
+      /* portcullis: shut while the gate chapter is read, it lifts as the
+             visitor scrolls on, well before the camera reaches it */
+      group name=Portcullis material=iron {
+        repeat count=7 step=translate(0.8,0,0) position=-2.4,4.3,3.2 {
+          box size=0.16,8.6,0.16
+        }
+        repeat count=9 step=translate(0,0.95,0) position=0,0.5,3.2 {
+          box size=5.2,0.12,0.12
+        }
+        animate attr=position values="0,0,0; 0,0,0; 0,6.4,0; 0,6.4,0" keyTimes=0,0.436,0.462,1 timeline=scroll
+      }
+      // torches either side of the arch
+      use @torch position=-3.6,5.2,4.2
+      use @torch position=3.6,5.2,4.2
+      light type=point name="Gate torch left" color=#ffae6b intensity=12 range=30 position=-3.6,7,6
+      light type=point name="Gate torch right" color=#ffae6b intensity=12 range=30 position=3.6,7,6
+    }
+    // short walls between the gatehouse and its neighbouring towers
+    group material=stoneWall {
+      box size=6.6,11,2.4 position=8.4,6.5,27.72
+      box size=6.6,11,2.4 position=-8.4,6.5,27.72
+      box size=6.6,0.6,3 position=8.4,12.2,27.82 material=stoneTrim
+      box size=6.6,0.6,3 position=-8.4,12.2,27.82 material=stoneTrim
+      repeat count=3 step=translate(2.4,0,0) position=6,13.25,28.77 {
+        box size=1.3,1.5,0.7
+      }
+      repeat count=3 step=translate(-2.4,0,0) position=-6,13.25,28.77 {
+        box size=1.3,1.5,0.7
+      }
+    }
+    // great hall, east of the courtyard, door and rose window facing the gate
+    group name="Great hall" position=15,0,3.75 rotation=0,-25,0 {
+      box size=11,9,20 position=0,4.9,0 material=stoneKeep
+      box size=11.6,0.5,20.6 position=0,9.4,0 material=stoneTrim
+      extrude name="Hall roof" d="M -6.6 0 L 6.6 0 L 0 7 Z" depth=20.6 center=true position=0,9.6,0 material=roof
+      extrude d="M -5.5 0 L 5.5 0 L 0 5.8 Z" depth=0.6 center=true position=0,9.6,10.1 material=stoneKeep
+      cylinder name="Rose window" radius=1.5 height=0.5 rotation=90,0,0 position=0,12,10.4 material=window segments=16
+      torus radius=1.55 tube=0.16 rotation=90,0,0 position=0,12,10.5 material=stoneTrim
+      use @archWindow position=0,2.6,10.05 scale=1.2
+      repeat count=5 step=translate(0,0,4) position=5.55,5.25,-8 {
+        use @archWindow rotation=0,90,0
+      }
+      repeat count=5 step=translate(0,0,4) position=-5.55,5.25,-8 {
+        use @archWindow rotation=0,-90,0
+      }
+      repeat count=6 step=translate(0,0,4) position=6,3.5,-10 material=stoneDark {
+        box size=1,7,1
+      }
+      repeat count=6 step=translate(0,0,4) position=-6,3.5,-10 material=stoneDark {
+        box size=1,7,1
+      }
+      box name=Chimney size=1.6,6,1.6 position=2.6,15,-6 material=stoneDark
+      light type=point name="Hall glow" color=#ffa04a intensity=120 range=38 position=9,5,4
+    }
+    // library wing with its turret, west of the courtyard, front facing the gate
+    group name=Library position=-16.5,0,5.25 rotation=0,40,0 {
+      box size=11,13,12 position=0,6.5,0 material=stoneKeep
+      box size=11.6,0.5,12.6 position=0,13.2,0 material=stoneTrim
+      cone radius=8.6 height=7 segments=4 rotation=0,45,0 position=0,16.9,0 scale=1,1,1.09 material=roofViolet
+      repeat count=3 step=translate(-3.6,0,0) position=3.6,4,6.05 {
+        use @archWindow scale=0.9
+      }
+      repeat count=3 step=translate(-3.6,0,0) position=3.6,9,6.05 {
+        use @archWindowSmall
+      }
+      repeat count=3 step=translate(0,0,-3.6) position=-5.55,6,3.6 {
+        use @archWindow rotation=0,-90,0 scale=0.9
+      }
+      use @turret position=5.6,0,-6 scale=1.1,1.25,1.1
+    }
+    // slender turrets around the keep, different heights
+    use @turret position=-12,0,-15 scale=1,1.4,1
+    use @turret position=11,0,-17 scale=0.9,1.05,0.9
+    use @turret position=-21,0,-6 scale=0.8,0.75,0.8
+    use @pennant position=-12,52.6,-15
+    // the courtyard: a glowing fountain, braziers and an old violet tree
+    group name=Fountain position=0,0,12 {
+      cylinder radius=3.6 height=0.9 segments=8 position=0,0.85,0 material=stoneTrim
+      cylinder radius=3.1 height=0.2 segments=8 position=0,1.24,0 material=magicWater
+      revolve d="M 0 0 L 0.7 0 L 0.45 1.6 L 1.3 2.3 L 1.4 2.5 L 0 2.5 Z" position=0,1,0 material=stoneTrim
+      sphere radius=0.55 position=0,4.4,0 material=crystal {
+        animate attr=position values="0,4.2,0; 0,4.7,0" dur=2.6s alternate=true easing=ease-in-out
+      }
+      plane size=5 rotation=90,0,0 position=0,4.4,0.6 material=glowCyan
+      light type=point name="Fountain glow" color=#62dcff intensity=45 range=22 position=0,3.5,0
+    }
+    group name=Braziers {
+      group position=-6.5,0,19 {
+        cylinder radius=0.18 height=1.6 position=0,0.8,0 material=iron
+        revolve d="M 0 0 L 0.9 0.2 L 1.1 0.7 L 0.95 0.7 L 0.8 0.32 L 0 0.2 Z" position=0,1.6,0 material=iron
+        use @flameCards position=0,2,0 scale=1.1
+        plane size=4 rotation=90,0,0 position=0,2.8,0.6 material=glowWarm
+      }
+      group position=6.5,0,19 {
+        cylinder radius=0.18 height=1.6 position=0,0.8,0 material=iron
+        revolve d="M 0 0 L 0.9 0.2 L 1.1 0.7 L 0.95 0.7 L 0.8 0.32 L 0 0.2 Z" position=0,1.6,0 material=iron
+        use @flameCards position=0,2,0 scale=1.1
+        plane size=4 rotation=90,0,0 position=0,2.8,0.6 material=glowWarm
+      }
+      light type=point name="Brazier glow" color=#ff8a3a intensity=60 range=28 position=0,4,19
+    }
+    group name="Violet tree" position=-5.25,0,13.75 {
+      sweep radius=0.9 taper=0.35 along="0,0,0 0.5,4,0.3 -0.6,8,0.4 0.4,11,-0.5" smooth=true material=bark
+      sweep radius=0.45 taper=0.3 along="0,7,0 2.5,9.5,1 4.2,10.6,1.5" smooth=true material=bark
+      sweep radius=0.4 taper=0.3 along="-0.4,8,0 -2.6,10.5,-1 -3.8,11.2,-1.8" smooth=true material=bark
+      scatter count=16 radius=4.6 seed=41 position=0.3,10.6,0 randomScale=0.7..1.25 randomMaterial=leaves,leavesLight {
+        sphere radius=1.5 segments=8 scale=1,0.8,1
+      }
+      scatter count=12 radius=3.6 seed=42 position=0.3,12.2,0 randomScale=0.7..1.2 randomMaterial=leaves,leavesLight,leavesLight {
+        sphere radius=1.4 segments=8 scale=1,0.8,1
+      }
+      scatter count=7 radius=2.2 seed=43 position=0.3,13.7,0 randomScale=0.7..1.1 randomMaterial=leavesLight,leaves {
+        sphere radius=1.3 segments=8 scale=1,0.8,1
+      }
+      scatter count=90 radius=5 seed=44 position=0.3,11,0 randomScale=0.6..1.3 material=blossom {
+        sphere radius=0.13 segments=5 position=0,1.6,0
+      }
+      scatter count=40 radius=3.4 seed=45 position=0.3,12.8,0 randomScale=0.6..1.3 material=blossom {
+        sphere radius=0.13 segments=5 position=0,1.4,0
+      }
+    }
+    /* =============================================================
            The wizard's tower
-           ============================================================= -->
-
-      <group name="Wizard tower" position="0,0,-8">
-        <!-- octagonal plinth and steps -->
-        <cylinder radius="10.2" height="1" segments="8" rotation="0,22.5,0" position="0,0.5,0" material="stoneDark"/>
-        <cylinder radius="9.2" height="3.2" segments="8" rotation="0,22.5,0" position="0,2.6,0" material="stoneKeep"/>
-        <cylinder radius="9.5" height="0.4" segments="8" rotation="0,22.5,0" position="0,4.2,0" material="stoneTrim"/>
-        <!-- door facing the gate -->
-        <extrude path="gothicArch" depth="0.6" center="true" scale="3,2.4,1" position="0,1,8.9" material="stoneTrim"/>
-        <extrude path="gothicArch" depth="0.7" center="true" scale="2.4,2,1" position="0,1,8.95" material="window"/>
-
-        <!-- three tiers, each a little narrower -->
-        <cylinder name="Tier one" radius="7" radiusTop="6.5" height="30" position="0,19.4,0" material="stoneSpire1"/>
-        <repeat count="24" step="rotateY(15)" position="0,34,0"><box size="0.6,0.9,0.8" position="0,0,6.95" material="stoneTrim"/></repeat>
-        <cylinder radius="7.6" height="1" position="0,34.9,0" material="stoneTrim"/>
-        <cylinder radius="8.8" height="0.6" position="0,35.7,0" material="stoneTrim"/>
-        <repeat count="30" step="rotateY(12)" position="0,36.55,0"><cylinder radius="0.13" height="1.1" position="0,0,8.45" material="stoneTrim"/></repeat>
-        <torus radius="8.45" tube="0.12" position="0,37.15,0" material="gold"/>
-
-        <cylinder name="Tier two" radius="6" radiusTop="5.5" height="26" position="0,49,0" material="stoneSpire2"/>
-        <torus radius="5.86" tube="0.16" position="0,44,0" material="rune"/>
-        <torus radius="5.68" tube="0.16" position="0,54,0" material="rune"/>
-        <repeat count="16" step="rotateY(22.5)" position="0,61.6,0"><box size="0.5,0.8,0.7" position="0,0,5.45" material="stoneTrim"/></repeat>
-        <cylinder radius="6.2" height="0.9" position="0,62.4,0" material="stoneTrim"/>
-        <cylinder radius="7.6" height="0.5" position="0,63.1,0" material="stoneTrim"/>
-        <repeat count="24" step="rotateY(15)" position="0,63.9,0"><cylinder radius="0.11" height="1" position="0,0,7.25" material="stoneTrim"/></repeat>
-        <torus radius="7.25" tube="0.1" position="0,64.45,0" material="gold"/>
-
-        <cylinder name="Tier three" radius="5" radiusTop="4.6" height="16" position="0,71.3,0" material="stoneSpire3"/>
-
-        <!-- windows climbing the tower -->
-        <repeat count="4" step="rotateY(90)" rotation="0,45,0"><use ref="archWindow" position="0,12,6.75" scale="0.9"/></repeat>
-        <repeat count="4" step="rotateY(90)"><use ref="archWindow" position="0,24,6.6" scale="0.9"/></repeat>
-        <repeat count="4" step="rotateY(90)" rotation="0,45,0"><use ref="archWindow" position="0,47.5,5.75" scale="0.85"/></repeat>
-        <repeat count="4" step="rotateY(90)"><use ref="archWindowSmall" position="0,57.5,5.6"/></repeat>
-        <repeat count="6" step="rotateY(60)"><box size="0.5,2.4,0.4" position="0,71,4.82" material="windowMagic"/></repeat>
-
-        <!-- a stair spiralling around tier one: 66 steps, one repeat -->
-        <repeat name="Spiral stair" count="66" step="translate(0,0.45,0) rotateY(10)" position="0,4.4,0">
-          <box size="2.6,0.35,1.25" position="8.2,0,0" material="stoneTrim"/>
-        </repeat>
-        <repeat count="33" step="translate(0,0.9,0) rotateY(20)" position="0,5.1,0">
-          <cylinder radius="0.06" height="1.1" position="9.35,0,0" material="iron"/>
-        </repeat>
-        <sweep name="Stair rail" radius="0.07" along="helix(9.35,16.2,1.82,48)" position="0,5.65,0" material="gold" segments="6"/>
-        <repeat count="11" step="translate(0,2.7,0) rotateY(60)" position="0,4.75,0">
-          <box size="0.32,0.32,0.32" position="9.0,0,0" rotation="45,0,45" material="rune"/>
-        </repeat>
-
-        <!-- corbelled observatory platform -->
-        <cylinder radius="4.7" radiusTop="9" height="4.4" position="0,81.5,0" material="stoneSpire3"/>
-        <cylinder radius="9.3" height="1" position="0,84.2,0" material="stoneTrim"/>
-        <cylinder radius="7.4" height="0.1" position="0,84.72,0" material="slate"/>
-        <repeat count="12" step="rotateY(30)" position="0,88,0">
-          <cylinder radius="0.42" height="6.6" position="0,0,8.3" material="stoneTrim"/>
-          <box size="1.1,0.4,1.1" position="0,3.4,8.3" material="stoneTrim"/>
-          <cone radius="0.3" height="1.5" position="0,4.35,8.3" segments="8" material="gold"/>
-        </repeat>
-        <revolve name="Observatory ring" d="M 7.4 0 L 9 0 L 9 1 L 7.4 1 Z" position="0,91.3,0" material="stoneTrim"/>
-
-        <!-- a magic circle inlaid in the observatory floor -->
-        <group name="Floor sigil" position="0,84.8,0" collide="false">
-          <torus radius="6.6" tube="0.07" segments="96" material="rune"/>
-          <torus radius="5.9" tube="0.05" segments="96" material="rune"/>
-          <polyline points="0,5.9,0 -4.172,-4.172,0 5.9,0,0 -4.172,4.172,0 0,-5.9,0 4.172,4.172,0 -5.9,0,0 4.172,-4.172,0" closed="true" radius="0.05" segments="4" rotation="-90,0,0" material="runeViolet"/>
-          <repeat count="8" step="rotateY(45)" rotation="0,22.5,0">
-            <use ref="runeA" position="0,0.02,6.25" rotation="-90,0,0" scale="0.22" material="rune"/>
-          </repeat>
-          <animate attr="rotation" from="0,0,0" to="0,360,0" dur="60s"/>
-        </group>
-
-        <!-- a brass telescope on a tripod, trained on the moon -->
-        <group name="Telescope" position="-4.2,84.7,3.6">
-          <group position="0,2.2,0">
-            <cylinder radius="0.06" height="2.5" position="0.55,-1.05,0" rotation="0,0,-14" material="wood"/>
-            <cylinder radius="0.06" height="2.5" position="-0.28,-1.05,0.48" rotation="12,0,8" material="wood"/>
-            <cylinder radius="0.06" height="2.5" position="-0.28,-1.05,-0.48" rotation="-12,0,8" material="wood"/>
-            <sphere radius="0.18" material="gold"/>
-            <group rotation="70,-134,0">
-              <cylinder radius="0.24" radiusTop="0.34" height="4.2" position="0,0.9,0" material="gold"/>
-              <cylinder radius="0.38" height="0.3" position="0,3,0" material="gold"/>
-              <cylinder radius="0.2" height="0.5" position="0,-1.4,0" material="iron"/>
-              <cylinder radius="0.11" height="0.4" position="0,-1.8,0" material="gold"/>
-              <torus radius="0.27" tube="0.05" position="0,0.2,0" material="iron"/>
-              <torus radius="0.31" tube="0.05" position="0,1.9,0" material="iron"/>
-            </group>
-          </group>
-        </group>
-        <torus radius="9.05" tube="0.16" position="0,92.35,0" material="gold"/>
-
-        <!-- the orb: crystal core, glass shells and rings turning at different speeds -->
-        <group name="Orb" position="0,95,0">
-          <animate attr="position" values="0,94.4,0; 0,95.6,0" dur="4.5s" alternate="true" easing="ease-in-out"/>
-          <sphere radius="2.1" material="orb" segments="32"/>
-          <sphere radius="2.9" material="orbShell" segments="32"/>
-          <sphere radius="4.4" material="orbHalo" segments="32"/>
-          <group rotation="20,0,0">
-            <torus radius="4.4" tube="0.11" material="rune"/>
-            <animate attr="rotation" from="20,0,0" to="20,360,0" dur="16s"/>
-          </group>
-          <group rotation="0,0,62">
-            <group>
-              <torus radius="5.6" tube="0.14" material="gold"/>
-              <repeat count="12" step="rotateY(30)"><box size="0.4,0.4,0.4" position="5.6,0,0" rotation="45,0,45" material="rune"/></repeat>
-              <animate attr="rotation" from="0,0,0" to="0,-360,0" dur="24s"/>
-            </group>
-          </group>
-          <group rotation="-58,0,30">
-            <group>
-              <torus radius="6.8" tube="0.09" material="runeViolet"/>
-              <animate attr="rotation" from="0,0,0" to="0,360,0" dur="34s"/>
-            </group>
-          </group>
-          <!-- three crossed glow cards: whichever way the camera looks, one faces it -->
-          <plane size="26" material="glowViolet"/>
-          <plane size="26" rotation="90,0,0" material="glowViolet"/>
-          <plane size="26" rotation="0,0,90" material="glowViolet"/>
-          <light type="point" name="Orb light" color="#b08cff" intensity="380" range="150" position="0,7,0"/>
-        </group>
-
-        <!-- magic ribbons coiling around the tower, turning slowly -->
-        <group name="Ribbons" collide="false">
-          <group>
-            <sweep d="M -0.45 -0.02 L 0.45 -0.02 L 0.45 0.02 L -0.45 0.02 Z" along="helix(11,26,3.1,40)" twist="900" taper="0.4" position="0,8,0" material="ribbonViolet"/>
-            <animate attr="rotation" from="0,0,0" to="0,360,0" dur="22s"/>
-          </group>
-          <group rotation="0,180,0">
-            <sweep d="M -0.32 -0.02 L 0.32 -0.02 L 0.32 0.02 L -0.32 0.02 Z" along="helix(12.5,24,2.6,40)" twist="-720" taper="0.3" position="0,14,0" material="ribbonCyan"/>
-            <animate attr="rotation" from="0,180,0" to="0,540,0" dur="30s"/>
-          </group>
-        </group>
-
-        <!-- runes orbiting at the height of tier two -->
-        <group name="Rune orbit" position="0,50,0" collide="false">
-          <animate attr="rotation" from="0,0,0" to="0,-360,0" dur="40s"/>
-          <repeat count="4" step="rotateY(90)">
-            <use ref="runeA" position="0,0,14" material="rune" scale="1.2"/>
-            <use ref="runeB" position="0,2,14" material="rune" scale="1.2" transform="rotateY(22.5)"/>
-            <use ref="runeC" position="0,-1,14" material="runeViolet" scale="1.2" transform="rotateY(45)"/>
-            <use ref="runeD" position="0,1,14" material="rune" scale="1.2" transform="rotateY(67.5)"/>
-          </repeat>
-        </group>
-      </group>
-
-      <!-- motes of light drifting over the courtyard -->
-      <group name="Motes" collide="false" position="0,6,0">
-        <scatter count="90" radius="26" seed="61" randomScale="0.5..1.3" material="mote">
-          <sphere radius="0.06" segments="6" position="0,2,0"/>
-        </scatter>
-        <animate attr="rotation" from="0,0,0" to="0,360,0" dur="90s"/>
-      </group>
-      <group name="Motes high" collide="false" position="0,30,-8">
-        <scatter count="120" radius="20" seed="62" randomScale="0.6..1.6" material="moteCyan">
-          <sphere radius="0.08" segments="6"/>
-        </scatter>
-        <animate attr="position" values="0,26,-8; 0,40,-8" dur="14s" alternate="true" easing="ease-in-out"/>
-      </group>
-
-      <!-- =============================================================
+           ============================================================= */
+    group name="Wizard tower" position=0,0,-8 {
+      // octagonal plinth and steps
+      cylinder radius=10.2 height=1 segments=8 rotation=0,22.5,0 position=0,0.5,0 material=stoneDark
+      cylinder radius=9.2 height=3.2 segments=8 rotation=0,22.5,0 position=0,2.6,0 material=stoneKeep
+      cylinder radius=9.5 height=0.4 segments=8 rotation=0,22.5,0 position=0,4.2,0 material=stoneTrim
+      // door facing the gate
+      extrude path=gothicArch depth=0.6 center=true scale=2.4,1.36,1 position=0,1,8.7 material=stoneTrim
+      extrude path=gothicArch depth=0.7 center=true scale=1.9,1.2,1 position=0,1,8.75 material=window
+      // three tiers, each a little narrower
+      cylinder name="Tier one" radius=7 radiusTop=6.5 height=30 position=0,19.4,0 material=stoneSpire1
+      repeat count=24 step=rotateY(15) position=0,34,0 {
+        box size=0.6,0.9,0.8 position=0,0,6.95 material=stoneTrim
+      }
+      cylinder radius=7.6 height=1 position=0,34.9,0 material=stoneTrim
+      cylinder radius=8.8 height=0.6 position=0,35.7,0 material=stoneTrim
+      repeat count=30 step=rotateY(12) position=0,36.55,0 {
+        cylinder radius=0.13 height=1.1 position=0,0,8.45 material=stoneTrim
+      }
+      torus radius=8.45 tube=0.12 position=0,37.15,0 material=gold
+      cylinder name="Tier two" radius=6 radiusTop=5.5 height=26 position=0,49,0 material=stoneSpire2
+      torus radius=5.86 tube=0.16 position=0,44,0 material=rune
+      torus radius=5.68 tube=0.16 position=0,54,0 material=rune
+      repeat count=16 step=rotateY(22.5) position=0,61.6,0 {
+        box size=0.5,0.8,0.7 position=0,0,5.45 material=stoneTrim
+      }
+      cylinder radius=6.2 height=0.9 position=0,62.4,0 material=stoneTrim
+      cylinder radius=7.6 height=0.5 position=0,63.1,0 material=stoneTrim
+      repeat count=24 step=rotateY(15) position=0,63.9,0 {
+        cylinder radius=0.11 height=1 position=0,0,7.25 material=stoneTrim
+      }
+      torus radius=7.25 tube=0.1 position=0,64.45,0 material=gold
+      cylinder name="Tier three" radius=5 radiusTop=4.6 height=16 position=0,71.3,0 material=stoneSpire3
+      // windows climbing the tower
+      repeat count=4 step=rotateY(90) rotation=0,45,0 {
+        use @archWindow position=0,12,6.75 scale=0.9
+      }
+      repeat count=4 step=rotateY(90) {
+        use @archWindow position=0,24,6.6 scale=0.9
+      }
+      repeat count=4 step=rotateY(90) rotation=0,45,0 {
+        use @archWindow position=0,47.5,5.75 scale=0.85
+      }
+      repeat count=4 step=rotateY(90) {
+        use @archWindowSmall position=0,57.5,5.6
+      }
+      repeat count=6 step=rotateY(60) {
+        box size=0.5,2.4,0.4 position=0,71,4.82 material=windowMagic
+      }
+      // a stair spiralling around tier one: 66 steps, one repeat
+      repeat name="Spiral stair" count=66 step="translate(0,0.45,0) rotateY(10)" position=0,4.4,0 {
+        box size=3,0.35,1.25 position=8,0,0 material=stoneTrim
+      }
+      repeat count=33 step="translate(0,0.9,0) rotateY(20)" position=0,5.1,0 {
+        cylinder radius=0.06 height=1.1 position=9.35,0,0 material=iron
+      }
+      sweep name="Stair rail" radius=0.07 along=helix(9.35,16.2,1.82,48) position=0,5.65,0 material=gold segments=6
+      repeat count=11 step="translate(0,2.7,0) rotateY(60)" position=0,4.75,0 {
+        box size=0.32,0.32,0.32 position=9.0,0,0 rotation=45,0,45 material=rune
+      }
+      // corbelled observatory platform
+      cylinder radius=4.7 radiusTop=9 height=4.4 position=0,81.5,0 material=stoneSpire3
+      cylinder radius=9.3 height=1 position=0,84.2,0 material=stoneTrim
+      cylinder radius=7.4 height=0.1 position=0,84.72,0 material=slate
+      repeat count=12 step=rotateY(30) position=0,88,0 {
+        cylinder radius=0.42 height=6.6 position=0,0,8.3 material=stoneTrim
+        box size=1.1,0.4,1.1 position=0,3.4,8.3 material=stoneTrim
+        cone radius=0.3 height=1.5 position=0,4.35,8.3 segments=8 material=gold
+      }
+      revolve name="Observatory ring" d="M 7.4 0 L 9 0 L 9 1 L 7.4 1 Z" position=0,91.3,0 material=stoneTrim
+      // a magic circle inlaid in the observatory floor
+      group name="Floor sigil" position=0,84.8,0 collide=false {
+        torus radius=6.6 tube=0.07 segments=96 material=rune
+        torus radius=5.9 tube=0.05 segments=96 material=rune
+        polyline points="0,5.9,0 -4.172,-4.172,0 5.9,0,0 -4.172,4.172,0 0,-5.9,0 4.172,4.172,0 -5.9,0,0 4.172,-4.172,0" closed=true radius=0.05 segments=4 rotation=-90,0,0 material=runeViolet
+        repeat count=8 step=rotateY(45) rotation=0,22.5,0 {
+          use @runeA position=0,0.02,6.25 rotation=-90,0,0 scale=0.22 material=rune
+        }
+        animate attr=rotation from=0,0,0 to=0,360,0 dur=60s
+      }
+      // a brass telescope on a tripod, trained on the moon
+      group name=Telescope position=-4.2,84.7,3.6 {
+        group position=0,2.2,0 {
+          cylinder radius=0.06 height=2.5 position=0.55,-1.05,0 rotation=0,0,-14 material=wood
+          cylinder radius=0.06 height=2.5 position=-0.28,-1.05,0.48 rotation=12,0,8 material=wood
+          cylinder radius=0.06 height=2.5 position=-0.28,-1.05,-0.48 rotation=-12,0,8 material=wood
+          sphere radius=0.18 material=gold
+          group rotation=70,-134,0 {
+            cylinder radius=0.24 radiusTop=0.34 height=4.2 position=0,0.9,0 material=gold
+            cylinder radius=0.38 height=0.3 position=0,3,0 material=gold
+            cylinder radius=0.2 height=0.5 position=0,-1.4,0 material=iron
+            cylinder radius=0.11 height=0.4 position=0,-1.8,0 material=gold
+            torus radius=0.27 tube=0.05 position=0,0.2,0 material=iron
+            torus radius=0.31 tube=0.05 position=0,1.9,0 material=iron
+          }
+        }
+      }
+      torus radius=9.05 tube=0.16 position=0,92.35,0 material=gold
+      // the orb: crystal core, glass shells and rings turning at different speeds
+      group name=Orb position=0,95,0 {
+        animate attr=position values="0,94.4,0; 0,95.6,0" dur=4.5s alternate=true easing=ease-in-out
+        sphere radius=2.1 material=orb segments=32
+        sphere radius=2.9 material=orbShell segments=32
+        sphere radius=4.4 material=orbHalo segments=32
+        group rotation=20,0,0 {
+          torus radius=4.4 tube=0.11 material=rune
+          animate attr=rotation from=20,0,0 to=20,360,0 dur=16s
+        }
+        group rotation=0,0,62 {
+          group {
+            torus radius=5.6 tube=0.14 material=gold
+            repeat count=12 step=rotateY(30) {
+              box size=0.4,0.4,0.4 position=5.6,0,0 rotation=45,0,45 material=rune
+            }
+            animate attr=rotation from=0,0,0 to=0,-360,0 dur=24s
+          }
+        }
+        group rotation=-58,0,30 {
+          group {
+            torus radius=6.8 tube=0.09 material=runeViolet
+            animate attr=rotation from=0,0,0 to=0,360,0 dur=34s
+          }
+        }
+        // three crossed glow cards: whichever way the camera looks, one faces it
+        plane size=26 material=glowViolet
+        plane size=26 rotation=90,0,0 material=glowViolet
+        plane size=26 rotation=0,0,90 material=glowViolet
+        light type=point name="Orb light" color=#b08cff intensity=380 range=150 position=0,7,0
+      }
+      // magic ribbons coiling around the tower, turning slowly
+      group name=Ribbons collide=false {
+        group {
+          sweep d="M -0.45 -0.02 L 0.45 -0.02 L 0.45 0.02 L -0.45 0.02 Z" along=helix(11,26,3.1,40) twist=900 taper=0.4 position=0,8,0 material=ribbonViolet
+          animate attr=rotation from=0,0,0 to=0,360,0 dur=22s
+        }
+        group rotation=0,180,0 {
+          sweep d="M -0.32 -0.02 L 0.32 -0.02 L 0.32 0.02 L -0.32 0.02 Z" along=helix(12.5,24,2.6,40) twist=-720 taper=0.3 position=0,14,0 material=ribbonCyan
+          animate attr=rotation from=0,180,0 to=0,540,0 dur=30s
+        }
+      }
+      // runes orbiting at the height of tier two
+      group name="Rune orbit" position=0,50,0 collide=false {
+        animate attr=rotation from=0,0,0 to=0,-360,0 dur=40s
+        repeat count=4 step=rotateY(90) {
+          use @runeA position=0,0,14 material=rune scale=1.2
+          use @runeB position=0,2,14 material=rune scale=1.2 transform=rotateY(22.5)
+          use @runeC position=0,-1,14 material=runeViolet scale=1.2 transform=rotateY(45)
+          use @runeD position=0,1,14 material=rune scale=1.2 transform=rotateY(67.5)
+        }
+      }
+    }
+    // motes of light drifting over the courtyard
+    group name=Motes collide=false position=0,6,0 {
+      scatter count=90 radius=26 seed=61 randomScale=0.5..1.3 material=mote {
+        sphere radius=0.06 segments=6 position=0,2,0
+      }
+      animate attr=rotation from=0,0,0 to=0,360,0 dur=90s
+    }
+    group name="Motes high" collide=false position=0,30,-8 {
+      scatter count=120 radius=20 seed=62 randomScale=0.6..1.6 material=moteCyan {
+        sphere radius=0.08 segments=6
+      }
+      animate attr=position values="0,26,-8; 0,40,-8" dur=14s alternate=true easing=ease-in-out
+    }
+    /* =============================================================
            The bridge of floating stones, from the gate to the cliff
-           ============================================================= -->
-
-      <group name="Bridge" position="0,-0.8,0">
-        <use ref="slab" transform="translate(0,-0.2,38)"/>
-        <use ref="slabLit" transform="translate(0,-1.7,48)"><animate attr="position" values="0,0,0; 0,0.5,0" dur="3.1s" alternate="true" easing="ease-in-out"/></use>
-        <use ref="slab" transform="translate(0,-3.2,58)"><animate attr="position" values="0,0,0; 0,0.6,0" dur="3.5s" begin="0.4s" alternate="true" easing="ease-in-out"/></use>
-        <use ref="slabLit" transform="translate(0,-4.7,68)"><animate attr="position" values="0,0,0; 0,0.5,0" dur="2.9s" begin="1.1s" alternate="true" easing="ease-in-out"/></use>
-        <use ref="slab" transform="translate(0,-6.2,78)"><animate attr="position" values="0,0,0; 0,0.7,0" dur="3.8s" begin="0.2s" alternate="true" easing="ease-in-out"/></use>
-        <use ref="slabLit" transform="translate(0,-7.7,88)"><animate attr="position" values="0,0,0; 0,0.5,0" dur="3.3s" begin="1.6s" alternate="true" easing="ease-in-out"/></use>
-        <use ref="slab" transform="translate(0,-9.2,98)"><animate attr="position" values="0,0,0; 0,0.6,0" dur="3s" begin="0.8s" alternate="true" easing="ease-in-out"/></use>
-        <use ref="slabLit" transform="translate(0,-10.7,108)"><animate attr="position" values="0,0,0; 0,0.5,0" dur="3.6s" begin="2.1s" alternate="true" easing="ease-in-out"/></use>
-        <use ref="slab" transform="translate(0,-12.2,118)"><animate attr="position" values="0,0,0; 0,0.7,0" dur="3.2s" begin="0.5s" alternate="true" easing="ease-in-out"/></use>
-        <use ref="slabLit" transform="translate(0,-13.7,128)"><animate attr="position" values="0,0,0; 0,0.5,0" dur="2.8s" begin="1.3s" alternate="true" easing="ease-in-out"/></use>
-        <use ref="slab" transform="translate(0,-15.2,138)"><animate attr="position" values="0,0,0; 0,0.6,0" dur="3.4s" begin="1.9s" alternate="true" easing="ease-in-out"/></use>
-        <use ref="slabLit" transform="translate(0,-16.7,148)"/>
-        <light type="point" name="Bridge lamps near" color="#ffa04a" intensity="70" range="40" position="0,1.5,66"/>
-        <light type="point" name="Bridge lamps far" color="#ffa04a" intensity="70" range="40" position="0,-10.5,126"/>
-      </group>
-
-      <!-- the cliff where the bridge lands, rising from the valley floor -->
-      <group name="Cliff" position="0,-95.85,166">
-        <revolve material="cliff" segments="7" d="M 0 0 L 21 0 L 18 14 L 19.5 28 L 15.5 42 L 16.5 55 L 13 66 L 12.5 74 L 11.2 78.8 L 0 78.8 Z"/>
-        <group material="rockDark">
-          <cone radius="7" height="38" segments="5" position="-12,22,6" rotation="0,20,14"/>
-          <cone radius="6" height="30" segments="5" position="13,18,-4" rotation="0,50,-16"/>
-          <cone radius="5" height="24" segments="5" position="4,58,-11" rotation="-18,10,0"/>
-          <cone radius="8" height="16" segments="5" position="0,72,0" rotation="180,30,0" scale="1.5,1,1.5"/>
-        </group>
-        <cylinder radius="11.4" height="0.6" position="0,79,0" segments="7" material="meadow"/>
-        <scatter count="7" radius="9" seed="77" position="0,79,2" randomScale="0.45..0.75" randomRotation="0,0..360,0" material="pineA"><use ref="pine"/></scatter>
-        <!-- a ruined arch marks the start of the crossing -->
-        <group position="0,79.2,-8" material="stoneWall">
-          <box size="1.6,8,1.6" position="-3.6,4,0"/>
-          <box size="1.6,6.2,1.6" position="3.6,3.1,0"/>
-          <extrude d="M -4.4 0 L 4.4 0 L 4.4 2.6 L 3 2.6 C 3 1 1.5 0.6 0 0.6 C -1.5 0.6 -3 1 -3 2.6 L -4.4 2.6 Z" depth="1.6" center="true" rotation="180,0,0" position="0,10.6,0"/>
-          <box size="1.2,1.2,1.2" position="4.6,0.6,2.6" rotation="0,30,10" material="stoneDark"/>
-          <box size="0.9,0.9,0.9" position="5.4,0.45,0.8" rotation="0,60,-8" material="stoneDark"/>
-          <use ref="torch" position="-3.6,8,0.85" scale="0.9"/>
-        </group>
-      </group>
-    </group>
-  </group>
-
-  <!-- ===================================================================
+           ============================================================= */
+    group name=Bridge {
+      use @slab transform=translate(0,-0.2,38)
+      use @slabLit transform=translate(0,-1.7,48) {
+        animate attr=position values="0,0,0; 0,0.5,0" dur=3.1s alternate=true easing=ease-in-out
+      }
+      use @slab transform=translate(0,-3.2,58) {
+        animate attr=position values="0,0,0; 0,0.6,0" dur=3.5s begin=0.4s alternate=true easing=ease-in-out
+      }
+      use @slabLit transform=translate(0,-4.7,68) {
+        animate attr=position values="0,0,0; 0,0.5,0" dur=2.9s begin=1.1s alternate=true easing=ease-in-out
+      }
+      use @slab transform=translate(0,-6.2,78) {
+        animate attr=position values="0,0,0; 0,0.7,0" dur=3.8s begin=0.2s alternate=true easing=ease-in-out
+      }
+      use @slabLit transform=translate(0,-7.7,88) {
+        animate attr=position values="0,0,0; 0,0.5,0" dur=3.3s begin=1.6s alternate=true easing=ease-in-out
+      }
+      use @slab transform=translate(0,-9.2,98) {
+        animate attr=position values="0,0,0; 0,0.6,0" dur=3s begin=0.8s alternate=true easing=ease-in-out
+      }
+      use @slabLit transform=translate(0,-10.7,108) {
+        animate attr=position values="0,0,0; 0,0.5,0" dur=3.6s begin=2.1s alternate=true easing=ease-in-out
+      }
+      use @slab transform=translate(0,-12.2,118) {
+        animate attr=position values="0,0,0; 0,0.7,0" dur=3.2s begin=0.5s alternate=true easing=ease-in-out
+      }
+      use @slabLit transform=translate(0,-13.7,128) {
+        animate attr=position values="0,0,0; 0,0.5,0" dur=2.8s begin=1.3s alternate=true easing=ease-in-out
+      }
+      use @slab transform=translate(0,-15.2,138) {
+        animate attr=position values="0,0,0; 0,0.6,0" dur=3.4s begin=1.9s alternate=true easing=ease-in-out
+      }
+      use @slabLit transform=translate(0,-16.7,148)
+      light type=point name="Bridge lamps near" color=#ffa04a intensity=70 range=40 position=0,1.5,66
+      light type=point name="Bridge lamps far" color=#ffa04a intensity=70 range=40 position=0,-10.5,126
+    }
+    // the cliff where the bridge lands, rising from the valley floor
+    group name=Cliff position=0,-95.85,166 {
+      revolve material=cliff segments=7 d="M 0 0 L 21 0 L 18 14 L 19.5 28 L 15.5 42 L 16.5 55 L 13 66 L 12.5 74 L 11.2 78.8 L 0 78.8 Z"
+      group material=rockDark {
+        cone radius=7 height=38 segments=5 position=-12,22,6 rotation=0,20,14
+        cone radius=6 height=30 segments=5 position=13,18,-4 rotation=0,50,-16
+        cone radius=5 height=24 segments=5 position=4,58,-11 rotation=-18,10,0
+        cone radius=8 height=16 segments=5 position=0,72,0 rotation=180,30,0 scale=1.5,1,1.5
+      }
+      cylinder radius=11.4 height=0.6 position=0,79,0 segments=7 material=meadow
+      scatter count=7 radius=9 seed=77 position=0,79,2 randomScale=0.45..0.75 randomRotation=0,0..360,0 material=pineA {
+        use @pine
+      }
+      // a ruined arch marks the start of the crossing
+      group position=0,79.2,-8 material=stoneWall {
+        box size=1.6,8,1.6 position=-3.6,4,0
+        box size=1.6,6.2,1.6 position=3.6,3.1,0
+        extrude d="M -4.4 0 L 4.4 0 L 4.4 2.6 L 3 2.6 C 3 1 1.5 0.6 0 0.6 C -1.5 0.6 -3 1 -3 2.6 L -4.4 2.6 Z" depth=1.6 center=true rotation=180,0,0 position=0,10.6,0
+        box size=1.2,1.2,1.2 position=4.6,0.6,2.6 rotation=0,30,10 material=stoneDark
+        box size=0.9,0.9,0.9 position=5.4,0.45,0.8 rotation=0,60,-8 material=stoneDark
+        use @torch position=-3.6,8,0.85 scale=0.9
+      }
+    }
+  }
+}
+/* ===================================================================
        Life: ravens wheeling round the tower, fireflies over the lake
-       =================================================================== -->
-
-  <group name="Ravens" position="7.5,0,-2.7" collide="false">
-    <!-- each raven: turn to its place on the circle, fly out to it, face along
-         the circle (a turning group carries it round) and bank into the turn -->
-    <group>
-      <animate attr="rotation" from="0,0,0" to="0,360,0" dur="28s"/>
-      <use ref="ravenSlow" transform="rotateY(0) translate(46,168,0) rotateY(180) rotateZ(-14)"/>
-      <use ref="ravenFast" transform="rotateY(18) translate(50,172,0) rotateY(180) rotateZ(-14)"/>
-      <use ref="ravenSlow" transform="rotateY(31) translate(44,165,0) rotateY(180) rotateZ(-12)"/>
-      <use ref="ravenFast" transform="rotateY(140) translate(48,175,0) rotateY(180) rotateZ(-16)"/>
-      <use ref="ravenSlow" transform="rotateY(155) translate(52,170,0) rotateY(180) rotateZ(-14)"/>
-      <use ref="ravenFast" transform="rotateY(250) translate(45,162,0) rotateY(180) rotateZ(-12)"/>
-    </group>
-    <group>
-      <animate attr="rotation" from="0,0,0" to="0,-360,0" dur="46s"/>
-      <use ref="ravenFast" transform="rotateY(60) translate(92,140,0) rotateZ(14)"/>
-      <use ref="ravenSlow" transform="rotateY(72) translate(96,146,0) rotateZ(12)"/>
-      <use ref="ravenFast" transform="rotateY(200) translate(88,136,0) rotateZ(14)"/>
-      <use ref="ravenSlow" transform="rotateY(300) translate(100,150,0) rotateZ(12)"/>
-    </group>
-  </group>
-
-  <group name="Fireflies" collide="false">
-    <group position="0,6,0">
-      <animate attr="rotation" from="0,0,0" to="0,360,0" dur="240s"/>
-      <scatter count="140" radius="160" seed="71" randomScale="0.6..1.4" material="firefly">
-        <sphere radius="0.55" segments="4"><animate attr="scale" values="1;0.35;1" dur="2.2s" easing="ease-in-out"/></sphere>
-      </scatter>
-    </group>
-    <group position="0,12,0">
-      <animate attr="rotation" from="0,0,0" to="0,-360,0" dur="300s"/>
-      <scatter count="110" radius="170" seed="72" randomScale="0.6..1.3" material="moteCyan">
-        <sphere radius="0.5" segments="4"><animate attr="scale" values="0.4;1;0.4" dur="3.1s" easing="ease-in-out"/></sphere>
-      </scatter>
-    </group>
-  </group>
-
-  <!-- ===================================================================
+       =================================================================== */
+group name=Ravens position=7.5,0,-2.7 collide=false {
+  /* each raven: turn to its place on the circle, fly out to it, face along
+         the circle (a turning group carries it round) and bank into the turn */
+  group {
+    animate attr=rotation from=0,0,0 to=0,360,0 dur=28s
+    use @ravenSlow transform="rotateY(0) translate(46,168,0) rotateY(180) rotateZ(-14)"
+    use @ravenFast transform="rotateY(18) translate(50,172,0) rotateY(180) rotateZ(-14)"
+    use @ravenSlow transform="rotateY(31) translate(44,165,0) rotateY(180) rotateZ(-12)"
+    use @ravenFast transform="rotateY(140) translate(48,175,0) rotateY(180) rotateZ(-16)"
+    use @ravenSlow transform="rotateY(155) translate(52,170,0) rotateY(180) rotateZ(-14)"
+    use @ravenFast transform="rotateY(250) translate(45,162,0) rotateY(180) rotateZ(-12)"
+  }
+  group {
+    animate attr=rotation from=0,0,0 to=0,-360,0 dur=46s
+    use @ravenFast transform="rotateY(60) translate(92,140,0) rotateZ(14)"
+    use @ravenSlow transform="rotateY(72) translate(96,146,0) rotateZ(12)"
+    use @ravenFast transform="rotateY(200) translate(88,136,0) rotateZ(14)"
+    use @ravenSlow transform="rotateY(300) translate(100,150,0) rotateZ(12)"
+  }
+}
+group name=Fireflies collide=false {
+  group position=0,6,0 {
+    animate attr=rotation from=0,0,0 to=0,360,0 dur=240s
+    scatter count=140 radius=160 seed=71 randomScale=0.6..1.4 material=firefly {
+      sphere radius=0.55 segments=4 {
+        animate attr=scale values="1;0.35;1" dur=2.2s easing=ease-in-out
+      }
+    }
+  }
+  group position=0,12,0 {
+    animate attr=rotation from=0,0,0 to=0,-360,0 dur=300s
+    scatter count=110 radius=170 seed=72 randomScale=0.6..1.3 material=moteCyan {
+      sphere radius=0.5 segments=4 {
+        animate attr=scale values="0.4;1;0.4" dur=3.1s easing=ease-in-out
+      }
+    }
+  }
+}
+/* ===================================================================
        The seal: a magic circle that forms in the sky at the end of the
        flight, directly behind the orb as seen from the last view. It is
        built in the XY plane and turned to face that view; page scroll grows
        it from nothing over the last tenth of the page.
-       =================================================================== -->
-
-  <group name="Seal" position="121.7,208,-98.4" rotation="6.6,-50.3,0" collide="false">
-    <group scale="0.001">
-      <animate attr="scale" timeline="scroll" values="0.001; 0.001; 0.62; 0.9; 1" keyTimes="0, 0.9, 0.94, 0.97, 1" smooth="true"/>
-      <group>
-        <animate attr="rotation" from="0,0,0" to="0,0,360" dur="90s"/>
-        <torus radius="70" tube="0.7" segments="160" rotation="90,0,0" material="rune"/>
-        <torus radius="62" tube="0.45" segments="160" rotation="90,0,0" material="rune"/>
-        <torus radius="26" tube="0.45" segments="96" rotation="90,0,0" material="runeViolet"/>
-        <polyline points="0,62,0 -43.84,-43.84,0 62,0,0 -43.84,43.84,0 0,-62,0 43.84,43.84,0 -62,0,0 43.84,-43.84,0" closed="true" radius="0.5" segments="5" material="runeViolet"/>
-        <repeat count="16" step="rotateZ(22.5)">
-          <use ref="runeA" position="0,66,0" scale="2.4" material="rune"/>
-          <use ref="runeC" position="0,66,0" scale="2.4" transform="rotateZ(11.25)" material="runeViolet"/>
-        </repeat>
-        <extrude path="sigilStar" depth="0.6" center="true" scale="18" material="runeViolet"/>
-      </group>
-      <group>
-        <animate attr="rotation" from="0,0,0" to="0,0,-360" dur="140s"/>
-        <torus radius="48" tube="0.3" segments="128" rotation="90,0,0" material="rune"/>
-        <repeat count="24" step="rotateZ(15)">
-          <box size="1.6,1.6,0.4" position="0,48,0" rotation="0,0,45" material="rune"/>
-        </repeat>
-      </group>
-      <plane size="210" rotation="90,0,0" material="glowViolet"/>
-    </group>
-  </group>
-
-  <!-- ===================================================================
+       =================================================================== */
+group name=Seal position=121.7,208,-98.4 rotation=6.6,-50.3,0 collide=false {
+  group scale=0.001 {
+    animate attr=scale timeline=scroll values="0.001; 0.001; 0.62; 0.9; 1" keyTimes="0, 0.9, 0.94, 0.97, 1" smooth=true
+    group {
+      animate attr=rotation from=0,0,0 to=0,0,360 dur=90s
+      torus radius=70 tube=0.7 segments=160 rotation=90,0,0 material=rune
+      torus radius=62 tube=0.45 segments=160 rotation=90,0,0 material=rune
+      torus radius=26 tube=0.45 segments=96 rotation=90,0,0 material=runeViolet
+      polyline points="0,62,0 -43.84,-43.84,0 62,0,0 -43.84,43.84,0 0,-62,0 43.84,43.84,0 -62,0,0 43.84,-43.84,0" closed=true radius=0.5 segments=5 material=runeViolet
+      repeat count=16 step=rotateZ(22.5) {
+        use @runeA position=0,66,0 scale=2.4 material=rune
+        use @runeC position=0,66,0 scale=2.4 transform=rotateZ(11.25) material=runeViolet
+      }
+      extrude path=sigilStar depth=0.6 center=true scale=18 material=runeViolet
+    }
+    group {
+      animate attr=rotation from=0,0,0 to=0,0,-360 dur=140s
+      torus radius=48 tube=0.3 segments=128 rotation=90,0,0 material=rune
+      repeat count=24 step=rotateZ(15) {
+        box size=1.6,1.6,0.4 position=0,48,0 rotation=0,0,45 material=rune
+      }
+    }
+    plane size=210 rotation=90,0,0 material=glowViolet
+  }
+}
+/* ===================================================================
        Camera and controls
-       =================================================================== -->
-
-  <!-- The flight. Page scroll drives the first camera through seventeen key
+       =================================================================== */
+/* The flight. Page scroll drives the first camera through seventeen key
        views on centripetal Catmull-Rom curves. Key times line up with the
        page's chapter stops (data-es3d-stop), so each chapter gets its view.
 
@@ -1067,28 +1083,15 @@
        "Flight portrait" centres the subjects, lifts them above the text at
        the bottom of a phone and opens the field of view a little. A reader
        shows the first camera; the page puts the portrait one first on tall
-       screens. -->
-  <camera name="Flight" position="-60,58,380" target="-56.61,120.67,-4.58" fov="38" aspect="1.778" fit="cover" near="0.25" far="6000">
-    <animate attr="position" timeline="scroll" smooth="true"
-      keyTimes="0, 0.08, 0.15, 0.23, 0.3, 0.37, 0.43, 0.48, 0.51, 0.56, 0.62, 0.68, 0.74, 0.8, 0.86, 0.93, 1"
-      values="-60,58,380; -48,44,270; -30,30,178; -88,52,120; -128,92,92; -67.66,102.35,24.63; -43.23,101.05,15.73; -31.95,100.25,11.63; -24.43,100.25,8.89; -14.95,100.65,8.63; -10.87,119.85,12.69; 10.44,145.85,25.11; 31.15,159.85,1.43; 18.52,179.85,-21.79; -4.74,198.85,-13.02; -150,200,150; -330,140,280"/>
-    <animate attr="target" timeline="scroll" smooth="true"
-      keyTimes="0, 0.08, 0.15, 0.23, 0.3, 0.37, 0.43, 0.48, 0.51, 0.56, 0.62, 0.68, 0.74, 0.8, 0.86, 0.93, 1"
-      values="-56.61,120.67,-4.58; -26.81,96.12,-2.1; 34.32,67.26,9.38; -30,92,16; -39.26,109,-9.47; -29.18,102.85,7.79; -25.55,102.37,12.32; -16.91,100.85,6.16; -7.52,103.85,2.74; 1.18,136.64,-9.19; 7.52,129.85,-2.74; 12.96,151.96,-2.75; 7.52,167.85,-2.74; 7.52,185.85,-2.74; 9.45,189.01,-5.43; 0,170,0; 22.83,150.04,29.39"/>
-    <animate attr="fov" timeline="scroll" smooth="true"
-      keyTimes="0, 0.08, 0.15, 0.23, 0.3, 0.37, 0.43, 0.48, 0.51, 0.56, 0.62, 0.68, 0.74, 0.8, 0.86, 0.93, 1"
-      values="38; 42; 54; 50; 46; 48; 50; 58; 62; 64; 58; 56; 54; 52; 52; 46; 44"/>
-  </camera>
-  <camera name="Flight portrait" position="-60,58,380" target="0.77,52.54,-4.87" fov="52" aspect="1.778" fit="cover" near="0.25" far="6000">
-    <animate attr="position" timeline="scroll" smooth="true"
-      keyTimes="0, 0.08, 0.15, 0.23, 0.3, 0.37, 0.43, 0.48, 0.51, 0.56, 0.62, 0.68, 0.74, 0.8, 0.86, 0.93, 1"
-      values="-60,58,380; -48,44,270; -30,30,178; -88,52,120; -128,92,92; -67.66,102.35,24.63; -43.23,101.05,15.73; -31.95,100.25,11.63; -24.43,100.25,8.89; -14.95,100.65,8.63; -10.87,119.85,12.69; 10.44,145.85,25.11; 31.15,159.85,1.43; 18.52,179.85,-21.79; -4.74,198.85,-13.02; -150,200,150; -330,140,280"/>
-    <animate attr="target" timeline="scroll" smooth="true"
-      keyTimes="0, 0.08, 0.15, 0.23, 0.3, 0.37, 0.43, 0.48, 0.51, 0.56, 0.62, 0.68, 0.74, 0.8, 0.86, 0.93, 1"
-      values="0.77,52.54,-4.87; -7.43,67.46,-3.88; -3.37,27.25,-4.33; -28,76.63,12.42; -21.84,83.57,7.64; -28.33,98.83,10.31; -26.5,98.08,9.64; -16.91,100.85,6.16; -7.41,103.19,2.7; 13.69,129.68,-5.86; 8.02,128.08,-3.16; 7.45,145.35,-3.36; 7.02,166.15,-2.82; 7.34,184.36,-2.43; 5.36,185.36,-4.54; -1.82,155.41,1.82; -4.1,71.27,3.48"/>
-    <animate attr="fov" timeline="scroll" smooth="true"
-      keyTimes="0, 0.08, 0.15, 0.23, 0.3, 0.37, 0.43, 0.48, 0.51, 0.56, 0.62, 0.68, 0.74, 0.8, 0.86, 0.93, 1"
-      values="52; 55; 70; 65; 60; 62; 65; 72; 72; 72; 72; 72; 70; 68; 68; 60; 57"/>
-  </camera>
-  <controls mode="scroll"/>
-</es3d>
+       screens. */
+camera name=Flight position=-60,58,380 target=-56.61,120.67,-4.58 fov=38 aspect=1.778 fit=cover near=0.25 far=6000 {
+  animate attr=position timeline=scroll smooth=true keyTimes="0, 0.08, 0.15, 0.23, 0.3, 0.37, 0.43, 0.48, 0.51, 0.56, 0.62, 0.68, 0.74, 0.8, 0.86, 0.93, 1" values="-60,58,380; -48,44,270; -30,30,178; -88,52,120; -128,92,92; -67.66,102.35,24.63; -43.23,101.05,15.73; -31.95,100.25,11.63; -24.43,100.25,8.89; -14.95,100.65,8.63; -10.87,119.85,12.69; 10.44,145.85,25.11; 31.15,159.85,1.43; 18.52,179.85,-21.79; -4.74,198.85,-13.02; -150,200,150; -330,140,280"
+  animate attr=target timeline=scroll smooth=true keyTimes="0, 0.08, 0.15, 0.23, 0.3, 0.37, 0.43, 0.48, 0.51, 0.56, 0.62, 0.68, 0.74, 0.8, 0.86, 0.93, 1" values="-56.61,120.67,-4.58; -26.81,96.12,-2.1; 34.32,67.26,9.38; -30,92,16; -39.26,109,-9.47; -29.18,102.85,7.79; -25.55,102.37,12.32; -16.91,100.85,6.16; -7.52,103.85,2.74; 1.18,136.64,-9.19; 7.52,129.85,-2.74; 12.96,151.96,-2.75; 7.52,167.85,-2.74; 7.52,185.85,-2.74; 9.45,189.01,-5.43; 0,170,0; 22.83,150.04,29.39"
+  animate attr=fov timeline=scroll smooth=true keyTimes="0, 0.08, 0.15, 0.23, 0.3, 0.37, 0.43, 0.48, 0.51, 0.56, 0.62, 0.68, 0.74, 0.8, 0.86, 0.93, 1" values="38; 42; 54; 50; 46; 48; 50; 58; 62; 64; 58; 56; 54; 52; 52; 46; 44"
+}
+camera name="Flight portrait" position=-60,58,380 target=0.77,52.54,-4.87 fov=52 aspect=1.778 fit=cover near=0.25 far=6000 {
+  animate attr=position timeline=scroll smooth=true keyTimes="0, 0.08, 0.15, 0.23, 0.3, 0.37, 0.43, 0.48, 0.51, 0.56, 0.62, 0.68, 0.74, 0.8, 0.86, 0.93, 1" values="-60,58,380; -48,44,270; -30,30,178; -88,52,120; -128,92,92; -67.66,102.35,24.63; -43.23,101.05,15.73; -31.95,100.25,11.63; -24.43,100.25,8.89; -14.95,100.65,8.63; -10.87,119.85,12.69; 10.44,145.85,25.11; 31.15,159.85,1.43; 18.52,179.85,-21.79; -4.74,198.85,-13.02; -150,200,150; -330,140,280"
+  animate attr=target timeline=scroll smooth=true keyTimes="0, 0.08, 0.15, 0.23, 0.3, 0.37, 0.43, 0.48, 0.51, 0.56, 0.62, 0.68, 0.74, 0.8, 0.86, 0.93, 1" values="0.77,52.54,-4.87; -7.43,67.46,-3.88; -3.37,27.25,-4.33; -28,76.63,12.42; -21.84,83.57,7.64; -28.33,98.83,10.31; -26.5,98.08,9.64; -16.91,100.85,6.16; -7.41,103.19,2.7; 13.69,129.68,-5.86; 8.02,128.08,-3.16; 7.45,145.35,-3.36; 7.02,166.15,-2.82; 7.34,184.36,-2.43; 5.36,185.36,-4.54; -1.82,155.41,1.82; -4.1,71.27,3.48"
+  animate attr=fov timeline=scroll smooth=true keyTimes="0, 0.08, 0.15, 0.23, 0.3, 0.37, 0.43, 0.48, 0.51, 0.56, 0.62, 0.68, 0.74, 0.8, 0.86, 0.93, 1" values="52; 55; 70; 65; 60; 62; 65; 72; 72; 72; 72; 72; 70; 68; 68; 60; 57"
+}
+controls mode=scroll

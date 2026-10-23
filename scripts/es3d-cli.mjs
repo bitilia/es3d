@@ -4,7 +4,7 @@
 //   npm run es3d -- validate scene.es3d
 //   npm run es3d -- fmt scene.es3d -o pretty.es3d
 //   npm run es3d -- stats scene.es3d
-//   npm run es3d -- glb scene.es3d --instancing -o scene.glb
+//   npm run es3d -- glb scene.es3d -o scene.glb
 //   npm run es3d -- import drawing.svg -o drawing.es3d
 //
 // Run without arguments for the full command list. Input "-" reads stdin;
@@ -17,7 +17,6 @@ import { parse, detectSyntax } from '../src/format/parse.js';
 import { serialize } from '../src/format/serializer.js';
 import { compile } from '../src/pipeline.js';
 import { exportOBJ } from '../src/io/obj.js';
-import { exportGLB } from '../src/io/gltf.js';
 import { exportSTL } from '../src/io/stl.js';
 import { exportSTEP } from '../src/io/step.js';
 import { detectKind, importFiles } from '../src/io/convert.js';
@@ -36,7 +35,7 @@ Commands
   optimize   run the optimizer and print its report to stderr
   expand     replace <repeat>/<scatter> with explicit elements
   obj        export Wavefront OBJ (+ .mtl next to -o) (--lod <0-3>)
-  glb        export glTF binary                      (--lod <0-3>, --instancing, --quantize 16)
+  glb        packed glTF binary                     (instances, LODs, lights, cameras, animation)
   stl        export STL for 3D printing, Z-up        (--lod <0-3>, --ascii)
   step       export tessellated STEP (AP242), Z-up  (--lod <0-3>)
   import     convert SVG, OBJ (+MTL), STL, STEP or glTF (.gltf + .bin, .glb) to ES3D:
@@ -48,9 +47,9 @@ Commands
 Options
   -o, --out <file>   output file (default: stdout for text)
   --precision <n>    round numbers to n decimals when writing text
-  --lod <n>          level of detail for mesh exports (default 0 = finest)
-  --instancing       GLB: use EXT_mesh_gpu_instancing
-  --quantize         GLB: KHR_mesh_quantization (int16 positions, int8 normals)
+  --lod <n>          level of detail for obj, stl and step (default 0 = finest)
+  --instancing       glb always writes EXT_mesh_gpu_instancing
+  --quantize         glb always writes KHR_mesh_quantization
   --min / --pretty   force minified / pretty output
   --json             validate/stats: machine readable output
   --ascii            STL: write ASCII instead of binary
@@ -312,8 +311,21 @@ async function main() {
       break;
     }
     case 'glb': {
-      const r = compiled(es3dInput(bytes));
-      write(opts, exportGLB(r.scene, (e, l) => r.cache.mesh(e, l), { lod: opts.lod, instancing: opts.instancing, quantize: opts.quantize > 0 }));
+      let exportPackedGLB;
+      try {
+        ({ exportPackedGLB } = await import('../src/io/gltf-pack.js'));
+      } catch (e) {
+        fail(`glb could not load the packer (${e.message})`, 1);
+      }
+      const baseDir = opts.input === '-' ? '' : path.dirname(path.resolve(opts.input));
+      const sourceName = opts.input === '-' ? 'stdin' : `${path.basename(path.dirname(opts.input))}/${path.basename(opts.input)}`;
+      let file;
+      try {
+        file = await exportPackedGLB(es3dInput(bytes), { baseDir, sourceName });
+      } catch (e) {
+        fail(e.message, 1);
+      }
+      write(opts, file);
       break;
     }
     case 'stl': {

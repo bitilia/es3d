@@ -1,6 +1,6 @@
 // The glTF stage: src/scene/castle.glb drawn with three.js.
 //
-// castle.glb is the world of castle.es3d, exported by scripts/export-gltf.mjs.
+// castle.glb is the world of castle.es3d, exported with es3d glb.
 // The file carries the geometry, materials, lights, cameras and animations.
 // This module adds what glTF has no place for, and what three.js does not do
 // by itself, so that the page looks and behaves like the ES3D one:
