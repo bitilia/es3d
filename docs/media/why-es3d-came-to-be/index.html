@@ -11,7 +11,7 @@
 <meta property="og:description" content="A slow preview of the Benchy, a start-up homepage, and the first prototype of ES3D.">
 <meta property="og:url" content="https://es3d.org/media/why-es3d-came-to-be/">
 <meta property="article:published_time" content="2026-10-15">
-<meta property="article:modified_time" content="<!--#echo var="LAST_MODIFIED" -->">
+<meta property="article:modified_time" content="<!--#echo var="LAST_MODIFIED_TIME" -->">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Why ES3D came to be">
 <meta name="twitter:description" content="A slow preview of the Benchy, a start-up homepage, and the first prototype of ES3D.">
@@ -19,39 +19,49 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
+  "@id": "https://es3d.org/media/why-es3d-came-to-be/#article",
   "headline": "Why ES3D came to be",
   "description": "A slow preview of the Benchy, a start-up homepage, and the first prototype of ES3D, from the founder.",
   "inLanguage": "en",
-  "image": {
+  "image": [{
     "@type": "ImageObject",
     "url": "https://es3d.org/images/studio-primitives.jpg",
     "width": 2000,
     "height": 1125
-  },
+  }],
   "datePublished": "2026-10-15",
-  "dateModified": "<!--#echo var="LAST_MODIFIED" -->",
+  "dateModified": "<!--#echo var="LAST_MODIFIED_TIME" -->",
   "author": {
     "@type": "Person",
     "name": "The founder of ES3D",
+    "url": "https://www.youtube.com/@es3dfile",
     "jobTitle": "Founder",
-    "affiliation": {
-      "@type": "Organization",
-      "@id": "https://es3d.org/#organization",
-      "name": "ES3D",
-      "url": "https://es3d.org/"
-    }
+    "affiliation": { "@id": "https://es3d.org/#organization" }
   },
   "publisher": {
     "@type": "Organization",
     "@id": "https://es3d.org/#organization",
     "name": "ES3D",
-    "url": "https://es3d.org/"
+    "url": "https://es3d.org/",
+    "description": "ES3D (Extensible Scalable 3D) is a file format for 3D scenes you can write by hand, with a free converter, a browser editor and a WebGPU/WebGL2 renderer.",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://es3d.org/logo.png",
+      "contentUrl": "https://es3d.org/logo.png",
+      "width": 1216,
+      "height": 384
+    },
+    "sameAs": [
+      "https://github.com/bitilia/es3d",
+      "https://www.youtube.com/@es3dfile"
+    ]
   },
-  "mainEntityOfPage": "https://es3d.org/media/why-es3d-came-to-be/",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://es3d.org/media/why-es3d-came-to-be/" },
+  "breadcrumb": { "@id": "https://es3d.org/media/why-es3d-came-to-be/#breadcrumb" },
   "url": "https://es3d.org/media/why-es3d-came-to-be/",
   "isAccessibleForFree": true,
   "about": [
-    { "@type": "SoftwareApplication", "@id": "https://es3d.org/#software", "name": "ES3D", "applicationCategory": "File format", "url": "https://es3d.org/" },
+    { "@id": "https://es3d.org/#software" },
     "Extensible Scalable 3D",
     "3D file format"
   ],

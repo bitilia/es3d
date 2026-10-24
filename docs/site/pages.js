@@ -43,6 +43,25 @@ export const PAGES = [
   { file: 'media/index.html', name: 'Media' },
   { file: 'media/why-es3d-came-to-be/index.html', name: 'Why ES3D came to be' },
   { file: 'media/making-the-web-3d/index.html', name: 'Making the Web 3D' },
+  {
+    file: 'media/making-the-web-lighter/index.html',
+    name: 'Making the web lighter',
+    video: {
+      title: 'Making the web lighter',
+      description: 'A 41-second short on the ES3D channel. It shows the castle demo.',
+      thumbnail: 'https://i.ytimg.com/vi/hWGNOcR_cmg/oardefault.jpg',
+      thumbnailWidth: 1080,
+      thumbnailHeight: 1920,
+      poster: 'https://i.ytimg.com/vi/hWGNOcR_cmg/maxresdefault.jpg',
+      posterWidth: 1280,
+      posterHeight: 720,
+      player: 'https://www.youtube-nocookie.com/embed/hWGNOcR_cmg',
+      watch: 'https://www.youtube.com/shorts/hWGNOcR_cmg',
+      channel: 'https://www.youtube.com/@es3dfile',
+      durationSeconds: 41,
+      published: '2026-10-24T03:31:03-07:00',
+    },
+  },
   { file: 'download/index.html', name: 'Download' },
   { file: 'faq/index.html', name: 'FAQ' },
   { file: 'benchmark-devices/index.html', name: 'Benchmarks', image: 'studio-forest.jpg' },
@@ -76,11 +95,18 @@ export function previewImage(page) {
 }
 
 /** Calendar date for "Last updated" and sitemap lastmod, YYYY-MM-DD in local time. */
-export function siteDate() {
-  const d = new Date();
+export function siteDate(d = new Date()) {
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   return `${d.getFullYear()}-${month}-${day}`;
+}
+
+/** ISO 8601 local date and time with a numeric offset, for structured data. */
+export function siteDateTime(d = new Date()) {
+  const pad = (n) => String(Math.trunc(Math.abs(n))).padStart(2, '0');
+  const off = -d.getTimezoneOffset();
+  const sign = off >= 0 ? '+' : '-';
+  return `${siteDate(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}${sign}${pad(Math.trunc(off / 60))}:${pad(Math.abs(off) % 60)}`;
 }
 
 /**
@@ -102,8 +128,32 @@ export function breadcrumbItems(page, currentName) {
   return items;
 }
 
+const xml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c]);
+
+/** One video sitemap block. Google wants the player page, a thumbnail, and the file or player URL. */
+function videoSitemap(video) {
+  return `
+    <video:video>
+      <video:thumbnail_loc>${xml(video.poster)}</video:thumbnail_loc>
+      <video:title>${xml(video.title)}</video:title>
+      <video:description>${xml(video.description)}</video:description>
+      <video:player_loc allow_embed="yes">${xml(video.player)}</video:player_loc>
+      <video:duration>${video.durationSeconds}</video:duration>
+      <video:publication_date>${xml(video.published)}</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>`;
+}
+
 /** sitemap.xml for every page that is listed in it. lastmod is the site date. */
 export function sitemapXml(modified = siteDate()) {
-  const urls = PAGES.filter((p) => p.sitemap !== false).map((p) => `  <url>\n    <loc>${pageUrl(p)}</loc>\n    <lastmod>${modified}</lastmod>\n  </url>`);
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`;
+  const videos = PAGES.some((p) => p.video && p.sitemap !== false);
+  const xmlns = videos
+    ? 'xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"'
+    : 'xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"';
+  const urls = PAGES.filter((p) => p.sitemap !== false).map((p) => {
+    const extra = p.video ? videoSitemap(p.video) : '';
+    return `  <url>\n    <loc>${pageUrl(p)}</loc>\n    <lastmod>${modified}</lastmod>${extra}\n  </url>`;
+  });
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset ${xmlns}>\n${urls.join('\n')}\n</urlset>\n`;
 }

@@ -144,3 +144,149 @@ test('site navigation: a menu button for phones, and no New badges', () => {
   assert.match(nav, />ES3D Modeller<\/a>/);
   assert.doesNotMatch(nav, /class="new"|>New</);
 });
+
+const ARTICLE_TYPES = new Set(['Article', 'NewsArticle', 'BlogPosting', 'ScholarlyArticle', 'TechArticle', 'Report']);
+const SOFTWARE_TYPES = new Set(['SoftwareApplication', 'WebApplication', 'MobileApplication']);
+
+function typesOf(node) {
+  const t = node['@type'];
+  if (!t) return new Set();
+  return new Set(Array.isArray(t) ? t : [t]);
+}
+
+function walkNodes(node, visit) {
+  if (!node || typeof node !== 'object') return;
+  if (Array.isArray(node)) {
+    for (const item of node) walkNodes(item, visit);
+    return;
+  }
+  visit(node);
+  for (const value of Object.values(node)) walkNodes(value, visit);
+}
+
+function jsonBlocks(html) {
+  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+}
+
+function renderSitePage(file) {
+  const docs = path.join(import.meta.dirname, '..', 'docs');
+  const html = fs.readFileSync(path.join(docs, file), 'utf8');
+  const dir = file.includes('/') ? file.slice(0, file.lastIndexOf('/')) : '';
+  const root = dir ? `${dir.split('/').map(() => '..').join('/')}/` : '';
+  return structuredData(linkPreview(expandPage(html, { ROOT: root, HOME: root || './', PAGE_DIR: dir }), file), file);
+}
+
+test('structured data on every public page is valid for Google rich results', () => {
+  const docs = path.join(import.meta.dirname, '..', 'docs');
+  const logo = fs.readFileSync(path.join(docs, 'public/logo.png'));
+  assert.equal(logo.readUInt32BE(16), 1216);
+  assert.equal(logo.readUInt32BE(20), 384);
+  const videoPage = PAGES.find((p) => p.video);
+  const xml = sitemapXml();
+  assert.match(xml, /xmlns:video="http:\/\/www\.google\.com\/schemas\/sitemap-video\/1\.1"/);
+  assert.match(xml, new RegExp(`<loc>${videoPage.video.player.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</loc>|<video:player_loc[^>]*>${videoPage.video.player}</video:player_loc>`));
+  assert.match(xml, /<video:thumbnail_loc>https:\/\/i\.ytimg\.com\/vi\/hWGNOcR_cmg\/maxresdefault\.jpg<\/video:thumbnail_loc>/);
+  assert.match(xml, /<video:duration>41<\/video:duration>/);
+  assert.match(xml, /<loc>https:\/\/es3d\.org\/media\/<\/loc>/);
+
+  for (const page of PAGES) {
+    if (page.sitemap === false) {
+      assert.equal(structuredData('<head></head>', page.file), '<head></head>');
+      continue;
+    }
+    const html = renderSitePage(page.file);
+    const blocks = jsonBlocks(html);
+    assert.ok(blocks.length, `${page.file} has no JSON-LD`);
+    const nodes = [];
+    for (const block of blocks) {
+      assert.doesNotMatch(block, /<!--|favicon\.svg/, page.file);
+      nodes.push(JSON.parse(block));
+    }
+    assert.match(html, /https:\/\/es3d\.org\/logo\.png/, page.file);
+    assert.match(html, /https:\/\/www\.youtube\.com\/@es3dfile/, page.file);
+    let sawOrg = false;
+    walkNodes(nodes, (node) => {
+      const types = typesOf(node);
+      if (typeof node.dateModified === 'string') {
+        assert.match(node.dateModified, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/, page.file);
+        if (typeof node.datePublished === 'string') {
+          assert.ok(Date.parse(node.dateModified) >= Date.parse(node.datePublished), `${page.file} dateModified before datePublished`);
+        }
+      }
+      if (types.has('Organization') && node.name === 'ES3D') {
+        sawOrg = true;
+        assert.equal(node.url, 'https://es3d.org/');
+        assert.equal(node.logo?.url, 'https://es3d.org/logo.png');
+        assert.equal(node.logo.contentUrl, 'https://es3d.org/logo.png');
+        assert.equal(node.logo.width, 1216);
+        assert.equal(node.logo.height, 384);
+        assert.ok(!/\.svg(\?|$)/i.test(node.logo.url));
+        const same = [].concat(node.sameAs || []);
+        assert.ok(same.includes('https://www.youtube.com/@es3dfile'), page.file);
+        assert.ok(same.includes('https://github.com/bitilia/es3d'), page.file);
+      }
+      for (const type of SOFTWARE_TYPES) {
+        if (!types.has(type)) continue;
+        const price = node.offers?.price;
+        assert.ok(price === 0 || price === '0' || Number(price) > 0, `${page.file} ${type} price`);
+        assert.ok(node.aggregateRating || node.review, `${page.file} ${type} requires a rating that is visible on the page`);
+      }
+      if ([...types].some((type) => ARTICLE_TYPES.has(type))) {
+        assert.ok(node.headline && node.headline.length <= 110, `${page.file} headline`);
+        const images = [].concat(node.image || []);
+        assert.ok(images.some((img) => typeof img === 'string' ? img : img?.url), `${page.file} image`);
+        assert.ok(node.datePublished, `${page.file} datePublished`);
+        const authors = [].concat(node.author || []);
+        assert.ok(authors.some((author) => author?.name && (author.url || author.sameAs)), `${page.file} author`);
+      }
+      if (types.has('VideoObject')) {
+        assert.equal(node.name, videoPage.video.title);
+        assert.equal(node.description, videoPage.video.description);
+        assert.equal(node.uploadDate, videoPage.video.published);
+        assert.equal(node.duration, `PT${videoPage.video.durationSeconds}S`);
+        assert.equal(node.embedUrl, videoPage.video.player);
+        const thumbs = [].concat(node.thumbnailUrl || []);
+        assert.ok(thumbs.includes(videoPage.video.poster) && thumbs.includes(videoPage.video.thumbnail));
+        assert.match(html, new RegExp(`<iframe[^>]*src="${node.embedUrl}"`));
+      }
+      if (types.has('BreadcrumbList')) {
+        node.itemListElement.forEach((item, i) => {
+          assert.equal(item['@type'], 'ListItem');
+          assert.equal(item.position, i + 1, page.file);
+          assert.ok(item.name, page.file);
+          assert.match(item.item, /^https:\/\/es3d\.org\//, page.file);
+        });
+      }
+      if (types.has('FAQPage')) {
+        const questions = [].concat(node.mainEntity || []);
+        assert.ok(questions.length >= 2, page.file);
+        for (const question of questions) {
+          assert.equal(question['@type'], 'Question');
+          assert.ok(question.name && question.acceptedAnswer?.text, page.file);
+        }
+      }
+      if (types.has('ItemList') && page.file === 'media/index.html') {
+        assert.equal(node.numberOfItems, node.itemListElement.length);
+        const urls = node.itemListElement.map((item) => item.url);
+        assert.deepEqual(urls, [
+          'https://es3d.org/media/making-the-web-lighter/',
+          'https://zenodo.org/records/23403919',
+          'https://dev.to/pavkode/optimizing-3d-file-formats-for-web-performance-by-reducing-precision-and-complexity-2i8i',
+          'https://es3d.org/media/why-es3d-came-to-be/',
+          'https://es3d.org/media/making-the-web-3d/',
+        ]);
+      }
+    });
+    assert.ok(sawOrg, `${page.file} organization`);
+    if (page.file === 'media/index.html') {
+      const joined = blocks.join('\n');
+      assert.doesNotMatch(joined, /ScholarlyArticle|BlogPosting|VideoObject|SoftwareApplication/);
+      assert.match(html, /making-the-web-lighter\//);
+    }
+    if (page.video) {
+      assert.match(html, new RegExp(`src="${page.video.player}"`));
+      assert.match(html, new RegExp(page.video.watch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+      assert.match(html, /"@type": "VideoObject"/);
+    }
+  }
+});

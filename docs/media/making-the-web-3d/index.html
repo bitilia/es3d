@@ -11,7 +11,7 @@
 <meta property="og:description" content="A very brief introduction of the ES3D format from the founder.">
 <meta property="og:url" content="https://es3d.org/media/making-the-web-3d/">
 <meta property="article:published_time" content="2026-10-15">
-<meta property="article:modified_time" content="<!--#echo var="LAST_MODIFIED" -->">
+<meta property="article:modified_time" content="<!--#echo var="LAST_MODIFIED_TIME" -->">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Making the Web 3D">
 <meta name="twitter:description" content="A very brief introduction of the ES3D format from the founder.">
@@ -19,40 +19,50 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
+  "@id": "https://es3d.org/media/making-the-web-3d/#article",
   "headline": "Making the Web 3D",
   "alternativeHeadline": "A very brief introduction of the format from the founder",
   "description": "A very brief introduction of the ES3D format from the founder. ES3D does for a 3D scene what SVG does for a drawing.",
   "inLanguage": "en",
-  "image": {
+  "image": [{
     "@type": "ImageObject",
     "url": "https://es3d.org/images/studio-primitives.jpg",
     "width": 2000,
     "height": 1125
-  },
+  }],
   "datePublished": "2026-10-15",
-  "dateModified": "<!--#echo var="LAST_MODIFIED" -->",
+  "dateModified": "<!--#echo var="LAST_MODIFIED_TIME" -->",
   "author": {
     "@type": "Person",
     "name": "The founder of ES3D",
+    "url": "https://www.youtube.com/@es3dfile",
     "jobTitle": "Founder",
-    "affiliation": {
-      "@type": "Organization",
-      "@id": "https://es3d.org/#organization",
-      "name": "ES3D",
-      "url": "https://es3d.org/"
-    }
+    "affiliation": { "@id": "https://es3d.org/#organization" }
   },
   "publisher": {
     "@type": "Organization",
     "@id": "https://es3d.org/#organization",
     "name": "ES3D",
-    "url": "https://es3d.org/"
+    "url": "https://es3d.org/",
+    "description": "ES3D (Extensible Scalable 3D) is a file format for 3D scenes you can write by hand, with a free converter, a browser editor and a WebGPU/WebGL2 renderer.",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://es3d.org/logo.png",
+      "contentUrl": "https://es3d.org/logo.png",
+      "width": 1216,
+      "height": 384
+    },
+    "sameAs": [
+      "https://github.com/bitilia/es3d",
+      "https://www.youtube.com/@es3dfile"
+    ]
   },
-  "mainEntityOfPage": "https://es3d.org/media/making-the-web-3d/",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://es3d.org/media/making-the-web-3d/" },
+  "breadcrumb": { "@id": "https://es3d.org/media/making-the-web-3d/#breadcrumb" },
   "url": "https://es3d.org/media/making-the-web-3d/",
   "isAccessibleForFree": true,
   "about": [
-    { "@type": "SoftwareApplication", "@id": "https://es3d.org/#software", "name": "ES3D", "applicationCategory": "File format", "url": "https://es3d.org/" },
+    { "@id": "https://es3d.org/#software" },
     "Extensible Scalable 3D",
     "3D file format",
     "SVG"

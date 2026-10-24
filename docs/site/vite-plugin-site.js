@@ -17,7 +17,8 @@
 // Every page listed in docs/site/pages.js gets a canonical link, Open Graph
 // and Twitter tags, and JSON-LD (the page, a breadcrumb trail, and the FAQ
 // when that page is the FAQ). A page that already writes structured data
-// keeps it and only gains the breadcrumb. The build writes sitemap.xml,
+// keeps it and gains a breadcrumb, plus the organization and the website
+// when that page does not declare them. The build writes sitemap.xml,
 // with lastmod set to the same date the footer calls "Last updated".
 //
 // Links between the Markdown documents become links between these pages.
@@ -28,7 +29,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { renderMarkdown, tableOfContents, escapeHtml } from './markdown.js';
 import { sizeHtml, formatBytes } from './filesize.js';
-import { PREVIEW_IMAGES, breadcrumbItems, pageFor, pageUrl, previewImage, siteDate, sitemapXml } from './pages.js';
+import { PREVIEW_IMAGES, breadcrumbItems, pageFor, pageUrl, previewImage, siteDate, siteDateTime, sitemapXml } from './pages.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DOCS = path.resolve(HERE, '..');
@@ -159,6 +160,7 @@ function examplesGallery(root = '') {
 export function expandPage(html, vars = {}) {
   const env = {
     LAST_MODIFIED: siteDate(),
+    LAST_MODIFIED_TIME: siteDateTime(),
     VERSION: JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version,
     ROOT: '',
     HOME: './',
@@ -248,6 +250,42 @@ export function linkPreview(html, file) {
 
 const ORG_ID = 'https://es3d.org/#organization';
 const SITE_ID = 'https://es3d.org/#website';
+const SITE_DESCRIPTION = 'ES3D (Extensible Scalable 3D) is a file format for 3D scenes you can write by hand, with a free converter, a browser editor and a WebGPU/WebGL2 renderer.';
+const YOUTUBE_CHANNEL = 'https://www.youtube.com/@es3dfile';
+
+/** Raster wordmark. Both sides are at least 112px, which is Google's minimum for a logo. */
+const LOGO = {
+  '@type': 'ImageObject',
+  url: 'https://es3d.org/logo.png',
+  contentUrl: 'https://es3d.org/logo.png',
+  width: 1216,
+  height: 384,
+};
+
+function organizationNode() {
+  return {
+    '@type': 'Organization',
+    '@id': ORG_ID,
+    name: 'ES3D',
+    url: 'https://es3d.org/',
+    description: SITE_DESCRIPTION,
+    logo: LOGO,
+    sameAs: ['https://github.com/bitilia/es3d', YOUTUBE_CHANNEL],
+  };
+}
+
+function websiteNode() {
+  return {
+    '@type': 'WebSite',
+    '@id': SITE_ID,
+    url: 'https://es3d.org/',
+    name: 'ES3D',
+    alternateName: 'Extensible Scalable 3D',
+    description: SITE_DESCRIPTION,
+    publisher: { '@id': ORG_ID },
+    inLanguage: 'en',
+  };
+}
 
 function jsonLd(data) {
   return JSON.stringify(data, null, 2).replace(/</g, '\\u003c');
@@ -301,22 +339,8 @@ export function structuredData(html, file) {
     const image = previewImage(page);
     const faq = file === 'faq/index.html' ? faqEntities(html) : null;
     const graph = [
-      {
-        '@type': 'Organization',
-        '@id': ORG_ID,
-        name: 'ES3D',
-        url: 'https://es3d.org/',
-        logo: { '@type': 'ImageObject', url: 'https://es3d.org/favicon.svg' },
-        sameAs: ['https://github.com/bitilia/es3d'],
-      },
-      {
-        '@type': 'WebSite',
-        '@id': SITE_ID,
-        url: 'https://es3d.org/',
-        name: 'ES3D',
-        publisher: { '@id': ORG_ID },
-        inLanguage: 'en',
-      },
+      organizationNode(),
+      websiteNode(),
       {
         '@type': faq ? ['WebPage', 'FAQPage'] : 'WebPage',
         '@id': `${url}#webpage`,
@@ -326,7 +350,7 @@ export function structuredData(html, file) {
         isPartOf: { '@id': SITE_ID },
         publisher: { '@id': ORG_ID },
         inLanguage: 'en',
-        dateModified: siteDate(),
+        dateModified: siteDateTime(),
         primaryImageOfPage: { '@type': 'ImageObject', url: image.url, width: image.width, height: image.height },
         ...(faq ? { mainEntity: faq } : {}),
         ...(crumbs.length > 1 ? { breadcrumb: { '@id': `${url}#breadcrumb` } } : {}),
@@ -334,8 +358,11 @@ export function structuredData(html, file) {
     ];
     if (crumbs.length > 1) graph.push(breadcrumbNode(url, crumbs));
     blocks.push({ '@context': 'https://schema.org', '@graph': graph });
-  } else if (crumbs.length > 1 && !html.includes('BreadcrumbList')) {
-    blocks.push({ '@context': 'https://schema.org', ...breadcrumbNode(url, crumbs) });
+  } else {
+    const extra = [];
+    if (!html.includes(ORG_ID)) extra.push(organizationNode(), websiteNode());
+    if (crumbs.length > 1 && !html.includes('BreadcrumbList')) extra.push(breadcrumbNode(url, crumbs));
+    if (extra.length) blocks.push({ '@context': 'https://schema.org', '@graph': extra });
   }
   if (!blocks.length) return html;
   const scripts = blocks.map((b) => `<script type="application/ld+json">\n${jsonLd(b)}\n</script>`).join('\n');

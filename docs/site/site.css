@@ -694,6 +694,27 @@ table.gallery img {
   font-size: 14px;
 }
 
+.video-short {
+  margin: 0 0 18px;
+  max-width: 22.5rem;
+}
+
+.video-short iframe {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  border: 0;
+  border-radius: 12px;
+  background: #111;
+}
+
+.video-short figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 /* -------------------------------------------------------------- converter */
 
 .disclaimer {

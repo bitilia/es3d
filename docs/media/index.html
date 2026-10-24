@@ -3,54 +3,128 @@
 <head>
 <!--#include virtual="head.html" -->
 <title>Media - ES3D</title>
-<meta name="description" content="Papers, talks and posts about ES3D, including the ES3D white paper, Why ES3D came to be, Making the Web 3D, and Pavel Kostromin's post on DEV Community.">
+<meta name="description" content="Papers, talks, posts and a short video about ES3D, including the white paper, Why ES3D came to be, Making the Web 3D, Making the web lighter, and Pavel Kostromin's post on DEV Community.">
 <link rel="canonical" href="https://es3d.org/media/">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "@id": "https://es3d.org/media/#webpage",
-  "url": "https://es3d.org/media/",
-  "name": "Media",
-  "description": "Papers, talks and posts about ES3D, including the ES3D white paper, Why ES3D came to be, Making the Web 3D, and Pavel Kostromin's post on DEV Community.",
-  "isPartOf": { "@id": "https://es3d.org/#website" },
-  "inLanguage": "en",
-  "dateModified": "<!--#echo var="LAST_MODIFIED" -->",
-  "mainEntity": {
-    "@type": "ItemList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "item": {
-          "@type": "ScholarlyArticle",
-          "@id": "https://doi.org/10.5281/zenodo.23403919",
-          "url": "https://zenodo.org/records/23403919",
-          "name": "Extensible Scalable 3D - Describing three-dimensional web scenes by parameters: the ES3D format and its reference implementation",
-          "sameAs": "https://doi.org/10.5281/zenodo.23403919",
-          "identifier": { "@type": "PropertyValue", "propertyID": "DOI", "value": "10.5281/zenodo.23403919" },
-          "author": { "@type": "Person", "name": "Ilia Kalina", "sameAs": "https://orcid.org/0009-0002-0510-6261" },
-          "datePublished": "2026-10-15",
-          "publisher": { "@type": "Organization", "name": "Zenodo" },
-          "license": "https://creativecommons.org/licenses/by/4.0/"
-        }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://es3d.org/#organization",
+      "name": "ES3D",
+      "url": "https://es3d.org/",
+      "description": "ES3D (Extensible Scalable 3D) is a file format for 3D scenes you can write by hand, with a free converter, a browser editor and a WebGPU/WebGL2 renderer.",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://es3d.org/logo.png",
+        "contentUrl": "https://es3d.org/logo.png",
+        "width": 1216,
+        "height": 384
       },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "item": {
-          "@type": "BlogPosting",
-          "url": "https://dev.to/pavkode/optimizing-3d-file-formats-for-web-performance-by-reducing-precision-and-complexity-2i8i",
-          "name": "Optimizing 3D File Formats for Web Performance by Reducing Precision and Complexity",
-          "author": { "@type": "Person", "name": "Pavel Kostromin", "url": "https://dev.to/pavkode" },
-          "datePublished": "2026-10-17",
-          "publisher": { "@type": "Organization", "name": "DEV Community", "url": "https://dev.to" }
-        }
-      },
-      { "@type": "ListItem", "position": 3, "url": "https://es3d.org/media/why-es3d-came-to-be/", "name": "Why ES3D came to be" },
-      { "@type": "ListItem", "position": 4, "url": "https://es3d.org/media/making-the-web-3d/", "name": "Making the Web 3D" }
-    ]
-  }
+      "sameAs": [
+        "https://github.com/bitilia/es3d",
+        "https://www.youtube.com/@es3dfile"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://es3d.org/#website",
+      "url": "https://es3d.org/",
+      "name": "ES3D",
+      "alternateName": "Extensible Scalable 3D",
+      "publisher": { "@id": "https://es3d.org/#organization" },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": "https://es3d.org/media/#webpage",
+      "url": "https://es3d.org/media/",
+      "name": "Media",
+      "description": "Papers, talks, posts and a short video about ES3D, including the white paper, Why ES3D came to be, Making the Web 3D, Making the web lighter, and Pavel Kostromin's post on DEV Community.",
+      "isPartOf": { "@id": "https://es3d.org/#website" },
+      "publisher": { "@id": "https://es3d.org/#organization" },
+      "breadcrumb": { "@id": "https://es3d.org/media/#breadcrumb" },
+      "inLanguage": "en",
+      "dateModified": "<!--#echo var="LAST_MODIFIED_TIME" -->",
+      "mainEntity": {
+        "@type": "ItemList",
+        "numberOfItems": 5,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Making the web lighter",
+            "url": "https://es3d.org/media/making-the-web-lighter/",
+            "item": {
+              "@type": "CreativeWork",
+              "name": "Making the web lighter",
+              "url": "https://es3d.org/media/making-the-web-lighter/",
+              "datePublished": "2026-10-24",
+              "author": { "@id": "https://es3d.org/#organization" }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Extensible Scalable 3D - Describing three-dimensional web scenes by parameters: the ES3D format and its reference implementation",
+            "url": "https://zenodo.org/records/23403919",
+            "item": {
+              "@type": "CreativeWork",
+              "name": "Extensible Scalable 3D - Describing three-dimensional web scenes by parameters: the ES3D format and its reference implementation",
+              "url": "https://zenodo.org/records/23403919",
+              "sameAs": "https://doi.org/10.5281/zenodo.23403919",
+              "identifier": { "@type": "PropertyValue", "propertyID": "DOI", "value": "10.5281/zenodo.23403919" },
+              "author": { "@type": "Person", "name": "Ilia Kalina", "url": "https://orcid.org/0009-0002-0510-6261" },
+              "datePublished": "2026-10-15",
+              "publisher": { "@type": "Organization", "name": "Zenodo", "url": "https://zenodo.org" },
+              "license": "https://creativecommons.org/licenses/by/4.0/"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Optimizing 3D File Formats for Web Performance by Reducing Precision and Complexity",
+            "url": "https://dev.to/pavkode/optimizing-3d-file-formats-for-web-performance-by-reducing-precision-and-complexity-2i8i",
+            "item": {
+              "@type": "CreativeWork",
+              "name": "Optimizing 3D File Formats for Web Performance by Reducing Precision and Complexity",
+              "url": "https://dev.to/pavkode/optimizing-3d-file-formats-for-web-performance-by-reducing-precision-and-complexity-2i8i",
+              "author": { "@type": "Person", "name": "Pavel Kostromin", "url": "https://dev.to/pavkode" },
+              "datePublished": "2026-10-17",
+              "publisher": { "@type": "Organization", "name": "DEV Community", "url": "https://dev.to" }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "Why ES3D came to be",
+            "url": "https://es3d.org/media/why-es3d-came-to-be/",
+            "item": {
+              "@type": "CreativeWork",
+              "name": "Why ES3D came to be",
+              "url": "https://es3d.org/media/why-es3d-came-to-be/",
+              "datePublished": "2026-10-15",
+              "author": { "@type": "Person", "name": "The founder of ES3D", "url": "https://www.youtube.com/@es3dfile" }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 5,
+            "name": "Making the Web 3D",
+            "url": "https://es3d.org/media/making-the-web-3d/",
+            "item": {
+              "@type": "CreativeWork",
+              "name": "Making the Web 3D",
+              "url": "https://es3d.org/media/making-the-web-3d/",
+              "datePublished": "2026-10-15",
+              "author": { "@type": "Person", "name": "The founder of ES3D", "url": "https://www.youtube.com/@es3dfile" }
+            }
+          }
+        ]
+      }
+    }
+  ]
 }
 </script>
 </head>
@@ -59,9 +133,14 @@
 <!--#set var="title" value="Media" -->
 <!--#include virtual="top.html" -->
 <h1>Media</h1>
-<p>Papers, talks and posts about the ES3D file format.</p>
+<p>Papers, talks, posts and a short video about the ES3D file format.</p>
 
 <div class="media-list">
+  <article class="media-item">
+    <h2><a href="making-the-web-lighter/">Making the web lighter</a></h2>
+    <p class="media-by">The <a href="https://www.youtube.com/@es3dfile">ES3D channel</a>, 24 October 2026. A 41-second short on YouTube</p>
+    <p>It shows the <a href="../demo/castle/">castle demo</a>.</p>
+  </article>
   <article class="media-item">
     <h2><a href="https://zenodo.org/records/23403919">Extensible Scalable 3D: describing three-dimensional web scenes by parameters</a></h2>
     <p class="media-by">Ilia Kalina, 15 October 2026. Preprint on Zenodo, <a href="https://doi.org/10.5281/zenodo.23403919">doi:10.5281/zenodo.23403919</a></p>

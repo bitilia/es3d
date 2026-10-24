@@ -110,6 +110,26 @@ function mul3(a, b) {
     }
   }
   return o;
+}
+function det3(a) {
+  return a[0] * (a[4] * a[8] - a[7] * a[5]) - a[3] * (a[1] * a[8] - a[7] * a[2]) + a[6] * (a[1] * a[5] - a[4] * a[2]);
+}
+
+// Eigenvectors of a symmetric 3x3. Columns of `vectors` match `values`.
+function jacobi3(m) {
+  const a = [
+    [m[0], m[3], m[6]],
+    [m[1], m[4], m[7]],
+    [m[2], m[5], m[8]],
+  ];
+  const v = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+  for (let iter = 0; iter < 24; iter++) {
+    let p = 0, q = 1, max = Math.abs(a[0][1]);
+    if (Math.abs(a[0][2]) > max) { max = Math.abs(a[0][2]); p = 0; q = 2; }
+    if (Math.abs(a[1][2]) > max) { max = Math.abs(a[1][2]); p = 1; q = 2; }
+    if (max < 1e-18) break;
+    const app = a[p][p], aqq = a[q][q], apq = a[p][q];
+    const tau = (aqq - app) / (2 * apq);
     const tt = Math.sign(tau) / (Math.abs(tau) + Math.sqrt(1 + tau * tau));
     const c = 1 / Math.sqrt(1 + tt * tt);
     const s = tt * c;
