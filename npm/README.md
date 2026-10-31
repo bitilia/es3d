@@ -56,6 +56,17 @@ stage.show(source); // ES3D markup, compact syntax or JSON
 
 The canvas is sized by its parent element. The stage draws only when something changes, plays animations, and follows the document's `<controls>`: orbit limits, collision with the scene, or a camera that follows page scroll.
 
+A page that moves shapes itself can load the stage as one file:
+
+```js
+import { createStage, mulberry32, es3dSin, es3dCos } from '@es3d/es3d/stage';
+
+const stage = await createStage(document.querySelector('canvas'), { background: true });
+stage.show(source);
+```
+
+`background: true` runs the clock and leaves the camera still. `stage.setTransform(id, matrix)` replaces the local matrix of an element that is placed once (column-major, the same layout as `matrix()`). `stage.setTransforms([[id, matrix], ...])` stores every matrix, walks each affected part of the scene once, and returns a boolean for each entry. A shared definition or a `<repeat>` / `<scatter>` copy is left unchanged and that entry is false. `stage.reducedMotion` follows the visitor's reduced-motion preference, and the clock stays still while it matches. `clock: 'always'` runs the clock when the document has no `<animate>`. `mulberry32`, `es3dSin` and `es3dCos` are the reader's placement functions. The format stays version 1.
+
 ## Compile, check and convert
 
 ```js

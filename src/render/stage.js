@@ -20,11 +20,16 @@
 //   the page is idle, and read back instead of tessellated on the next visit.
 //
 // Reduced motion (prefers-reduced-motion) stops clock animations and the
-// automatic orbit; scroll-driven cameras jump between stops.
+// automatic orbit; scroll-driven cameras jump between stops. stage.reducedMotion
+// reads that preference on each access, and the clock checks it every frame.
+//
+// clock: 'always' advances time even when the document has no <animate>.
+// background: true selects that clock and leaves the camera still, for a
+// page that moves shapes itself with stage.setTransform(id, matrix).
 
 import { compile } from '../pipeline.js';
 import { formatDiagnostics } from '../format/parse.js';
-import { updateDynamic } from '../scene/flatten.js';
+import { applyLocalMatrices, updateDynamic } from '../scene/flatten.js';
 import { pick } from '../scene/picking.js';
 import { createRenderer, PROGRESSIVE_BUDGET_MS } from './renderer.js';
 import { openGeometryStore, persistGeometry } from '../cache/geometry-store.js';
@@ -32,8 +37,35 @@ import { Camera } from './camera.js';
 import { OrbitControls } from './orbit-controls.js';
 import { ScrollTimeline } from './scroll-timeline.js';
 
-const reducedMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const prefersReducedMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 const idle = (fn) => (typeof requestIdleCallback === 'function' ? requestIdleCallback(fn, { timeout: 500 }) : setTimeout(fn, 16));
+
+/**
+ * Clock and orbit flags for createStage. background: true runs the clock
+ * and does not orbit, unless clock or autoOrbit is set explicitly.
+ * @param {object} [opts]
+ * @param {boolean} [reduced]
+ */
+export function stageOptions(opts = {}, reduced = false) {
+  const background = opts.background === true;
+  const always = opts.clock === 'always' || (opts.clock == null && background);
+  const autoOrbit = opts.autoOrbit !== undefined ? opts.autoOrbit !== false : !background;
+  return {
+    clock: always ? 'always' : 'document',
+    playing: opts.playing !== false && !reduced,
+    auto: autoOrbit && !reduced,
+  };
+}
+
+/** True when this frame should add dt to the stage clock. */
+export function clockAdvances(state, scene, reduced) {
+  return !!(state.playing && !reduced && (state.clock === 'always' || (scene.animation && scene.animation.time)));
+}
+
+/** True when this frame should turn the automatic orbit. */
+export function orbitAdvances(state, reduced) {
+  return !!(state.auto && !reduced);
+}
 
 /** Names (name or id) on an element and its ancestors, nearest first. */
 export function ancestorNames(doc, uid) {
@@ -57,7 +89,12 @@ const RESTORE_WAIT_MS = 50;
  * @param {HTMLCanvasElement} canvas sized by its parent element
  * @param {object} [opts]
  * @param {boolean} [opts.playing=true] play clock animations
- * @param {boolean} [opts.autoOrbit=true] turn slowly around the target until someone drags
+ * @param {boolean} [opts.autoOrbit=true] turn slowly around the target until someone drags.
+ *   background: true starts this off
+ * @param {'always'|'document'} [opts.clock] 'always' advances time with no <animate>.
+ *   background: true selects 'always'
+ * @param {boolean} [opts.background=false] a still camera and a running clock, for a script
+ *   that moves shapes with setTransform. <controls mode="none"/> turns dragging off
  * @param {number} [opts.orbitSpeed=0.22] radians per second
  * @param {boolean} [opts.interactive=true] false: no dragging, whatever the document says
  * @param {HTMLElement} [opts.scroll] section whose scroll position drives timeline="scroll"
@@ -80,15 +117,16 @@ export async function createStage(canvas, opts = {}) {
   target.style.display = 'block';
   const camera = new Camera();
   const controls = new OrbitControls(target, camera);
-  const motion = !reducedMotion();
+  const motion = stageOptions(opts, prefersReducedMotion());
   const state = {
     result: null,
     time: 0,
     progress: 0,
     last: 0,
     disposed: false,
-    playing: opts.playing !== false && motion,
-    auto: opts.autoOrbit !== false && motion,
+    clock: motion.clock,
+    playing: motion.playing,
+    auto: motion.auto,
     orbitSpeed: opts.orbitSpeed ?? 0.22,
     onScreen: true,
     // A frame is drawn only when something visible changed: the camera, the
@@ -250,6 +288,43 @@ export async function createStage(canvas, opts = {}) {
     set playing(v) {
       state.playing = !!v;
     },
+    /** True while the visitor prefers reduced motion. The clock and the automatic orbit stay still. */
+    get reducedMotion() {
+      return prefersReducedMotion();
+    },
+    /**
+     * Replace the local matrix of each element. An entry is `[id, matrix]`
+     * or `{id, matrix}`. The matrix is column-major, 16 numbers, the same
+     * layout as matrix(). Every matrix is stored first, then each affected
+     * part of the scene is walked once. The returned array has false for an
+     * id that is missing or drawn in more than one place (a shared
+     * definition, or a copy made by repeat or scatter).
+     * @param {Array<[string, ArrayLike<number>]|{id: string, matrix: ArrayLike<number>}>} entries
+     */
+    setTransforms(entries) {
+      const list = Array.from(entries || []);
+      const res = state.result;
+      const graph = res && res.graph;
+      const byId = graph && graph.byId;
+      const nodes = list.map((entry) => byId && byId.get(Array.isArray(entry) ? entry[0] : entry && entry.id));
+      const matrices = list.map((entry) => Array.isArray(entry) ? entry[1] : entry && entry.matrix);
+      const applied = graph && res.scene
+        ? applyLocalMatrices(res.scene, graph, nodes, matrices, state.time, state.progress)
+        : list.map(() => false);
+      if (applied.some(Boolean)) state.dirty = true;
+      return applied;
+    },
+    /**
+     * Replace the local matrix of the element with this id. The matrix is
+     * column-major, 16 numbers, the same layout as matrix(). Returns false
+     * when the id is missing or that element is drawn in more than one place
+     * (a shared definition, or a copy made by repeat or scatter).
+     * @param {string} id
+     * @param {ArrayLike<number>} matrix
+     */
+    setTransform(id, matrix) {
+      return this.setTransforms([[id, matrix]])[0] === true;
+    },
     /** Draw the next frame even if nothing the stage tracks has changed. */
     invalidate,
     get result() {
@@ -320,11 +395,11 @@ export async function createStage(canvas, opts = {}) {
     if (!state.width || !state.height) return;
     const res = state.result;
     const scene = res.scene;
-    // a scene without clock animations looks the same at every time
-    if (state.playing && scene.animation.time) state.time += dt;
+    const reduced = prefersReducedMotion();
+    if (clockAdvances(state, scene, reduced)) state.time += dt;
     if (state.timeline && state.timeline.update(dt)) state.progress = state.timeline.value;
     if (opts.onFrame) opts.onFrame(dt, api);
-    if (state.auto) {
+    if (orbitAdvances(state, reduced)) {
       const prev = controls.snapshot();
       const dx = camera.position[0] - camera.target[0];
       const dz = camera.position[2] - camera.target[2];

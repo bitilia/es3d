@@ -37,6 +37,12 @@ export class SceneNode {
     this.step = null;
     // scatter / lod / light / camera parameters
     this.params = null;
+    /** Column-major local matrix written by a script, or null. It wins over this node's own transform. */
+    this.scriptLocal = null;
+    /** One recorded placement, or 'many' when the node is drawn in more than one place. */
+    this.place = null;
+    /** Scene-graph parent. A shared definition has none: it is not a child of the uses that draw it. */
+    this.parent = null;
   }
 
   get animated() {
@@ -65,6 +71,7 @@ export function buildSceneGraph(doc, cache, opts = {}) {
   const diagnostics = [];
   const materials = new MaterialTable();
   const memo = new Map();
+  const byId = new Map();
   let environment = { ...ENV_DEFAULTS, explicit: false };
   let envFound = false;
   let controls = null;
@@ -132,6 +139,7 @@ export function buildSceneGraph(doc, cache, opts = {}) {
     memo.set(el, node);
     stats.nodes++;
     const v = el.values || {};
+    if (v.id !== undefined) byId.set(v.id, node);
     if (kind !== 'camera' && kind !== 'light') {
       const m = localMatrix(v);
       node.local = isIdentity(m) ? null : m;
@@ -167,7 +175,10 @@ export function buildSceneGraph(doc, cache, opts = {}) {
       }
       if (c.name === 'material' || c.name === 'environment' || c.name === 'controls') continue;
       const child = nodeFor(c, depth + 1);
-      if (child) node.children.push(child);
+      if (child) {
+        child.parent = node;
+        node.children.push(child);
+      }
     }
 
     switch (kind) {
@@ -298,7 +309,7 @@ export function buildSceneGraph(doc, cache, opts = {}) {
     report(doc.root, 'error', 'E_TOO_MANY_INSTANCES', `The scene expands to ${expanded.toLocaleString('en-US')} instances, more than the limit of ${maxInstances.toLocaleString('en-US')}. Reduce repeat or scatter counts.`, 'render');
   }
 
-  return { doc, root, materials, environment, controls, animation, cache, diagnostics, stats, tooLarge: expanded > maxInstances, expanded };
+  return { doc, root, materials, environment, controls, animation, cache, diagnostics, stats, tooLarge: expanded > maxInstances, expanded, byId };
 }
 
 /** Viewer settings from a <controls> element (angles in degrees, as written). */

@@ -15,6 +15,13 @@
 //
 // The RenderScene is renderer-agnostic; the OBJ and glTF importers produce the
 // same structure, which lets the benchmark render all formats identically.
+//
+// A node the walker visits once remembers that placement: the parent matrix
+// and the cursors at its start. applyLocalMatrices() stores every script
+// matrix first, then rewrites each affected subtree once. A later animation
+// walk reads the script matrix, so the document's own animation does not put
+// the old matrix back. A node visited again, or written by the instance
+// kernel, is shared and left alone.
 
 import * as mat4 from '../math/mat4.js';
 import { mulberry32 } from '../math/random.js';
@@ -160,6 +167,33 @@ class Walker {
     return this.stack[depth];
   }
 
+  /**
+   * Remember the one placement of a node. A second visit drops it: scatter,
+   * repeat and a definition used twice do not have one matrix to replace.
+   */
+  notePlace(node, parent, material, color, sel, lodNode, lodChild) {
+    if (node.place === 'many') return;
+    if (node.place) {
+      node.place = 'many';
+      return;
+    }
+    const copy = new Float64Array(16);
+    copy.set(parent);
+    node.place = {
+      parent: copy,
+      material,
+      color,
+      sel,
+      lodNode,
+      lodChild,
+      noCollide: this.noCollide,
+      rowStart: this.cursor,
+      lightStart: this.lightCursor,
+      cameraStart: this.cameraCursor,
+      switchStart: this.switchCursor,
+    };
+  }
+
   /** Local matrix of a node at the current time. */
   localOf(node, out) {
     if (!node.anims.length) {
@@ -177,7 +211,7 @@ class Walker {
 
   walk(node, parent, material, color, sel, lodNode, lodChild, depth) {
     if (!node || !node.visible) return;
-    const g = this.graph;
+    if (!this.overwrite) this.notePlace(node, parent, material, color, sel, lodNode, lodChild);
     const isSegmentRoot = node.anims.length > 0 && this.segmentDepth === 0 && !this.overwrite;
     let seg = null;
     if (isSegmentRoot) {
@@ -213,13 +247,14 @@ class Walker {
     else if (node.kind === 'camera') this.emitCamera(node, parent);
     else {
       let world;
-      if (!node.local && !node.anims.length) {
+      const scripted = node.scriptLocal;
+      if (!scripted && !node.local && !node.anims.length) {
         // identity local transform: children write only to deeper stack slots, so the parent can be shared
         world = parent;
       } else {
         world = this.mat(depth);
-        // static nodes multiply by their stored matrix directly (no copy)
-        const local = node.anims.length ? this.localOf(node, this.tmp) : node.local;
+        // a script matrix replaces the element's own transform, including its <animate>
+        const local = scripted || (node.anims.length ? this.localOf(node, this.tmp) : node.local);
         mat4.multiply(world, parent, local);
       }
       switch (node.kind) {
@@ -255,6 +290,12 @@ class Walker {
       seg.cameraEnd = this.cameraCursor;
       seg.switchEnd = this.switchCursor;
       this.scene.dynamic.push(seg);
+    }
+    if (!this.overwrite && node.place && node.place !== 'many') {
+      node.place.rowEnd = this.cursor;
+      node.place.lightEnd = this.lightCursor;
+      node.place.cameraEnd = this.cameraCursor;
+      node.place.switchEnd = this.switchCursor;
     }
   }
 
@@ -438,6 +479,7 @@ class Walker {
     }
     this.cursor = cursor;
     this.switchCursor = sw;
+    markPlacedMany(node);
     return true;
   }
 
@@ -726,6 +768,168 @@ export function flattenScene(graph, opts = {}) {
   if (!(scene.bounds.min[0] <= scene.bounds.max[0])) scene.bounds = { min: [-1, -1, -1], max: [1, 1, 1] };
   scene.version++;
   return scene;
+}
+
+/**
+ * The instance kernel wrote every copy of this subtree, so none of those
+ * nodes has a single placement a script can replace.
+ */
+function markPlacedMany(node) {
+  const visit = (n) => {
+    if (!n || n.place === 'many') return;
+    n.place = 'many';
+    if (n.target) visit(n.target);
+    if (n.children) for (const c of n.children) visit(c);
+  };
+  if (node.target) visit(node.target);
+  if (node.children) for (const c of node.children) visit(c);
+}
+
+/**
+ * The animated subtree that contains this node, if its parent matrix depends
+ * on the clock. The segment's own parent is above that animation, so rewalking
+ * the segment at the current time keeps a script matrix in the right place.
+ */
+function segmentFor(scene, node) {
+  for (const seg of scene.dynamic) {
+    for (let n = node; n; n = n.parent) if (n === seg.node) return seg;
+  }
+  return null;
+}
+
+function finiteMatrix(matrix) {
+  if (!matrix || matrix.length < 16) return false;
+  for (let i = 0; i < 16; i++) if (!Number.isFinite(+matrix[i])) return false;
+  return true;
+}
+
+function writeScriptLocal(node, matrix) {
+  let local = node.scriptLocal;
+  if (!local) local = node.scriptLocal = new Float64Array(16);
+  for (let i = 0; i < 16; i++) local[i] = +matrix[i];
+}
+
+function under(node, ancestor) {
+  for (let n = node; n; n = n.parent) if (n === ancestor) return true;
+  return false;
+}
+
+/** The deepest node that contains every entry, itself included. */
+function deepestCovering(nodes) {
+  for (let p = nodes[0]; p; p = p.parent) {
+    if (nodes.every((n) => n === p || under(n, p))) return p;
+  }
+  return null;
+}
+
+/**
+ * One walk root per cluster. A shared parent of several moves is walked
+ * once. The document root is not that parent: two unrelated shapes keep
+ * two small walks.
+ */
+function clusterRoots(nodes, root) {
+  if (nodes.length <= 1) return nodes.slice();
+  const common = deepestCovering(nodes);
+  if (common && common !== root && common.place && common.place !== 'many') return [common];
+  const groups = new Map();
+  for (const node of nodes) {
+    let top = node;
+    for (let p = node.parent; p && p !== root && p.place && p.place !== 'many'; p = p.parent) top = p;
+    let list = groups.get(top);
+    if (!list) groups.set(top, list = []);
+    list.push(node);
+  }
+  const out = [];
+  for (const [top, members] of groups) {
+    if (members.length > 1 && top.place && top.place !== 'many' && top !== root) out.push(top);
+    else if (members.length === nodes.length) for (const member of members) out.push(member);
+    else out.push(...clusterRoots(members, root));
+  }
+  return out;
+}
+
+function rewalkAt(w, rowStart, lightStart, cameraStart, switchStart, noCollide, node, parent, material, color, sel, lodNode, lodChild) {
+  w.cursor = rowStart;
+  w.lightCursor = lightStart;
+  w.cameraCursor = cameraStart;
+  w.switchCursor = switchStart;
+  w.segmentDepth = 0;
+  w.noCollide = noCollide;
+  w.walk(node, parent, material, color, sel, lodNode, lodChild, 0);
+}
+
+/**
+ * Replace the local matrix of each node and rewrite the rows once per
+ * affected subtree. Each entry of the returned array is false when that
+ * node is missing, the matrix is not 16 finite numbers, or the element is
+ * shared (a definition used twice, a repeat or scatter copy, or a subtree
+ * the instance kernel expanded). Column-major, the same layout as matrix().
+ * @param {RenderScene} scene
+ * @param {object} graph
+ * @param {import('./scene-graph.js').SceneNode[]} nodes
+ * @param {ArrayLike<number>[]} matrices
+ */
+export function applyLocalMatrices(scene, graph, nodes, matrices, time = 0, progress = 0) {
+  const list = nodes || [];
+  const ok = new Array(list.length);
+  const accepted = [];
+  const seen = new Set();
+  for (let i = 0; i < list.length; i++) {
+    const node = list[i];
+    const matrix = matrices && matrices[i];
+    if (!scene || !graph || !node || !node.place || node.place === 'many' || !finiteMatrix(matrix)) {
+      ok[i] = false;
+      continue;
+    }
+    writeScriptLocal(node, matrix);
+    ok[i] = true;
+    if (!seen.has(node)) {
+      seen.add(node);
+      accepted.push(node);
+    }
+  }
+  if (!accepted.length) return ok;
+
+  const segments = [];
+  const staticNodes = [];
+  const seenSeg = new Set();
+  for (const node of accepted) {
+    const seg = segmentFor(scene, node);
+    if (seg) {
+      if (!seenSeg.has(seg)) {
+        seenSeg.add(seg);
+        segments.push(seg);
+      }
+    } else staticNodes.push(node);
+  }
+  const roots = clusterRoots(staticNodes, graph.root);
+  const w = new Walker(scene, graph, time, progress);
+  w.overwrite = true;
+  for (const node of roots) {
+    const p = node.place;
+    rewalkAt(w, p.rowStart, p.lightStart, p.cameraStart, p.switchStart, p.noCollide, node, p.parent, p.material, p.color, p.sel, p.lodNode, p.lodChild);
+  }
+  for (const seg of segments) {
+    if (roots.some((node) => under(seg.node, node))) continue;
+    rewalkAt(w, seg.start, seg.lightStart, seg.cameraStart, seg.switchStart, seg.noCollide, seg.node, seg.parent, seg.material, seg.color, seg.sel, seg.lodNode, seg.lodChild);
+  }
+  scene.version++;
+  return ok;
+}
+
+/**
+ * Replace one element's local matrix and rewrite the rows of its single
+ * placement. The matrix is column-major, the same layout as matrix().
+ * Returns false when the id is missing, the matrix is not 16 finite numbers,
+ * or the element is shared (a definition used twice, a repeat or scatter
+ * copy, or a subtree the instance kernel expanded).
+ * @param {RenderScene} scene
+ * @param {object} graph
+ * @param {import('./scene-graph.js').SceneNode} node
+ * @param {ArrayLike<number>} matrix
+ */
+export function applyLocalMatrix(scene, graph, node, matrix, time = 0, progress = 0) {
+  return applyLocalMatrices(scene, graph, [node], [matrix], time, progress)[0] === true;
 }
 
 /** Re-evaluate animated subtrees at time t and scroll progress, overwriting their rows. */

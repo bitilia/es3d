@@ -25,7 +25,9 @@ export { ELEMENTS, elementSpec, attrSpec } from './format/schema.js';
 // scene pipeline
 export { compile, generateGeometry, GeometryCache } from './pipeline.js';
 export { openGeometryStore, indexedDBStore, memoryStore, restoreGeometry, saveGeometry, persistGeometry, geometryKey, GEOMETRY_REVISION } from './cache/geometry-store.js';
-export { RenderScene, updateDynamic, FLAG_MIRRORED, FLAG_NO_COLLIDE } from './scene/flatten.js';
+export { RenderScene, updateDynamic, applyLocalMatrix, applyLocalMatrices, FLAG_MIRRORED, FLAG_NO_COLLIDE } from './scene/flatten.js';
+export { mulberry32 } from './math/random.js';
+export { es3dSin, es3dCos } from './math/trig.js';
 export { pick, raycast } from './scene/picking.js';
 export { applyLimits, sweepCamera, constrainCamera } from './scene/camera-constraints.js';
 

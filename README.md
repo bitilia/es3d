@@ -158,6 +158,17 @@ const stage = await createStage(document.querySelector('#tour canvas'), { scroll
 stage.show(source); // a new document reuses the geometry of the last one, so a colour swap uploads nothing
 ```
 
+A page that moves shapes from its own script loads one file, `@es3d/es3d/stage`:
+
+```js
+import { createStage, mulberry32, es3dSin, es3dCos } from '@es3d/es3d/stage';
+
+const stage = await createStage(document.querySelector('canvas'), { background: true });
+stage.show(source);
+```
+
+`background: true` runs the clock and leaves the camera still. `stage.setTransform(id, matrix)` replaces that element's local matrix when the element is placed once. `stage.setTransforms([[id, matrix], ...])` does the same for many elements, stores every matrix, then walks each affected part of the scene once, and returns a boolean for each entry. The matrix is column-major, the same layout as `matrix()`. A shared definition, or a copy made by `<repeat>` or `<scatter>`, is left as the file drew it and that entry is false. `stage.reducedMotion` is true while the visitor prefers reduced motion, and the clock stays still. `clock: 'always'` runs the clock in a document that has no `<animate>`. `mulberry32`, `es3dSin` and `es3dCos` are the functions the reader uses for placement. The format stays version 1. Give each shape you move its own id.
+
 A camera that follows the page needs nothing else. The path is in the file:
 
 ```xml
@@ -202,7 +213,7 @@ test/                      node:test suites; render/reference/ holds the referen
 .github/workflows/         CI, website deployment (GitHub Pages), npm publishing
 ```
 
-The package entry (`src/index.js`) exposes the pipeline for use as a library: `compile()`, `parse()`, `serialize()`, `createStage()`, `createRenderer()`, `Camera`, `OrbitControls`, `ScrollTimeline`, `raycast()`, the importers, exporters and converter (`importFiles()`, `exportFormat()`, `svgToES3D()`, …) and the optimiser. `npm install @es3d/es3d` installs it together with the `es3d` command.
+The package entry (`src/index.js`) exposes the pipeline for use as a library: `compile()`, `parse()`, `serialize()`, `createStage()`, `setTransform` and `setTransforms` through the stage (and `applyLocalMatrix()` / `applyLocalMatrices()` on a compiled scene), `createRenderer()`, `Camera`, `OrbitControls`, `ScrollTimeline`, `raycast()`, `mulberry32()`, `es3dSin()`, `es3dCos()`, the importers, exporters and converter (`importFiles()`, `exportFormat()`, `svgToES3D()`, …) and the optimiser. `@es3d/es3d/stage` is the same stage and the placement functions in one minified file (`browser/es3d-stage.min.js`, `npm run build:stage`). `npm install @es3d/es3d` installs it together with the `es3d` command.
 
 ## Browser support
 
