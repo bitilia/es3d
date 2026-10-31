@@ -1,6 +1,15 @@
 # ES3D: Extensible Scalable 3D
 
-**A declarative, SVG-inspired 3D scene format** (`.es3d`), with a reference implementation: a strict parser and validator, a WebGPU renderer with a WebGL2 fallback, an editor ("ES3D Studio"), a low-poly modeller, a file converter (SVG, OBJ, STL, STEP and glTF to ES3D and back), a command-line tool, and the website for [es3d.org](https://es3d.org). The public site lives in `docs/`.
+<p align="center">
+  <a href="https://www.jsdelivr.com/package/npm/@es3d/es3d"><img src="https://img.shields.io/jsdelivr/npm/hm/@es3d/es3d?label=jsDelivr" alt="jsDelivr"></a>
+  <a href="https://www.npmjs.com/package/@es3d/es3d"><img src="https://img.shields.io/npm/v/@es3d/es3d" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@es3d/es3d"><img src="https://img.shields.io/npm/dm/@es3d/es3d" alt="npm downloads"></a>
+  <a href="https://github.com/bitilia/es3d/stargazers"><img src="https://img.shields.io/github/stars/bitilia/es3d" alt="GitHub stars"></a>
+  <a href="https://github.com/bitilia/es3d/blob/main/LICENSE"><img src="https://img.shields.io/github/license/bitilia/es3d" alt="License"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/node/v/@es3d/es3d" alt="Node.js"></a>
+</p>
+
+**A declarative, SVG-inspired 3D scene format** (`.es3d`), with a reference implementation: a strict parser and validator, a WebGPU renderer with a WebGL2 fallback, an editor ("ES3D Studio"), a low-poly modeller, a file converter (SVG, OBJ, STL, STEP and glTF to ES3D and back), a command-line tool, and the website for [es3d.org](https://es3d.org).
 
 ```xml
 <es3d version="1">

@@ -1,5 +1,14 @@
 # ES3D
 
+<p align="center">
+  <a href="https://www.jsdelivr.com/package/npm/@es3d/es3d"><img src="https://img.shields.io/jsdelivr/npm/hm/@es3d/es3d?label=jsDelivr" alt="jsDelivr"></a>
+  <a href="https://www.npmjs.com/package/@es3d/es3d"><img src="https://img.shields.io/npm/v/@es3d/es3d" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@es3d/es3d"><img src="https://img.shields.io/npm/dm/@es3d/es3d" alt="npm downloads"></a>
+  <a href="https://github.com/bitilia/es3d/stargazers"><img src="https://img.shields.io/github/stars/bitilia/es3d" alt="GitHub stars"></a>
+  <a href="https://github.com/bitilia/es3d/blob/main/LICENSE"><img src="https://img.shields.io/github/license/bitilia/es3d" alt="License"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/node/v/@es3d/es3d" alt="Node.js"></a>
+</p>
+
 **A file format for 3D scenes you can write by hand, the way people write SVG.** The file describes objects, not triangles: a rounded box, an outline extruded into a solid, two thousand trees placed by a rule. The viewer builds the triangles, at the detail the screen needs.
 
 This package is the reference implementation:
