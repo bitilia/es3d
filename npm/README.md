@@ -68,12 +68,12 @@ const { text } = await importFiles([{ name: 'logo.svg', bytes }]); // SVG, OBJ, 
 const { files } = exportFormat(text, 'glb');                         // ES3D → glTF, OBJ, STL, STEP
 ```
 
-Every error has a line, a column, a code and, where it can, a "did you mean" suggestion.
+Every error has a line, a column, a code and, where it can, a "did you mean" suggestion. Repeated warnings that share a code, an element name and a message are printed once, with a count. `validate --json` still lists every warning.
 
 ## The command
 
 ```bash
-npx @es3d/es3d validate scene.es3d               # every diagnostic; exit code 1 on errors
+npx @es3d/es3d validate scene.es3d               # diagnostics, repeated warnings grouped; exit code 1 on errors
 npx @es3d/es3d compact scene.es3d                # convert to the compact syntax (also: markup, json, fmt, minify)
 npx @es3d/es3d glb scene.es3d -o scene.glb       # export (also: obj, stl, step)
 npx @es3d/es3d import logo.svg -o logo.es3d      # SVG, OBJ, STL, STEP or glTF to ES3D

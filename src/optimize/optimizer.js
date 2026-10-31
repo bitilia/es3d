@@ -6,7 +6,8 @@
 //   detectPatterns    sibling copies whose transforms form a progression -> <repeat>
 //   collapseGroups    drop empty groups and attribute-less single-child groups
 //   weldMeshes        merge duplicate vertices of <mesh> elements
-//   removeUnused      drop definitions and materials nothing references
+//   removeUnused      drop definitions and materials nothing references,
+//                     counting ids named by an x- attribute
 //   precision         quantize numbers when serializing (lossy, opt-in)
 //
 // plus expandProcedural(), the inverse operation used by the benchmark: it
@@ -163,21 +164,36 @@ function stripDefaults(root, report) {
   if (n) report.push({ pass: 'stripDefaults', detail: `removed ${n} attribute${n === 1 ? '' : 's'} equal to the default` });
 }
 
+/** An id token as written in an attribute: an optional leading # is not part of the id. */
+function idToken(token) {
+  return token.replace(/^#/, '');
+}
+
+/** Rewrite id tokens inside an x- attribute, keeping the original separators and any leading #. */
+function rewriteExtensionTokens(value, mapping) {
+  return value.replace(/[^\s,]+/g, (token) => {
+    const id = idToken(token);
+    if (!mapping.has(id)) return token;
+    return (token.startsWith('#') ? '#' : '') + mapping.get(id);
+  });
+}
+
 function rewriteRefs(root, mapping, kinds) {
   walkAll(root, (el) => {
     for (const a of el.attrs) {
       const k = canonicalAttr(el, a);
       const s = attrSpec(el.name, k);
-      if (!s) continue;
-      if (s.type === 'ref' && kinds.includes(s.ref)) {
-        const id = a.value.trim().replace(/^#/, '');
+      if (s && s.type === 'ref' && kinds.includes(s.ref)) {
+        const id = idToken(a.value.trim());
         if (mapping.has(id)) a.value = mapping.get(id);
-      } else if (s.type === 'idlist' && kinds.includes(s.ref)) {
+      } else if (s && s.type === 'idlist' && kinds.includes(s.ref)) {
         a.value = a.value
           .split(/[\s,]+/)
           .filter(Boolean)
-          .map((id) => mapping.get(id.replace(/^#/, '')) || id)
+          .map((id) => mapping.get(idToken(id)) || id)
           .join(',');
+      } else if (!s && el.name.startsWith('x-')) {
+        a.value = rewriteExtensionTokens(a.value, mapping);
       }
     }
   });
@@ -211,12 +227,21 @@ function dedupeMaterials(root, report) {
 
 function collectReferences(root) {
   const used = new Set();
+  // x- attributes are not in the schema. A token counts only when it names an id
+  // that exists, so prose in an extension cannot pin an unrelated definition.
+  const ids = usedIds(root);
   walkAll(root, (el) => {
     for (const a of el.attrs) {
       const s = attrSpec(el.name, canonicalAttr(el, a));
-      if (!s) continue;
-      if (s.type === 'ref') used.add(a.value.trim().replace(/^#/, ''));
-      else if (s.type === 'idlist') for (const id of a.value.split(/[\s,]+/)) if (id) used.add(id.replace(/^#/, ''));
+      if (s) {
+        if (s.type === 'ref') used.add(idToken(a.value.trim()));
+        else if (s.type === 'idlist') for (const id of a.value.split(/[\s,]+/)) if (id) used.add(idToken(id));
+      } else if (el.name.startsWith('x-')) {
+        for (const token of a.value.split(/[\s,]+/)) {
+          const id = idToken(token);
+          if (id && ids.has(id)) used.add(id);
+        }
+      }
     }
   });
   return used;

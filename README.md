@@ -104,7 +104,7 @@ npm run sizes                         # re-measure the file sizes the site quote
 - Animation that moves, turns and scales objects and moves cameras (position, target, fov): from/to, key values with key times, or a path walked at constant speed, played by the clock or by page scroll (`timeline="scroll"`). It is not SMIL. SVG specified SMIL, then the major browsers dropped it.
 - `<controls>`: how a viewer may move the camera. Orbit with distance, angle and pan limits, collision that stops the camera at surfaces (`collide`), a fixed view, or a camera that follows page scroll.
 - Three interchangeable encodings of the same tree: markup (canonical), compact ES3D-C, and JsonML. These are spellings, not profiles. A reader does not get to implement a smaller subset and still call it version 1.
-- Strict validation: every error has a line, a column, a code and a "did you mean" suggestion. Input is never repaired in silence.
+- Strict validation: every error has a line, a column, a code and a "did you mean" suggestion. Repeated warnings that share a code, an element name and a message are shown once, with a count. Input is never repaired in silence.
 
 **The renderer** ([ARCHITECTURE.md](docs/ARCHITECTURE.md)) is written directly against WebGPU (WGSL) and WebGL2 (GLSL), with no 3D framework. Tessellation is lazy. Each curved shape carries a chordal-error bound, and a frame keeps the coarsest level that stays within one pixel. Canonical meshes are shared by all instances. One vertex buffer and one index buffer are shared. Each frame batches into instanced draws, with frustum culling, metallic/roughness GGX shading, MSAA, wireframe, normal and bounding-box overlays, and ray picking.
 

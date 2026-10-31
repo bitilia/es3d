@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
-import { parse, detectSyntax } from '../src/format/parse.js';
+import { parse, detectSyntax, formatDiagnostics } from '../src/format/parse.js';
 import { serialize } from '../src/format/serializer.js';
 import { compile } from '../src/pipeline.js';
 import { exportOBJ } from '../src/io/obj.js';
@@ -26,7 +26,8 @@ import { optimize, expandProcedural } from '../src/optimize/optimizer.js';
 const HELP = `es3d <command> [options] <input>
 
 Commands
-  validate   parse, validate and build the scene; print every diagnostic (exit 1 on errors)
+  validate   parse, validate and build the scene; print diagnostics (exit 1 on errors).
+             Repeated warnings are grouped; --json lists every one
   fmt        pretty-print, keeping the syntax (markup or compact)
   minify     minified markup (short attribute aliases, no comments)
   compact    convert to the compact syntax           (--min for one line)
@@ -131,9 +132,7 @@ function write(opts, data) {
 }
 
 function report(doc) {
-  const out = [];
-  for (const d of doc.diagnostics) out.push(d.format(doc.lineIndex));
-  return out.join('\n\n');
+  return formatDiagnostics(doc);
 }
 
 /** Parse and validate, or exit with the diagnostics. */
@@ -143,7 +142,8 @@ function parsed(input) {
     process.stderr.write(report(doc) + '\n');
     process.exit(1);
   }
-  for (const w of doc.warnings || []) process.stderr.write(w.format(doc.lineIndex) + '\n\n');
+  const warnings = formatDiagnostics(doc.warnings || [], doc.lineIndex);
+  if (warnings) process.stderr.write(warnings + '\n\n');
   return doc;
 }
 
@@ -151,7 +151,7 @@ function compiled(input) {
   const r = compile(input);
   const errors = r.diagnostics.filter((d) => d.severity === 'error');
   if (errors.length) {
-    process.stderr.write(r.diagnostics.map((d) => d.format(r.doc.lineIndex)).join('\n\n') + '\n');
+    process.stderr.write(formatDiagnostics(r) + '\n');
     process.exit(1);
   }
   return r;
@@ -263,7 +263,8 @@ async function main() {
       const warnings = r.diagnostics.length - errors;
       if (opts.json) console.log(JSON.stringify({ ok: errors === 0, diagnostics: r.diagnostics.map((d) => d.toJSON()) }, null, 2));
       else {
-        if (r.diagnostics.length) process.stderr.write(r.diagnostics.map((d) => d.format(r.doc.lineIndex)).join('\n\n') + '\n\n');
+        const text = formatDiagnostics(r);
+        if (text) process.stderr.write(text + '\n\n');
         console.log(`${opts.input}: ${errors} error${errors === 1 ? '' : 's'}, ${warnings} warning${warnings === 1 ? '' : 's'}${errors ? '' : `, ${r.scene.count.toLocaleString('en-US')} instances`}`);
       }
       process.exit(errors ? 1 : 0);

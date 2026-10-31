@@ -120,6 +120,80 @@ test('quantized GLB (KHR_mesh_quantization) re-imports within int16 precision', 
   assert.ok(worst < 1e-3, `max position error ${worst}`);
 });
 
+function extensions(doc) {
+  const out = [];
+  const walk = (el) => {
+    if (el.name.startsWith('x-')) {
+      const attrs = el.attrs.map((a) => `${a.name}=${a.value.trim()}`).sort();
+      out.push(`${el.parent.name}>${el.name} ${attrs.join(' ')}`);
+    }
+    for (const c of el.children) if (c.type === 'element') walk(c);
+  };
+  walk(doc.root);
+  return out.sort();
+}
+
+test('extension elements round-trip in every syntax and the fallback still draws', () => {
+  const src = `<es3d version="1.1">
+    <defs><polygon id="tri" points="0,0 1,0 0,1"/></defs>
+    <polygon points="0,0 1,0 0,1"><x-anchors nodes="a b c" inset="0.2"/></polygon>
+    <line from="0,0,0" to="1,0,0"><x-anchors nodes="a b"/></line>
+    <use ref="tri"><x-anchors nodes="a b c"/></use>
+    <box><animate attr="position" to="1,0,0" dur="1s"><x-wave axis="x" amplitude="1" period="2" phase="0"/></animate></box>
+  </es3d>`;
+  const doc = parse(src);
+  assert.ok(doc.ok, formatDiagnostics(doc));
+  const reference = extensions(doc);
+  assert.deepEqual(reference, [
+    'animate>x-wave amplitude=1 axis=x period=2 phase=0',
+    'line>x-anchors nodes=a b',
+    'polygon>x-anchors inset=0.2 nodes=a b c',
+    'use>x-anchors nodes=a b c',
+  ]);
+  for (const syntax of ['xml', 'compact', 'json']) {
+    const again = parse(serialize(doc, { syntax, pretty: true }));
+    assert.ok(again.ok, `${syntax}: ${formatDiagnostics(again)}`);
+    assert.equal(again.root.values.version, '1.1', syntax);
+    assert.deepEqual(extensions(again), reference, syntax);
+  }
+  const drawn = compile(src);
+  assert.ok(drawn.ok, formatDiagnostics(drawn));
+  assert.equal(drawn.scene.count, 4);
+});
+
+test('the optimizer keeps extension elements and the ids they name', () => {
+  const src = `<es3d version="1.1">
+    <material id="paint" color="#112233"/>
+    <material id="same" color="#112233"/>
+    <defs>
+      <group id="keep"/>
+      <group id="drop"/>
+      <polygon id="tri" points="0,0 1,0 0,1"/>
+    </defs>
+    <polygon points="0,0 1,0 0,1"><x-anchors nodes="keep drop-not"/></polygon>
+    <line from="0,0,0" to="1,0,0"><x-anchors nodes="#keep b"/></line>
+    <use ref="tri"><x-note tint="same"/></use>
+    <box>
+      <animate attr="position" to="1,0,0" dur="1s"><x-pulses axis="y" every="2"/></animate>
+    </box>
+  </es3d>`;
+  const doc = parse(src);
+  assert.ok(doc.ok, formatDiagnostics(doc));
+  const before = compile(src);
+  const out = optimize(doc);
+  assert.match(out.text, /<x-anchors\b[^>]*nodes="keep drop-not"/);
+  assert.match(out.text, /<x-anchors\b[^>]*nodes="#keep b"/);
+  assert.match(out.text, /id="keep"/);
+  assert.match(out.text, /id="paint"/);
+  assert.match(out.text, /<x-pulses\b/);
+  assert.match(out.text, /tint="paint"/);
+  assert.doesNotMatch(out.text, /id="drop"/);
+  assert.doesNotMatch(out.text, /id="same"/);
+  const after = compile(out.text);
+  assert.ok(after.ok, formatDiagnostics(after));
+  assert.equal(signature(after), signature(before));
+});
+
 test('the optimizer preserves the rendered scene', () => {
   for (const f of ['02-primitives.es3d', '05-gearbox.es3d', '07-staircases.es3d', '09-compact-syntax.es3d']) {
     const r0 = compile(fs.readFileSync(new URL(f, examples), 'utf8'));

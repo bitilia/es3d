@@ -123,6 +123,35 @@ test('entities are decoded', () => {
   assert.equal(doc.root.children[0].text, 'A & B ☺');
 });
 
+test('version 1.x is accepted; a new attribute or a new value is not', () => {
+  const doc = ok('<es3d version="1.1"><box size="1"/></es3d>');
+  assert.equal(doc.warnings.length, 0);
+  assert.equal(errors('<es3d version="1.1"><box shine="1"/></es3d>')[0].code, 'E_UNKNOWN_ATTRIBUTE');
+  assert.equal(errors('<es3d version="1.1"><polyline points="0,0,0 1,0,0" smooth="uniform"/></es3d>')[0].code, 'E_INVALID_VALUE');
+});
+
+test('repeated extension warnings group in the text report and stay in the list', () => {
+  const anchors = 6;
+  const polys = Array.from({ length: anchors }, () => '<polygon points="0,0 1,0 0,1"><x-anchors nodes="a b c"/></polygon>').join('');
+  const waves = '<line from="0,0,0" to="1,0,0"><x-wave axis="y"/></line>'.repeat(2);
+  const doc = parse(`<es3d version="1.1">${polys}${waves}</es3d>`);
+  assert.ok(doc.ok, formatDiagnostics(doc));
+  assert.equal(doc.warnings.length, anchors + 2);
+  const text = formatDiagnostics(doc);
+  assert.equal(text.split('Extension element <x-anchors>').length - 1, 1);
+  assert.equal(text.split('Extension element <x-wave>').length - 1, 1);
+  assert.match(text, new RegExp(`Reported ${anchors} times\\. Showing the first\\.`));
+  assert.match(text, /Reported 2 times\. Showing the first\./);
+  const one = parse('<es3d version="1"><x-once/></es3d>');
+  assert.equal(one.warnings.length, 1);
+  assert.doesNotMatch(formatDiagnostics(one), /Reported/);
+});
+
+test('errors are listed one by one', () => {
+  const text = formatDiagnostics(parse('<es3d version="1"><box foo="1"/><sphere foo="1"/></es3d>'));
+  assert.equal(text.split('Unknown attribute: foo').length - 1, 2);
+});
+
 test('suggestion helper', () => {
   assert.equal(levenshtein('kitten', 'sitting'), 3);
   assert.equal(suggest('raduis', ['radius', 'height']), 'radius');

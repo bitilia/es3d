@@ -1,6 +1,6 @@
 {
   "name": "@es3d/es3d",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ES3D (Extensible Scalable 3D): a declarative, SVG-inspired 3D scene format with a WebGPU/WebGL2 reference renderer, editor and converter.",
   "type": "module",
   "license": "Apache-2.0",

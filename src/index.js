@@ -1,9 +1,9 @@
 // Public API of the ES3D reference implementation.
 //
-//   import { compile, createRenderer, Camera } from '@es3d/es3d';
+//   import { compile, createRenderer, Camera, formatDiagnostics } from '@es3d/es3d';
 //
 //   const result = compile(text);              // parse + validate + build + flatten
-//   if (!result.ok) console.error(result.diagnostics.map((d) => d.format()).join('\n\n'));
+//   if (!result.ok) console.error(formatDiagnostics(result));
 //   const renderer = await createRenderer(canvas);   // WebGPU, else WebGL2
 //   renderer.setScene(result.scene, (entry, lod) => result.cache.mesh(entry, lod));
 //   const camera = new Camera().frame(result.scene.bounds);

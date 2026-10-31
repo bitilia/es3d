@@ -30,6 +30,21 @@ test('es3d CLI: validate exit codes and canonical diagnostics', () => {
   assert.equal(usage.status, 2);
 });
 
+test('es3d CLI: repeated warnings group in text and stay in json', () => {
+  const src = `<es3d version="1.1">${'<polygon points="0,0 1,0 0,1"><x-anchors nodes="a b c"/></polygon>'.repeat(4)}</es3d>`;
+  const run = (args) => spawnSync(process.execPath, ['scripts/es3d-cli.mjs', ...args], { cwd: root, encoding: 'utf8', input: src });
+  const text = run(['validate', '-']);
+  assert.equal(text.status, 0, text.stderr);
+  assert.equal(text.stderr.split('Extension element <x-anchors>').length - 1, 1);
+  assert.match(text.stderr, /Reported 4 times\. Showing the first\./);
+  assert.match(text.stdout, /0 errors, 4 warnings, 4 instances/);
+  const json = run(['validate', '-', '--json']);
+  assert.equal(json.status, 0, json.stderr);
+  const body = JSON.parse(json.stdout);
+  assert.equal(body.ok, true);
+  assert.equal(body.diagnostics.filter((d) => d.code === 'W_EXTENSION').length, 4);
+});
+
 test('es3d CLI: conversions are readable again', () => {
   const compact = cli('compact', 'docs/public/examples/04-forest.es3d', '--min');
   assert.equal(compact.status, 0, compact.stderr);

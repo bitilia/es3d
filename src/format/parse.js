@@ -86,7 +86,47 @@ export function parseStrict(input, opts = {}) {
   return doc;
 }
 
-/** Human readable report of all diagnostics. */
-export function formatDiagnostics(doc) {
-  return doc.diagnostics.map((d) => d.format(doc.lineIndex)).join('\n\n');
+/** Element name written in a message, if it has one (`<x-anchors>`). */
+function mentionedElement(message) {
+  const m = /<([^<>\s]+)>/.exec(message || '');
+  return m ? m[1] : '';
+}
+
+/**
+ * Human-readable report of diagnostics.
+ * Repeated warnings that share a code, the element name in the message, and
+ * the same message are shown once, at the first location, with a count.
+ * Errors are listed one by one. The diagnostic objects are not changed.
+ * @param {object|Array} source a document, a compile result, or a diagnostic list
+ * @param {import('./errors.js').LineIndex} [lineIndex]
+ */
+export function formatDiagnostics(source, lineIndex) {
+  if (!source) return '';
+  const list = Array.isArray(source) ? source : source.diagnostics || [];
+  const index = lineIndex || source.lineIndex || (source.doc && source.doc.lineIndex) || null;
+  const seen = new Map();
+  const items = [];
+  for (const d of list) {
+    if (!d || d.severity !== 'warning') {
+      items.push(d);
+      continue;
+    }
+    const key = `${d.code}\0${mentionedElement(d.message)}\0${d.message}`;
+    const prev = seen.get(key);
+    if (prev) {
+      prev.count++;
+      continue;
+    }
+    const slot = { d, count: 1 };
+    seen.set(key, slot);
+    items.push(slot);
+  }
+  return items
+    .map((item) => {
+      if (!item || !item.d) return item.format(index);
+      const text = item.d.format(index);
+      if (item.count < 2) return text;
+      return `${text}\n\nReported ${item.count} times. Showing the first.`;
+    })
+    .join('\n\n');
 }

@@ -23,6 +23,7 @@
 // automatic orbit; scroll-driven cameras jump between stops.
 
 import { compile } from '../pipeline.js';
+import { formatDiagnostics } from '../format/parse.js';
 import { updateDynamic } from '../scene/flatten.js';
 import { pick } from '../scene/picking.js';
 import { createRenderer, PROGRESSIVE_BUDGET_MS } from './renderer.js';
@@ -267,7 +268,7 @@ export async function createStage(canvas, opts = {}) {
       // and the renderer finds those meshes already on the GPU.
       const result = compile(source, { time: state.time, progress: state.progress, cache: state.result ? state.result.cache : undefined });
       if (!result.ok) {
-        const msg = result.diagnostics.map((d) => d.format()).join('\n\n');
+        const msg = formatDiagnostics(result);
         if (opts.onError) opts.onError(msg, result);
         else console.error(msg);
         return result;

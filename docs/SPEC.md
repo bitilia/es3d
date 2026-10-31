@@ -403,11 +403,20 @@ The title names the phase (`Parse`, `Reference`, `Geometry`, `Render`, `File`) a
 
 Unknown names get a suggestion when a known name is within a small edit distance or shares a prefix (`raduis` → `radius`, `spotlight` → `spot`, `sphear` → `sphere`).
 
+The reference reader's human-readable report (`formatDiagnostics`, and the text from `validate`) shows a repeated warning once. Warnings group when they share a code, the element name written in the message (its first `<name>`), and the same message. The report keeps the first location and then says how many times that warning occurred:
+
+```
+Reported 906 times. Showing the first.
+```
+
+Every warning remains its own entry in the diagnostic list. `validate --json` prints that list. Errors are listed one by one.
+
 ## 16. Extensibility and versioning
 
 - Elements whose names start with `x-` (and their subtrees) are vendor extensions: readers that do not understand them skip them with `W_EXTENSION`. Unknown elements without the prefix are errors, so typos are never mistaken for extensions.
 - Unknown attributes are always errors. (A future version may reserve an `x-` attribute prefix as well.)
 - `version="1.x"` documents must remain readable by version-1 readers; incompatible changes require version 2, which version-1 readers reject with `E_VERSION`.
+- A processor that rewrites a document keeps `x-` elements, and keeps any element whose id is named by a token in an `x-` attribute. The reference optimizer treats a whitespace-separated token (an optional leading `#` is ignored) as a reference when that id exists, and updates the token when it merges a duplicate material.
 
 ## 17. File names and media types
 
