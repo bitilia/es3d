@@ -44,7 +44,11 @@ export function exportThree(model) {
   const tally = new Map();
   const add = (key, k = 1) => tally.set(key, (tally.get(key) || 0) + k);
   const lines = [];
+  // Geometries and materials are declared once, at the top of createScene(), so a
+  // repeat factory and the code after it can both use them.
+  const defs = [];
   const geos = new Map();
+  const bakedGeos = new Map();
   const mats = new Map();
   let seq = 0;
   const fresh = (p) => `${p}${seq++}`;
@@ -59,10 +63,10 @@ export function exportThree(model) {
     const c = m.baseColorSrgb;
     const side = (m.doubleSided || forceDouble) ? ', side: THREE.DoubleSide' : '';
     if (m.unlit) {
-      lines.push(`  const ${id} = new THREE.MeshBasicMaterial({ color: new THREE.Color(${n(c[0])}, ${n(c[1])}, ${n(c[2])}), transparent: ${m.opacity < 0.999}, opacity: ${n(m.opacity)}${side} });`);
+      defs.push(`  const ${id} = new THREE.MeshBasicMaterial({ color: new THREE.Color(${n(c[0])}, ${n(c[1])}, ${n(c[2])}), transparent: ${m.opacity < 0.999}, opacity: ${n(m.opacity)}${side} });`);
       return id;
     }
-    lines.push(`  const ${id} = new THREE.MeshStandardMaterial({ color: new THREE.Color(${n(c[0])}, ${n(c[1])}, ${n(c[2])}), metalness: ${n(m.metallic)}, roughness: ${n(m.roughness)}, transparent: ${m.opacity < 0.999}, opacity: ${n(m.opacity)}${side} });`);
+    defs.push(`  const ${id} = new THREE.MeshStandardMaterial({ color: new THREE.Color(${n(c[0])}, ${n(c[1])}, ${n(c[2])}), metalness: ${n(m.metallic)}, roughness: ${n(m.roughness)}, transparent: ${m.opacity < 0.999}, opacity: ${n(m.opacity)}${side} });`);
     return id;
   };
 
@@ -71,7 +75,7 @@ export function exportThree(model) {
     if (geos.has(key)) return geos.get(key);
     const id = fresh('g');
     geos.set(key, id);
-    lines.push(`  const ${id} = ${geometryExpr(solid)};`);
+    defs.push(`  const ${id} = ${geometryExpr(solid)};`);
     return id;
   };
 
@@ -116,12 +120,17 @@ export function exportThree(model) {
   const baked = (node) => {
     const mesh = node.solid.kind === 'mesh' || node.solid.kind === 'lines' ? node.solid : model.bakedMesh(node.entry);
     add(node.solid.kind === 'mesh' || node.solid.kind === 'lines' ? 'mesh' : node.solid.kind);
-    const g = fresh('g');
-    const positions = `new Float32Array([${nums(mesh.positions)}])`;
-    lines.push(`  const ${g} = new THREE.BufferGeometry();`);
-    lines.push(`  ${g}.setAttribute('position', new THREE.BufferAttribute(${positions}, 3));`);
-    if (mesh.normals) lines.push(`  ${g}.setAttribute('normal', new THREE.BufferAttribute(new Float32Array([${nums(mesh.normals)}]), 3));`);
-    lines.push(`  ${g}.setIndex([${Array.from(mesh.indices).join(', ')}]);`);
+    const geoKey = mesh.key || mesh;
+    let g = bakedGeos.get(geoKey);
+    if (!g) {
+      g = fresh('g');
+      bakedGeos.set(geoKey, g);
+      const positions = `new Float32Array([${nums(mesh.positions)}])`;
+      defs.push(`  const ${g} = new THREE.BufferGeometry();`);
+      defs.push(`  ${g}.setAttribute('position', new THREE.BufferAttribute(${positions}, 3));`);
+      if (mesh.normals) defs.push(`  ${g}.setAttribute('normal', new THREE.BufferAttribute(new Float32Array([${nums(mesh.normals)}]), 3));`);
+      defs.push(`  ${g}.setIndex([${Array.from(mesh.indices).join(', ')}]);`);
+    }
     const m = material(node.material, node.doubleSided);
     const id = fresh('o');
     const kind = mesh.kind === 'lines' ? 'LineSegments' : 'Mesh';
@@ -289,6 +298,7 @@ export function exportThree(model) {
 ${helper}
 export function createScene() {
   const root = new THREE.Group();
+${defs.join('\n')}
 ${lines.join('\n')}
   return root;
 }

@@ -155,7 +155,7 @@ test('the package exports the placement functions', () => {
   assert.equal(typeof es3dSin(0), 'number');
   const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
   assert.equal(pkg.exports['./stage'], './browser/es3d-stage.min.js');
-  assert.equal(pkg.version, '1.1.0');
+  assert.equal(pkg.version, '1.1.1');
 });
 
 test('the stage bundle is one file', async () => {

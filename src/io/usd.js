@@ -220,7 +220,7 @@ export function exportUSD(model) {
     const inst = g.matrix || matrix;
     if ((uses.get(key) || 0) > 1) {
       const id = ensureProto(shape);
-      return `        def Xform "${name}" (\n            prepend references = </World/Prototypes/${id}>\n        ) {\n            token visibility = "inherited"\n${indent(xformBlock(inst, ''), 12)}${indent(bind, 12)}        }`;
+      return `        def "${name}" (\n            prepend references = </World/Prototypes/${id}>\n        ) {\n            token visibility = "inherited"\n${indent(xformBlock(inst, ''), 12)}${indent(bind, 12)}        }`;
     }
     const combined = g.matrix ? inst : combine(matrix, g.local);
     return `        def ${g.type} "${name}" {\n${indent(g.body, 12)}${indent(xformBlock(combined, ''), 12)}${indent(bind, 12)}        }`;
@@ -439,6 +439,27 @@ function blockNamed(text, type, name) {
   return sliceBlock(text, open);
 }
 
+/** The text of a prim's body without the bodies of the prims defined inside it. */
+function ownText(body) {
+  let out = '';
+  let i = 0;
+  while (i < body.length) {
+    const at = body.indexOf('def ', i);
+    if (at < 0) { out += body.slice(i); break; }
+    out += body.slice(i, at);
+    const open = body.indexOf('{', at);
+    if (open < 0) break;
+    let depth = 0;
+    let j = open;
+    for (; j < body.length; j++) {
+      if (body[j] === '{') depth++;
+      else if (body[j] === '}' && --depth === 0) break;
+    }
+    i = j + 1;
+  }
+  return out;
+}
+
 function listPrims(text) {
   const out = [];
   let i = 0;
@@ -447,22 +468,25 @@ function listPrims(text) {
     if (at < 0) break;
     const before = text.slice(i, at);
     if ((before.match(/\{/g) || []).length !== (before.match(/\}/g) || []).length) { i = at + 4; continue; }
-    const head = /^def\s+([A-Za-z0-9_]+)\s+"([^"]+)"\s*(\([^)]*\))?/.exec(text.slice(at));
+    const head = /^def\s+(?:([A-Za-z0-9_]+)\s+)?"([^"]+)"\s*(\([^)]*\))?/.exec(text.slice(at));
     if (!head) { i = at + 4; continue; }
     const open = text.indexOf('{', at + head[0].length - 1);
     if (open < 0) break;
     const body = sliceBlock(text, open);
-    out.push({ type: head[1], name: head[2], meta: head[3] || '', body });
+    out.push({ type: head[1] || '', name: head[2], meta: head[3] || '', body });
     i = open + body.length + 2;
   }
   return out;
 }
 
 function emitPrim(prim, lib, materials, paint, notes, parent, inherited) {
-  const local = readXform(prim.body);
+  // A prim's own transform and binding, not those of the prims nested in it.
+  const own = ownText(prim.body);
+  const local = readXform(own);
   const matrix = combine(parent, local);
-  const style = paint(prim.body, materials) || inherited || '';
-  if (prim.type === 'Xform') {
+  const style = paint(own, materials) || inherited || '';
+  // A typeless def takes its type from the prototype it references.
+  if (prim.type === 'Xform' || prim.type === '') {
     const ref = /references\s*=\s*<([^>]+)>/.exec(prim.meta);
     const target = ref ? lib.get(ref[1].split('/').pop()) : null;
     if (target) return emitPrim(target, lib, materials, paint, notes, matrix, style);

@@ -592,7 +592,7 @@ export function importX3D(text) {
     i = step.i;
   }
   materialAttrs.materials = [];
-  const parts = nodes.map((node) => emitEs3d(node, notes)).filter(Boolean);
+  const parts = nodes.map((node) => emitEs3d(node, notes, defs)).filter(Boolean);
   const mats = materialAttrs.materials;
   materialAttrs.materials = [];
   const markup = `<es3d version="1">\n${mats.join('\n')}${mats.length ? '\n' : ''}${parts.join('\n')}\n</es3d>\n`;
@@ -734,7 +734,7 @@ function numAttr(list, count) {
   return nums.slice(0, count);
 }
 
-function emitEs3d(node, notes) {
+function emitEs3d(node, notes, defs) {
   if (!node) return '';
   if (node.use) return `<use ref="${esc(node.use)}"/>`;
   const f = node.fields || {};
@@ -743,11 +743,13 @@ function emitEs3d(node, notes) {
   if (node.name === 'Transform' || node.name === 'Group' || node.name === 'Anchor' || node.name === 'Collision' || node.name === 'Switch' || node.name === 'Billboard') {
     if (node.name !== 'Transform' && node.name !== 'Group') notes.push(`<${node.name}> was written as a group.`);
     const tr = x3dTransform(f);
-    const body = kids.map((c) => emitEs3d(c, notes)).filter(Boolean).join('\n');
+    const body = kids.map((c) => emitEs3d(c, notes, defs)).filter(Boolean).join('\n');
     return `<group${id}${tr}>\n${body}\n</group>`;
   }
   if (node.name === 'Shape') {
-    const geom = f.geometry && f.geometry.name ? f.geometry : null;
+    // geometry USE G names a node defined earlier; draw that geometry here too.
+    const used = f.geometry && f.geometry.use && defs ? defs.get(f.geometry.use) : null;
+    const geom = f.geometry && f.geometry.name ? f.geometry : (used && used.name ? used : null);
     const style = materialAttrs(f.appearance, notes);
     if (!geom) return '';
     return emitGeom(geom, id, style, notes);
