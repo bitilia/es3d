@@ -34,7 +34,8 @@ npx @es3d/es3d glb scene.es3d --instancing -o scene.glb
 npx @es3d/es3d obj scene.es3d -o scene.obj
 npx @es3d/es3d stl scene.es3d -o scene.stl
 npx @es3d/es3d step scene.es3d -o scene.step
-npx @es3d/es3d import drawing.svg -o drawing.es3d   # also .obj, .stl, .step, .gltf, .glb
+npx @es3d/es3d import drawing.svg -o drawing.es3d   # also .obj, .stl, .step, .gltf, .glb, .x3d, .x3dv, .usda, .scad
+npx @es3d/es3d x3d scene.es3d -o scene.x3dv        # also: usd, scad, js
 npx @es3d/es3d stats scene.es3d</pre>
 <p>Run <code>npx @es3d/es3d --help</code> for the full list.</p>
 
@@ -55,13 +56,13 @@ npm run build      # static site in dist/ (any web server can host it)</pre>
 <tr><td><code>.es3d.gz</code></td><td>The same text, gzip-compressed</td><td>the type above, with content encoding gzip</td><td>gzip magic bytes <code>1F 8B</code></td></tr>
 </tbody>
 </table></div>
-<p class="small">A web server can send <code>.es3d</code> as <code>text/plain; charset=utf-8</code>. Compression is ordinary gzip, <code>.es3d.gz</code>. There is no special compressed extension.</p>
+<p class="small">A web server can send <code>.es3d</code> as <code>text/plain; charset=utf-8</code>. Compression is ordinary gzip, <code>.es3d.gz</code>.</p>
 
 <h2>5. What you need</h2>
 <ul>
   <li><b>To view and convert:</b> a current browser. WebGL2 is enough. WebGPU is used when the browser has it. No plugin.</li>
   <li><b>To build the project:</b> Node.js 22 or newer, and npm.</li>
-  <li><b>To write ES3D:</b> any text editor. Markup highlights reasonably well if the editor treats <code>.es3d</code> as XML. A namespace declaration is not required.</li>
+  <li><b>To write ES3D:</b> any text editor. Markup highlights reasonably well if the editor treats <code>.es3d</code> as XML. No namespace is required.</li>
 </ul>
 <!--#include virtual="bottom.html" -->
 </body>

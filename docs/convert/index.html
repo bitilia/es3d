@@ -3,23 +3,23 @@
 <head>
 <!--#include virtual="head.html" -->
 <title>File converter - ES3D</title>
-<meta name="description" content="Convert SVG, OBJ, STL, STEP and glTF files to ES3D, and ES3D to glTF, OBJ, STL and STEP, in your browser. Files stay on your computer.">
+<meta name="description" content="Convert SVG, OBJ, STL, STEP, glTF, X3D, USDA and OpenSCAD to ES3D, and ES3D to glTF, OBJ, STL, STEP, X3D, USDA, OpenSCAD and a three.js module, in your browser. Files stay on your computer.">
 </head>
 <body>
 <!--#set var="page" value="convert" -->
 <!--#set var="title" value="File converter" -->
 <!--#include virtual="top.html" -->
 <h1>File converter</h1>
-<p class="disclaimer">Not all file conversions are seamless: some flaws still exist in the converter, and not all files get smaller when converted. This is an early version and will be updated in the future.</p>
-<p>Turn <b>SVG</b> drawings and <b>OBJ</b>, <b>STL</b>, <b>STEP</b> and <b>glTF</b> models into ES3D, or turn ES3D into glTF, OBJ, STL and STEP. It all runs in this page. <b>Your files are not uploaded.</b></p>
+<p class="disclaimer">Some conversions still have flaws, and some files get larger. This version will change.</p>
+<p><b>Files stay on this computer.</b></p>
 
 <form id="converter" onsubmit="return false">
 <fieldset>
   <legend>Step 1: Choose a file</legend>
   <div class="dropzone" id="drop">
     <p><b>Drop a file here</b> or <label class="button" for="file">Browse&hellip;</label></p>
-    <input type="file" id="file" multiple hidden accept=".svg,.svgz,.obj,.mtl,.stl,.step,.stp,.p21,.gltf,.glb,.bin,.es3d,.gz">
-    <p class="small muted">SVG, OBJ (select the .mtl too), STL, STEP (.step, .stp), glTF (.glb, or .gltf with its .bin), ES3D (.es3d). Gzip is fine.</p>
+    <input type="file" id="file" multiple hidden accept=".svg,.svgz,.obj,.mtl,.stl,.step,.stp,.p21,.gltf,.glb,.bin,.es3d,.gz,.x3d,.x3dv,.usda,.scad">
+    <p class="small muted">SVG, OBJ (select the .mtl too), STL, STEP (.step, .stp), glTF (.glb, or .gltf with its .bin), X3D (.x3d, .x3dv), USDA (.usda), OpenSCAD (.scad), ES3D (.es3d). Gzip is fine.</p>
   </div>
   <div class="samples">
     <span>No file at hand? Try a sample:</span>
@@ -104,7 +104,10 @@
   <li><b>SVG</b> drawings become real ES3D shapes. Path data is kept as path data, so curves stay curves. Filled shapes are extruded. Strokes become round tubes. Colours become materials. Later shapes sit on top of earlier ones. Text, images, filters, masks and scripts are skipped (convert text to paths in your drawing program first). Gradients become their average colour. Script in the SVG is not run.</li>
   <li><b>OBJ, STL and glTF</b> models become ES3D <code>&lt;mesh&gt;</code> elements, with their materials and, for glTF, their reuse of meshes and their transforms. That is the escape hatch for content that has no procedural description. The file is about as large as the original. Textures, skins and animations are not converted.</li>
   <li><b>STEP</b> solids from CAD software become real ES3D shapes. A part that is one shape is written as one: a box, an extrusion of its exact outline (with arcs, ellipses, splines and holes), a cylinder, a sphere, a torus, or a revolve of its profile for a turned part. Any other part is written face by face: flat faces become paths with exact arcs and holes, and fillets, hole walls and rounded corners become revolves through the angle they cover. ES3D has no free-form (NURBS) surfaces, so a free-form face, or a curved face cut along a curve that is not one of its circles (the rim of a cross hole), is tessellated from its exact surface into a mesh, and the note says how many. Coordinates stay in the file's unit, and a Z-up file is turned Y-up by a rotation on its outer group. Tessellated STEP stays a mesh.</li>
-  <li><b>ES3D</b> documents convert to glTF (with instancing), OBJ, STL and tessellated STEP at the level of detail you choose, so you can take them into a 3D program, a game engine or a slicer. They also convert between the ES3D encodings (minified and compact). Those encodings are the same document, not a reduced profile.</li>
+  <li><b>X3D</b> Classic (<code>.x3dv</code>) and XML (<code>.x3d</code>) become the same solids where X3D has them: a box, a sphere, a cylinder, a cone. An Extrusion becomes a mesh in the extrusion's own coordinates, so its transform still applies. Indexed faces become a mesh, in Classic and in XML. An indexed line set becomes polylines. Lights and viewpoints become lights and cameras. <code>DEF</code> and <code>USE</code> stay as definitions and uses.</li>
+  <li><b>USD ASCII</b> (<code>.usda</code>) becomes the solids this converter writes: cube, sphere, cylinder, cone, capsule, plane and mesh, including a shared prototype and a point instancer. A non-cube box is a cube of size 1 plus a scale, folded back into the box size. A crate (<code>.usdc</code>, <code>.usdz</code>) is not read. Convert it to USDA first. Lights and cameras are not written into the USDA file, and the notes say how many were left out.</li>
+  <li><b>OpenSCAD</b> (<code>.scad</code>) is read as a program. The OpenSCAD application is not run. The solids it names become shapes. A flat difference becomes a hole. A 3D difference, an intersection, a hull or a minkowski is kept, and the notes say the operation was not applied, because ES3D has no boolean.</li>
+  <li><b>ES3D</b> documents convert to glTF (with instancing), OBJ, STL and tessellated STEP at the level of detail you choose, so you can take them into a 3D program, a game engine or a slicer. They also convert to X3D Classic, USD ASCII, an OpenSCAD program and a three.js module. Those four keep the shapes, and each format's own way of reusing a shape. The notes list every approximation, including a shape the format has no node for. A three.js module is written for you to run. ES3D also converts between its own encodings (minified and compact). Those encodings are the same document.</li>
 </ul>
 <p>The same converter is in the command-line tool: <code>npx @es3d/es3d import drawing.svg -o drawing.es3d</code>. See the <a href="../download/">download page</a>.</p>
 <!--#include virtual="bottom.html" -->

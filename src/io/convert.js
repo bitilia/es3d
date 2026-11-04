@@ -16,6 +16,12 @@ import { svgToES3D } from './svg-import.js';
 import { sceneToMeshDocument } from './mesh-import.js';
 import { compile } from '../pipeline.js';
 import { exportableInstances } from './external-scene.js';
+import { buildExportModel } from './export-model.js';
+import { exportX3D, importX3D } from './x3d.js';
+import { exportUSD, importUSD } from './usd.js';
+import { exportOpenSCAD } from './openscad.js';
+import { importOpenSCAD } from './openscad-import.js';
+import { exportThree } from './threejs.js';
 
 /** OBJ and STL repeat every copy's triangles; beyond this the file gets too large for a browser tab. */
 const OBJ_TRIANGLE_LIMIT = 4e6;
@@ -28,6 +34,12 @@ export const INPUT_KINDS = {
   gltf: 'glTF (JSON)',
   glb: 'glTF binary (GLB)',
   step: 'STEP',
+  x3dv: 'X3D Classic',
+  x3d: 'X3D XML',
+  usda: 'USD ASCII',
+  usdc: 'USD crate',
+  usdz: 'USDZ',
+  scad: 'OpenSCAD',
 };
 
 export const OUTPUT_FORMATS = {
@@ -38,6 +50,10 @@ export const OUTPUT_FORMATS = {
   obj: { label: 'Wavefront OBJ + MTL (.obj)', ext: '.obj', mime: 'model/obj', text: true },
   stl: { label: 'STL for 3D printing (.stl)', ext: '.stl', mime: 'model/stl' },
   step: { label: 'STEP, tessellated (.step)', ext: '.step', mime: 'model/step', text: true },
+  x3dv: { label: 'X3D Classic (.x3dv)', ext: '.x3dv', mime: 'model/x3d+vrml', text: true },
+  usda: { label: 'USD ASCII (.usda)', ext: '.usda', mime: 'model/vnd.usda', text: true },
+  scad: { label: 'OpenSCAD (.scad)', ext: '.scad', mime: 'text/x-openscad', text: true },
+  js: { label: 'three.js module (.js)', ext: '.js', mime: 'text/javascript', text: true },
 };
 
 /** Files that only accompany a main file (OBJ materials, glTF buffers and textures). */
@@ -61,6 +77,11 @@ export function detectKind(name, bytes) {
   if (ext === 'stl' || isAsciiSTL(bytes)) return 'stl';
   if (ext === 'gltf' || /^\s*\{[\s\S]*"asset"\s*:/.test(head)) return 'gltf';
   if (ext === 'obj' || /^\s*(#[^\n]*\n\s*)*(mtllib|o|g|v|vt|vn|f|usemtl|s)\s/.test(head)) return 'obj';
+  if (ext === 'x3dv' || /^#X3D\b/.test(head)) return 'x3dv';
+  if (ext === 'x3d' || /<X3D[\s>]/i.test(head)) return 'x3d';
+  if (ext === 'usda' || /^#usda\b/.test(head)) return 'usda';
+  if (ext === 'usdc' || ext === 'usdz') return ext;
+  if (ext === 'scad') return 'scad';
   if (ext === 'step' || ext === 'stp' || ext === 'p21') return 'step';
   return null;
 }
@@ -93,7 +114,7 @@ export async function importFiles(files, opts = {}) {
   const main = list.find((f) => !COMPANION.test(f.name)) || list[0];
   const companions = list.filter((f) => f !== main);
   const kind = detectKind(main.name, main.bytes);
-  if (!kind) throw new Error(`${main.name}: unknown file type. The converter reads SVG, OBJ, STL, STEP (.step, .stp) and glTF (.gltf, .glb) and ES3D (.es3d) files.`);
+  if (!kind) throw new Error(`${main.name}: unknown file type. The converter reads SVG, OBJ, STL, STEP (.step, .stp), glTF (.gltf, .glb), X3D (.x3d, .x3dv), USDA, OpenSCAD (.scad) and ES3D (.es3d) files.`);
   const title = main.name.replace(/\.[^.]+$/, '') || 'untitled';
   const svgOpts = { ...IMPORT_DEFAULTS.svg, ...(opts.svg || {}) };
   const meshOpts = { ...IMPORT_DEFAULTS.mesh, ...(opts.mesh || {}) };
@@ -165,6 +186,23 @@ export async function importFiles(files, opts = {}) {
       text = meshDocument(s, hasNormals);
       break;
     }
+    case 'x3dv':
+    case 'x3d':
+    case 'usda': {
+      const imported = kind === 'usda' ? importUSD(decode(main.bytes)) : importX3D(decode(main.bytes));
+      text = imported.text;
+      notes.push(...imported.notes);
+      break;
+    }
+    case 'usdc':
+    case 'usdz':
+      throw new Error('USDC and USDZ are not read here. This tool reads and writes USDA text; convert a crate with usdcat if you have the USD tools.');
+    case 'scad': {
+      const imported = importOpenSCAD(decode(main.bytes), { files: companions });
+      text = imported.text;
+      notes.push(...imported.notes);
+      break;
+    }
   }
   return { kind, name: main.name, title, text, warnings, notes };
 }
@@ -186,11 +224,13 @@ function describeErrors(diagnostics, lineIndex) {
  * Write an ES3D document in another format.
  * @param {string|Uint8Array} source ES3D text
  * @param {keyof OUTPUT_FORMATS} format
- * @param {{baseName?: string, lod?: number, compiled?: object, instancing?: boolean}} [opts]
- *        compiled: an existing compile() result for the same source (saves compiling twice)
- * @returns {{files: {name: string, data: Uint8Array|string, mime: string}[], triangles?: number}}
+ * @param {{baseName?: string, lod?: number, compiled?: object, instancing?: boolean, structure?: 'keep'|'flatten'}} [opts]
+ *        compiled: an existing compile() result for the same source (saves compiling twice).
+ *        structure applies to X3D, USD, OpenSCAD and three.js: keep (the default) writes
+ *        primitives and the target's own reuse; flatten writes the same triangles as glTF and OBJ.
+ * @returns {{files: {name: string, data: Uint8Array|string, mime: string}[], triangles?: number, notes?: string[]}}
  */
-export function exportFormat(source, format, { baseName = 'scene', lod = 0, compiled = null, instancing = true } = {}) {
+export function exportFormat(source, format, { baseName = 'scene', lod = 0, compiled = null, instancing = true, structure = 'keep' } = {}) {
   const spec = OUTPUT_FORMATS[format];
   if (!spec) throw new Error(`Unknown output format ${format}.`);
   const name = baseName + spec.ext;
@@ -206,6 +246,14 @@ export function exportFormat(source, format, { baseName = 'scene', lod = 0, comp
       const r = compiled || compile(source);
       if (!r.ok) throw new Error(describeErrors(r.diagnostics, r.doc && r.doc.lineIndex));
       const meshOf = (e, l) => r.cache.mesh(e, Math.min(l, e.lods - 1));
+      if (format === 'x3dv' || format === 'usda' || format === 'scad' || format === 'js') {
+        const model = buildExportModel(r, meshOf, { lod, structure: structure === 'flatten' ? 'flatten' : 'keep' });
+        if (model.meshTriangles > OBJ_TRIANGLE_LIMIT) {
+          throw new Error(`At this level of detail the scene has ${model.meshTriangles.toLocaleString('en-US')} triangles, too many for this file (limit ${OBJ_TRIANGLE_LIMIT.toLocaleString('en-US')}). Choose a coarser detail.`);
+        }
+        const written = format === 'x3dv' ? exportX3D(model) : format === 'usda' ? exportUSD(model) : format === 'scad' ? exportOpenSCAD(model) : exportThree(model);
+        return { ...one(written.text), notes: written.notes };
+      }
       if (format === 'glb') return one(exportGLB(r.scene, meshOf, { lod, instancing }));
       if (format === 'obj') {
         let triangles = 0;

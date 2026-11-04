@@ -75,22 +75,20 @@
 <!--#include virtual="top.html" -->
 
 <div class="logo3d" id="logo3d"><img class="logo-still" src="favicon.svg" alt="ES3D" width="304" height="96" fetchpriority="high"></div>
-<p class="center small muted">The logo above is drawn live by <span id="logo-backend">the ES3D renderer</span> from the file <a href="#logo-file">printed further down</a>. It holds still under the pointer. Drag to turn it.<br>
+<p class="center small muted">Drawn by <span id="logo-backend">the ES3D renderer</span> from the file <a href="#logo-file">below</a>. Drag to turn it.<br>
 The logo: <!--#filesize of="docs/public/es3d-logo.es3d" --><br>
 Triangles drawn so far: <span class="counter" id="tri-counter"><b>0</b><b>0</b><b>0</b><b>0</b><b>0</b><b>0</b><b>0</b><b>0</b><b>0</b><b>0</b></span></p>
 
-<p class="callout">The <a href="convert/">converter</a> turns SVG, OBJ, STL, STEP and glTF into ES3D in the browser. <a href="studio/">ES3D Studio</a> shows the scene as you type.</p>
+<p class="callout"><a href="convert/">Convert a file</a> or <a href="studio/">edit one in ES3D Studio</a>. Both run in the browser.</p>
 
 <h1>A 3D scene you can read</h1>
 
 <p><b>ES3D</b> (Extensible Scalable 3D) is a file format for 3D scenes. It does for a scene what SVG does for a drawing. The file describes the objects. A rounded box here. An outline extruded into a solid there. Two thousand trees on a hill. The viewer builds the triangles, at the detail the screen actually needs. A forest fits in under a kilobyte, and a text editor is enough to write it.</p>
 
-<p>You can try that here without installing a plugin. There is a converter for files you already have, an editor that runs in the browser, and the specification.</p>
-
 <h2>What can I do here?</h2>
 <ul>
-  <li><a href="convert/"><b>Convert a file</b></a>. SVG, OBJ, STL, STEP or glTF to ES3D, and ES3D back to glTF, OBJ, STL or STEP. The work happens in your browser. Nothing is uploaded.</li>
-  <li><a href="studio/"><b>Open ES3D Studio</b></a>. Write on the left, watch the scene on the right, as you type.</li>
+  <li><a href="convert/"><b>Convert a file</b></a>. SVG, OBJ, STL, STEP, glTF, X3D, USDA or OpenSCAD to ES3D, and ES3D back to glTF, OBJ, STL, STEP, X3D, USDA, OpenSCAD or a three.js module. The work happens in your browser. Nothing is uploaded.</li>
+  <li><a href="studio/"><b>Open ES3D Studio</b></a>. Edit the source with the scene beside it.</li>
   <li><a href="modeller/"><b>Model something low-poly</b></a>. Type points in 3D, join them into flat planes and paint each one. The ES3D Modeller saves the model as polygons.</li>
   <li><a href="examples/"><b>Look at the examples</b></a>. Thirteen scenes, from a rotating cube to a city of 7,300 buildings.</li>
   <li><a href="demo/"><b>Open the Demo Sites</b></a>. Ashby, Parcel, Spoke and Helio are small sites built with the library. Each one shows the size of its file.</li>
@@ -155,15 +153,15 @@ Triangles drawn so far: <span class="counter" id="tri-counter"><b>0</b><b>0</b><
 <p class="small">WebGL2, Chrome. A scan has no shapes to simplify: on the PC, ES3D took 24.4 ms to become ready and instanced glTF in three.js took 9.70 ms. <a href="benchmark-devices/">Full tables</a>.</p>
 
 <h2 id="logo-file">The logo file</h2>
-<p>This is the whole file behind the spinning logo (<a href="studio/?file=es3d-logo.es3d">open it in ES3D Studio</a>). <!--#filesize of="docs/public/es3d-logo.es3d" --></p>
+<p><a href="studio/?file=es3d-logo.es3d">Open it in ES3D Studio</a>. <!--#filesize of="docs/public/es3d-logo.es3d" --></p>
 <pre id="logo-source"><!--#include file="docs/public/es3d-logo.es3d" escape --></pre>
 
-<h2>One minute, if you want the source</h2>
+<h2>Source</h2>
 <pre class="terminal">git clone https://github.com/bitilia/es3d.git
 cd es3d
 npm install
 npm run dev        # this site, ES3D Studio and the converter, at http://localhost:5173</pre>
-<p>More on the <a href="download/">download page</a>. If you only want to look, you already are.</p>
+<p>The same commands are on the <a href="download/">download page</a>.</p>
 
 <!--#include virtual="bottom.html" -->
 <script type="module" src="./site/home.js"></script>

@@ -9,8 +9,8 @@
 //   const camera = new Camera().frame(result.scene.bounds);
 //   renderer.render(camera, { width: canvas.clientWidth, height: canvas.clientHeight });
 //
-//   const svg = await importFiles([{ name: 'logo.svg', bytes }]);   // SVG, OBJ, STL, STEP, glTF → ES3D
-//   const { files } = exportFormat(svg.text, 'glb');                 // ES3D → glTF, OBJ, STL, STEP
+//   const svg = await importFiles([{ name: 'logo.svg', bytes }]);   // SVG, OBJ, STL, STEP, glTF, X3D, USDA, OpenSCAD → ES3D
+//   const { files } = exportFormat(svg.text, 'glb');                 // ES3D → glTF, OBJ, STL, STEP, X3D, USD, OpenSCAD, three.js
 //
 // The format, scene, geometry and I/O modules run in Node as well; only the
 // renderer and controls need a browser.
@@ -45,5 +45,10 @@ export { exportOBJ, parseOBJ, objToScene } from './io/obj.js';
 export { exportGLB, parseGLB, glbToScene, isGLB, parseGLTF, gltfToScene } from './io/gltf.js';
 export { exportSTL, parseSTL, stlToScene } from './io/stl.js';
 export { exportSTEP, parseSTEP, stepToScene, isSTEP } from './io/step.js';
+export { exportX3D, importX3D } from './io/x3d.js';
+export { exportUSD, importUSD } from './io/usd.js';
+export { exportOpenSCAD } from './io/openscad.js';
+export { importOpenSCAD } from './io/openscad-import.js';
+export { exportThree } from './io/threejs.js';
 export { sceneToMeshDocument } from './io/mesh-import.js';
 export { optimize, expandProcedural } from './optimize/optimizer.js';

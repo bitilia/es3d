@@ -15,8 +15,8 @@
       <div class="file"><span id="file-name">untitled.es3d</span><span id="syntax-label" class="pill"></span></div>
       <nav class="toolbar">
         <select id="examples" title="Load an example scene" aria-label="Example scene"></select>
-        <button id="btn-open" title="Open .es3d, .svg, .obj, .stl, .step, .gltf or .glb (or drop a file anywhere)">Open…</button>
-        <input type="file" id="file-input" accept=".es3d,.svg,.svgz,.obj,.stl,.step,.stp,.p21,.gltf,.glb,.json,.gz" hidden />
+        <button id="btn-open" title="Open .es3d, .svg, .obj, .stl, .step, .gltf, .glb, .x3d, .x3dv, .usda or .scad (or drop a file anywhere)">Open…</button>
+        <input type="file" id="file-input" accept=".es3d,.svg,.svgz,.obj,.stl,.step,.stp,.p21,.gltf,.glb,.json,.gz,.x3d,.x3dv,.usda,.scad" hidden />
         <button id="btn-format" title="Pretty-print the document">Format</button>
         <button id="btn-convert" title="Convert between markup and compact syntax">To compact</button>
         <button id="btn-optimize" title="Deduplicate, extract repeated parts, detect patterns">Optimise</button>
@@ -36,10 +36,15 @@
             <button data-export="glb-inst">GLB with GPU instancing</button>
             <button data-export="glb-q">GLB, instanced + quantized (KHR_mesh_quantization)</button>
             <hr />
+            <button data-export="x3dv">X3D Classic (.x3dv)</button>
+            <button data-export="usda">USD ASCII (.usda)</button>
+            <button data-export="scad">OpenSCAD (.scad)</button>
+            <button data-export="js">three.js module (.js)</button>
+            <hr />
             <button data-export="png">PNG screenshot</button>
           </div>
         </div>
-        <a class="button" href="../convert/" title="Convert SVG, OBJ, STL, STEP and glTF files to ES3D">Converter</a>
+        <a class="button" href="../convert/" title="Convert SVG, OBJ, STL, STEP, glTF, X3D, USDA and OpenSCAD to ES3D">Converter</a>
         <a class="button" href="../modeller/" title="Build a low-poly model from points and planes">Modeller</a>
       </nav>
       <div id="backend-label" class="backend">…</div>
@@ -87,7 +92,7 @@
         </section>
       </aside>
     </main>
-    <div id="drop-overlay" class="drop-overlay"><div>Drop an .es3d, .svg, .obj, .stl, .step, .gltf or .glb file</div></div>
+    <div id="drop-overlay" class="drop-overlay"><div>Drop an .es3d, .svg, .obj, .stl, .step, .gltf, .glb, .x3d, .usda or .scad file</div></div>
     <div id="toasts" class="toasts"></div>
     <script type="module" src="../site/studio.js"></script>
   </body>

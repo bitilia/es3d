@@ -19,7 +19,7 @@ import { compile } from '../src/pipeline.js';
 import { exportOBJ } from '../src/io/obj.js';
 import { exportSTL } from '../src/io/stl.js';
 import { exportSTEP } from '../src/io/step.js';
-import { detectKind, importFiles } from '../src/io/convert.js';
+import { detectKind, importFiles, exportFormat } from '../src/io/convert.js';
 import { exportableInstances } from '../src/io/external-scene.js';
 import { optimize, expandProcedural } from '../src/optimize/optimizer.js';
 
@@ -39,16 +39,22 @@ Commands
   glb        packed glTF binary                     (instances, LODs, lights, cameras, animation)
   stl        export STL for 3D printing, Z-up        (--lod <0-3>, --ascii)
   step       export tessellated STEP (AP242), Z-up  (--lod <0-3>)
-  import     convert SVG, OBJ (+MTL), STL, STEP or glTF (.gltf + .bin, .glb) to ES3D:
+  x3d        export X3D Classic (.x3dv)            (--lod <0-3>, --flatten)
+  usd        export USD ASCII (.usda)              (--lod <0-3>, --flatten)
+  scad       export an OpenSCAD program            (--lod <0-3>, --flatten)
+  js         export a three.js module              (--lod <0-3>, --flatten)
+  import     convert SVG, OBJ (+MTL), STL, STEP, glTF, X3D, USDA or OpenSCAD to ES3D:
              SVG shapes are extruded (--size, --depth, --bevel, --flat, --no-strokes, --plate),
              STEP solids become ES3D shapes (boxes, extrusions, revolves, paths; free-form faces a mesh),
-             meshes become <mesh> elements (--precision, --smooth, --up y for Y-up STL or STEP)
+             meshes become <mesh> elements (--precision, --smooth, --up y for Y-up STL or STEP),
+             OpenSCAD programs become shapes (difference and intersection are kept and noted, not evaluated)
   stats      sizes, element / instance / triangle counts and pipeline timings
 
 Options
   -o, --out <file>   output file (default: stdout for text)
   --precision <n>    round numbers to n decimals when writing text
-  --lod <n>          level of detail for obj, stl and step (default 0 = finest)
+  --lod <n>          level of detail for mesh export (default 0 = finest)
+  --flatten          x3d, usd, scad, js: write triangles instead of primitives
   --instancing       glb always writes EXT_mesh_gpu_instancing
   --quantize         glb always writes KHR_mesh_quantization
   --min / --pretty   force minified / pretty output
@@ -65,7 +71,7 @@ Options
   -h, --help         this text`;
 
 function parseArgs(argv) {
-  const o = { cmd: null, input: null, out: null, precision: null, lod: 0, instancing: false, quantize: 0, min: false, pretty: false, json: false, ascii: false, svg: {}, mesh: {}, stl: {} };
+  const o = { cmd: null, input: null, out: null, precision: null, lod: 0, instancing: false, quantize: 0, min: false, pretty: false, json: false, ascii: false, flatten: false, svg: {}, mesh: {}, stl: {} };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const val = () => {
@@ -82,6 +88,7 @@ function parseArgs(argv) {
     else if (a === '--pretty') o.pretty = true;
     else if (a === '--json') o.json = true;
     else if (a === '--ascii') o.ascii = true;
+    else if (a === '--flatten') o.flatten = true;
     else if (a === '--size') o.svg.size = Number(val());
     else if (a === '--depth') o.svg.depth = Number(val()) / 100;
     else if (a === '--bevel') o.svg.bevel = Number(val()) / 100;
@@ -354,6 +361,22 @@ async function main() {
       }
       write(opts, out.data);
       process.stderr.write(`${out.triangles.toLocaleString('en-US')} triangles\n`);
+      break;
+    }
+    case 'x3d':
+    case 'usd':
+    case 'scad':
+    case 'js': {
+      const format = { x3d: 'x3dv', usd: 'usda', scad: 'scad', js: 'js' }[opts.cmd];
+      const base = opts.out ? path.basename(opts.out).replace(/\.[^.]+$/, '') : 'scene';
+      let out;
+      try {
+        out = exportFormat(es3dInput(bytes), format, { baseName: base, lod: opts.lod, structure: opts.flatten ? 'flatten' : 'keep' });
+      } catch (e) {
+        fail(e.message, 1);
+      }
+      write(opts, out.files[0].data);
+      for (const note of out.notes || []) process.stderr.write(`${note}\n`);
       break;
     }
     case 'import': {

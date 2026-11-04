@@ -14,7 +14,7 @@
 This package is the reference implementation:
 - a strict parser and validator;
 - a WebGPU renderer with a WebGL2 fallback;
-- converters from SVG, OBJ, STL, STEP and glTF, and back;
+- converters from SVG, OBJ, STL, STEP, glTF, X3D, USDA and OpenSCAD, and to glTF, OBJ, STL, STEP, X3D, USDA, OpenSCAD and a three.js module;
 - the `es3d` command.
 
 It has no dependencies.
@@ -75,8 +75,8 @@ import { compile, importFiles, exportFormat } from '@es3d/es3d';
 const result = compile(source);
 if (!result.ok) console.error(result.diagnostics.map((d) => d.format()).join('\n\n'));
 
-const { text } = await importFiles([{ name: 'logo.svg', bytes }]); // SVG, OBJ, STL, STEP, glTF → ES3D
-const { files } = exportFormat(text, 'glb');                         // ES3D → glTF, OBJ, STL, STEP
+const { text } = await importFiles([{ name: 'logo.svg', bytes }]); // SVG, OBJ, STL, STEP, glTF, X3D, USDA, OpenSCAD → ES3D
+const { files } = exportFormat(text, 'glb');                         // ES3D → glTF, OBJ, STL, STEP, X3D, USDA, OpenSCAD, three.js
 ```
 
 Every error has a line, a column, a code and, where it can, a "did you mean" suggestion. Repeated warnings that share a code, an element name and a message are printed once, with a count. `validate --json` still lists every warning.
@@ -86,8 +86,8 @@ Every error has a line, a column, a code and, where it can, a "did you mean" sug
 ```bash
 npx @es3d/es3d validate scene.es3d               # diagnostics, repeated warnings grouped; exit code 1 on errors
 npx @es3d/es3d compact scene.es3d                # convert to the compact syntax (also: markup, json, fmt, minify)
-npx @es3d/es3d glb scene.es3d -o scene.glb       # export (also: obj, stl, step)
-npx @es3d/es3d import logo.svg -o logo.es3d      # SVG, OBJ, STL, STEP or glTF to ES3D
+npx @es3d/es3d glb scene.es3d -o scene.glb       # export (also: obj, stl, step, x3d, usd, scad, js)
+npx @es3d/es3d import logo.svg -o logo.es3d      # SVG, OBJ, STL, STEP, glTF, X3D, USDA or OpenSCAD to ES3D
 npx @es3d/es3d stats scene.es3d                  # sizes, counts and timings
 ```
 

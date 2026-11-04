@@ -22,6 +22,7 @@ import { gzip } from '../io/compression.js';
 import { exportOBJ } from '../io/obj.js';
 import { exportGLB } from '../io/gltf.js';
 import { exportSTEP } from '../io/step.js';
+import { exportFormat } from '../io/convert.js';
 import { optimize } from '../optimize/optimizer.js';
 import { openGeometryStore, persistGeometry } from '../cache/geometry-store.js';
 
@@ -306,7 +307,7 @@ export class App {
       return;
     }
     const text = r.text;
-    this.fileName = r.name.replace(/\.(obj|glb|gltf|stl|svg|json|step|stp|p21)$/i, '.es3d');
+    this.fileName = r.name.replace(/\.(obj|glb|gltf|stl|svg|svgz|json|step|stp|p21|x3d|x3dv|usda|usdc|usdz|scad)$/i, '.es3d');
     this.loadedBytes = r.originalSize;
     $('#file-name').textContent = r.name;
     if (r.note) this.toast(`${r.name}: ${r.note}`);
@@ -682,6 +683,19 @@ export class App {
         return download(`${name}.instanced.glb`, exportGLB(c.scene, meshOf, { instancing: true }), 'model/gltf-binary');
       case 'glb-q':
         return download(`${name}.quantized.glb`, exportGLB(c.scene, meshOf, { instancing: true, quantize: true }), 'model/gltf-binary');
+      case 'x3dv':
+      case 'usda':
+      case 'scad':
+      case 'js': {
+        try {
+          const out = exportFormat(this.editor.value, kind, { baseName: name, compiled: c });
+          if (out.notes && out.notes.length) this.toast(out.notes.join(' '));
+          const file = out.files[0];
+          return download(file.name, file.data, file.mime);
+        } catch (e) {
+          return this.toast(e.message, 'error');
+        }
+      }
       default:
         return undefined;
     }
@@ -720,6 +734,9 @@ export class App {
       const o = exportOBJ(c.scene, meshOf);
       if (o.obj.length < 64e6) items.push(['OBJ (+MTL)', o.obj + o.mtl]);
       else items.push(['OBJ (+MTL)', null, o.obj.length + o.mtl.length]);
+      for (const [label, format] of [['X3D Classic', 'x3dv'], ['USD ASCII', 'usda'], ['OpenSCAD', 'scad'], ['three.js module', 'js']]) {
+        items.push([label, exportFormat(text, format, { baseName: 'scene', compiled: c }).files[0].data]);
+      }
       const out = [];
       for (const [label, data, size] of items) {
         if (data === null) {

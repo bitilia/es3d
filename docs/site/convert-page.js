@@ -1,4 +1,5 @@
-// The converter page. Files come in. ES3D, glTF, OBJ, STL or STEP goes out.
+// The converter page. Files come in. ES3D, glTF, OBJ, STL, STEP, X3D, USDA,
+// OpenSCAD or a three.js module goes out.
 // All of that happens in the browser. The conversion itself lives in
 // src/io/convert.js and is shared with the command-line tool.
 
@@ -22,7 +23,7 @@ const SAMPLES = {
 
 /** Formats offered first for each kind of input. */
 const ES3D_OUTPUTS = ['es3d', 'es3d-min', 'es3d-compact'];
-const MESH_OUTPUTS = ['glb', 'obj', 'stl', 'step'];
+const MESH_OUTPUTS = ['glb', 'obj', 'stl', 'step', 'x3dv', 'usda', 'scad', 'js'];
 const TEXT_PREVIEW_LIMIT = 300_000;
 
 const state = { files: [], kind: null, result: null, viewer: null, viewerFailed: false, busy: false, again: false };
@@ -112,7 +113,7 @@ async function setFiles(files, origin = '') {
   updateOptionGroups();
   populateFormats();
   if (!kind) {
-    setStatus(`${main.name} is not an SVG, OBJ, STL, STEP, glTF or ES3D file.`, true);
+    setStatus(`${main.name} is not a file this converter reads. It reads SVG, OBJ, STL, STEP, glTF, X3D, USDA, OpenSCAD and ES3D.`, true);
     $('#result').hidden = true;
     return;
   }
@@ -193,6 +194,7 @@ async function showResult() {
   const { imported, compiled, out, format, triangles } = state.result;
   const msgs = $('#messages');
   for (const n of imported.notes) msgs.append(el('li', {}, n));
+  for (const n of out.notes || []) msgs.append(el('li', {}, n));
   for (const w of imported.warnings) msgs.append(el('li', {}, el('b', {}, 'Note: '), w));
   for (const d of compiled.diagnostics.filter((x) => x.severity === 'warning').slice(0, 5)) msgs.append(el('li', {}, el('b', {}, 'Warning: '), d.message));
 
