@@ -31,12 +31,17 @@
       "@id": "https://es3d.org/#organization",
       "name": "ES3D",
       "url": "https://es3d.org/",
+      "description": "ES3D (Extensible Scalable 3D) is a file format for 3D scenes you can write by hand, with a free converter, a browser editor and a WebGPU/WebGL2 renderer.",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://es3d.org/favicon.svg"
+        "url": "https://es3d.org/logo.png",
+        "contentUrl": "https://es3d.org/logo.png",
+        "width": 1216,
+        "height": 384
       },
       "sameAs": [
-        "https://github.com/bitilia/es3d"
+        "https://github.com/bitilia/es3d",
+        "https://www.youtube.com/@es3dfile"
       ]
     },
     {
@@ -44,6 +49,8 @@
       "@id": "https://es3d.org/#website",
       "url": "https://es3d.org/",
       "name": "ES3D",
+      "alternateName": "Extensible Scalable 3D",
+      "description": "ES3D (Extensible Scalable 3D) is a file format for 3D scenes you can write by hand, with a free converter, a browser editor and a WebGPU/WebGL2 renderer.",
       "publisher": {
         "@id": "https://es3d.org/#organization"
       },
@@ -62,7 +69,7 @@
         "@id": "https://es3d.org/#organization"
       },
       "inLanguage": "en",
-      "dateModified": "2026-10-15",
+      "dateModified": "2026-11-05T10:51:33+00:00",
       "primaryImageOfPage": {
         "@type": "ImageObject",
         "url": "https://es3d.org/images/studio-primitives.jpg",
@@ -95,8 +102,8 @@
 }
 </script>
   <script type="module" crossorigin src="../assets/modulepreload-polyfill-P2Xu9kJm.js"></script>
-  <script type="module" crossorigin src="../assets/site-NDrmVV8F.js"></script>
-  <link rel="stylesheet" crossorigin href="../assets/site-Dj63CpNW.css">
+  <script type="module" crossorigin src="../assets/site-DjgRp99O.js"></script>
+  <link rel="stylesheet" crossorigin href="../assets/site-ChlUFvJe.css">
 </head>
 <body>
 
@@ -139,7 +146,7 @@
 <main id="content">
 
 <h1>Download</h1>
-<p>Everything on this site is one free JavaScript project: the reference implementation, the renderer, ES3D Studio, the converter and the command-line tool. It is released under the <a href="https://github.com/bitilia/es3d/blob/HEAD/LICENSE">Apache License 2.0</a>, version 1.0.0.</p>
+<p>Everything on this site is one free JavaScript project: the reference implementation, the renderer, ES3D Studio, the converter and the command-line tool. It is released under the <a href="https://github.com/bitilia/es3d/blob/HEAD/LICENSE">Apache License 2.0</a>, version 1.1.2.</p>
 
 <h2>1. The JavaScript library (npm)</h2>
 <pre class="terminal">npm install @es3d/es3d</pre>
@@ -163,7 +170,8 @@ npx @es3d/es3d glb scene.es3d --instancing -o scene.glb
 npx @es3d/es3d obj scene.es3d -o scene.obj
 npx @es3d/es3d stl scene.es3d -o scene.stl
 npx @es3d/es3d step scene.es3d -o scene.step
-npx @es3d/es3d import drawing.svg -o drawing.es3d   # also .obj, .stl, .step, .gltf, .glb
+npx @es3d/es3d import drawing.svg -o drawing.es3d   # also .obj, .stl, .step, .gltf, .glb, .x3d, .x3dv, .usda, .scad
+npx @es3d/es3d x3d scene.es3d -o scene.x3dv        # also: usd, scad, js
 npx @es3d/es3d stats scene.es3d</pre>
 <p>Run <code>npx @es3d/es3d --help</code> for the full list.</p>
 
@@ -184,13 +192,13 @@ npm run build      # static site in dist/ (any web server can host it)</pre>
 <tr><td><code>.es3d.gz</code></td><td>The same text, gzip-compressed</td><td>the type above, with content encoding gzip</td><td>gzip magic bytes <code>1F 8B</code></td></tr>
 </tbody>
 </table></div>
-<p class="small">A web server can send <code>.es3d</code> as <code>text/plain; charset=utf-8</code>. Compression is ordinary gzip, <code>.es3d.gz</code>. There is no special compressed extension.</p>
+<p class="small">A web server can send <code>.es3d</code> as <code>text/plain; charset=utf-8</code>. Compression is ordinary gzip, <code>.es3d.gz</code>.</p>
 
 <h2>5. What you need</h2>
 <ul>
   <li><b>To view and convert:</b> a current browser. WebGL2 is enough. WebGPU is used when the browser has it. No plugin.</li>
   <li><b>To build the project:</b> Node.js 22 or newer, and npm.</li>
-  <li><b>To write ES3D:</b> any text editor. Markup highlights reasonably well if the editor treats <code>.es3d</code> as XML. A namespace declaration is not required.</li>
+  <li><b>To write ES3D:</b> any text editor. Markup highlights reasonably well if the editor treats <code>.es3d</code> as XML. No namespace is required.</li>
 </ul>
 </main>
 </div>
@@ -202,8 +210,9 @@ npm run build      # static site in dist/ (any web server can host it)</pre>
     <li>No plugin</li>
     <li><a href="https://github.com/bitilia/es3d/blob/HEAD/LICENSE">Apache 2.0</a></li>
   </ul>
-  <p><b>es3d.org</b>. Opens in a normal browser. No plugin, no cookies, no trackers.</p>
-  <p>Last updated 2026-10-15. ES3D 1.0.0 is free software under the Apache License 2.0.<br>
+  <p><b>es3d.org</b></p>
+  <p>We do not collect data. Cloudflare or GitHub might, and some pages embed content from other sites.</p>
+  <p>Last updated 2026-11-05. ES3D 1.1.2 is free software under the Apache License 2.0.<br>
   Questions, bugs, ideas: <a href="https://github.com/bitilia/es3d/issues">open an issue on GitHub</a>.</p>
 </footer>
 </div>

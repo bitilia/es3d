@@ -244,6 +244,7 @@ const _s = new THREE.Sphere();
 const _inv = new THREE.Matrix4();
 const _local = new THREE.Frustum();
 const _cam = new THREE.Vector3();
+const _fwd = new THREE.Vector3();
 
 /**
  * The instances of one instanced glTF node, chosen every frame: culled one by
@@ -342,6 +343,14 @@ class InstanceSet {
     for (let k = 0; k < 6; k++) _local.planes[k].copy(frustum.planes[k]).applyMatrix4(_inv);
     this.camera = _cam.copy(camera.position).applyMatrix4(_inv);
     this.toWorld = Math.cbrt(Math.abs(world.determinant())) || 1; // node units to world units
+    // The view direction in the node's space, scaled so that its dot product with a
+    // node-space offset is the offset's depth along the view axis in world units.
+    camera.getWorldDirection(_fwd);
+    const e = _inv.elements;
+    const s = this.toWorld;
+    this.fx = (e[0] * _fwd.x + e[4] * _fwd.y + e[8] * _fwd.z) * s;
+    this.fy = (e[1] * _fwd.x + e[5] * _fwd.y + e[9] * _fwd.z) * s;
+    this.fz = (e[2] * _fwd.x + e[6] * _fwd.y + e[10] * _fwd.z) * s;
     let inside = true;
     for (const plane of _local.planes) {
       const d = plane.distanceToPoint(this.bounds.center);
@@ -351,12 +360,13 @@ class InstanceSet {
     return inside ? 1 : -1;
   }
 
-  /** Instance i against this frame's view (prepare first); sets this.distance in world units. */
+  /** Instance i against this frame's view (prepare first); sets this.distance and this.viewDepth (along the view axis) in world units. */
   visible(i, test) {
     const C = this.centers;
     const x = C[i * 3], y = C[i * 3 + 1], z = C[i * 3 + 2];
     const dx = x - this.camera.x, dy = y - this.camera.y, dz = z - this.camera.z;
     this.distance = Math.sqrt(dx * dx + dy * dy + dz * dz) * this.toWorld;
+    this.viewDepth = dx * this.fx + dy * this.fy + dz * this.fz;
     if (test === 1) return true;
     const r = this.radii[i];
     for (const plane of _local.planes) if (plane.normal.x * x + plane.normal.y * y + plane.normal.z * z + plane.constant < -r) return false;
@@ -470,7 +480,12 @@ class TessGroup {
     this.lists = levels.map((l) => new Uint32Array(l.count));
   }
 
-  update(camera, frustum, pixelsAtUnitDistance) {
+  /**
+   * Same rule as ES3D's instancePixelsPerUnit: F * d / z^2 (F = pixelsAtUnitDistance),
+   * with d^2/z^2 limited to its value at the view's corners (cornerStretch), which is
+   * also used when the centre is at or behind the eye plane.
+   */
+  update(camera, frustum, pixelsAtUnitDistance, cornerStretch) {
     const base = this.levels[0];
     const test = base.prepare(camera, frustum);
     const counts = this.levels.map(() => 0);
@@ -478,7 +493,10 @@ class TessGroup {
     if (test !== 0) {
       for (let i = 0; i < base.count; i++) {
         if (!base.visible(i, test)) continue;
-        const k = (base.axes[i] * base.toWorld * pixelsAtUnitDistance) / Math.max(base.distance, 1e-6);
+        const d = base.distance;
+        const z = base.viewDepth;
+        const stretch = z > 0 ? Math.min((d * d) / (z * z), cornerStretch) : cornerStretch;
+        const k = (base.axes[i] * base.toWorld * pixelsAtUnitDistance * stretch) / Math.max(d, 1e-6);
         let level = 0;
         for (let l = D.length - 1; l >= 1; l--) {
           if (D[l] * k <= 1) {
@@ -830,7 +848,10 @@ export async function createGltfStage(canvas, opts) {
       for (let i = 0; i < plainSets.length; i++) if (plainOn[i]) plainSets[i].update(view, frustum);
       // pixels per world unit at distance 1, in CSS pixels as ES3D measures it
       const pixelsAtUnitDistance = state.height / (2 * Math.tan((view.fov * DEG) / 2));
-      for (let i = 0; i < tessGroups.length; i++) if (tessOn[i]) tessGroups[i].update(view, frustum, pixelsAtUnitDistance);
+      // d^2/z^2 at the corner of the view: 1 + tan(fov/2)^2 * (1 + aspect^2)
+      const tanV = Math.tan((view.fov * DEG) / 2);
+      const cornerStretch = 1 + tanV * tanV * (1 + view.aspect * view.aspect);
+      for (let i = 0; i < tessGroups.length; i++) if (tessOn[i]) tessGroups[i].update(view, frustum, pixelsAtUnitDistance, cornerStretch);
       // ES3D draws transparent batches farthest first, instances back to front
       for (let i = 0; i < sortSets.length; i++) {
         if (!sortOn[i]) continue;

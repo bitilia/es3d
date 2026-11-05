@@ -31,12 +31,17 @@
       "@id": "https://es3d.org/#organization",
       "name": "ES3D",
       "url": "https://es3d.org/",
+      "description": "ES3D (Extensible Scalable 3D) is a file format for 3D scenes you can write by hand, with a free converter, a browser editor and a WebGPU/WebGL2 renderer.",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://es3d.org/favicon.svg"
+        "url": "https://es3d.org/logo.png",
+        "contentUrl": "https://es3d.org/logo.png",
+        "width": 1216,
+        "height": 384
       },
       "sameAs": [
-        "https://github.com/bitilia/es3d"
+        "https://github.com/bitilia/es3d",
+        "https://www.youtube.com/@es3dfile"
       ]
     },
     {
@@ -44,6 +49,8 @@
       "@id": "https://es3d.org/#website",
       "url": "https://es3d.org/",
       "name": "ES3D",
+      "alternateName": "Extensible Scalable 3D",
+      "description": "ES3D (Extensible Scalable 3D) is a file format for 3D scenes you can write by hand, with a free converter, a browser editor and a WebGPU/WebGL2 renderer.",
       "publisher": {
         "@id": "https://es3d.org/#organization"
       },
@@ -62,7 +69,7 @@
         "@id": "https://es3d.org/#organization"
       },
       "inLanguage": "en",
-      "dateModified": "2026-10-15",
+      "dateModified": "2026-11-05T10:51:33+00:00",
       "primaryImageOfPage": {
         "@type": "ImageObject",
         "url": "https://es3d.org/images/studio-errors.jpg",
@@ -95,8 +102,8 @@
 }
 </script>
   <script type="module" crossorigin src="../assets/modulepreload-polyfill-P2Xu9kJm.js"></script>
-  <script type="module" crossorigin src="../assets/site-NDrmVV8F.js"></script>
-  <link rel="stylesheet" crossorigin href="../assets/site-Dj63CpNW.css">
+  <script type="module" crossorigin src="../assets/site-DjgRp99O.js"></script>
+  <link rel="stylesheet" crossorigin href="../assets/site-ChlUFvJe.css">
 </head>
 <body>
 
@@ -309,7 +316,7 @@ VALUE     := bare-value | '&quot;' escaped-string '&quot;'</code></pre>
 <tr><td>Rounded box</td><td style="text-align:right">4</td><td style="text-align:right">1</td><td>4, 2, 1, 1</td></tr>
 </tbody></table></div>
 <p>A <code>segments</code> attribute (or both torus segment counts) requests one fixed tessellation, which is part of the shape. A <code>segments=&quot;6&quot;</code> cylinder is a hexagonal prism at every distance. Exact shapes (box, plane, polygon, hairline, authored mesh) have one level and a bound of 0.</p>
-<p>Each level stores its bound. A frame may draw a level only while <code>bound × scale × pixelsPerUnit</code> is at most 1. <code>scale</code> is the longest column of the instance matrix. <code>pixelsPerUnit</code> is the projected size of one canonical unit. The reference reader picks the coarsest level that satisfies that test. A renderer <code>lodBias</code> above 1 (default 1) divides the one-pixel budget; it is not a document attribute. While a level is still being generated, a renderer may draw a coarser one in its place for a few frames (progressive refinement), as long as it keeps drawing until every level passes the test. For a unit sphere the switches fall near 59, 15 and 7 pixels of the sphere's own radius.</p>
+<p>Each level stores its bound. A frame may draw a level only while <code>bound × scale × pixelsPerUnit</code> is at most 1. <code>scale</code> is the longest column of the instance matrix. <code>pixelsPerUnit</code> is the largest projected size, in CSS pixels, of a unit length at the centre of the instance's bounding sphere. For a perspective view it is F·d/z², where F = viewportHeight / (2·tan(verticalFov/2)), d is the distance from the eye to the centre and z is its depth along the view axis; d²/z² is limited to its value at the corners of the view, and that limit is used when z ≤ 0. For an orthographic view it is viewportHeight divided by the view's height. The reference reader picks the coarsest level that satisfies that test. A renderer <code>lodBias</code> above 1 (default 1) divides the one-pixel budget; it is not a document attribute. While a level is still being generated, a renderer may draw a coarser one in its place for a few frames (progressive refinement), as long as it keeps drawing until every level passes the test. For a unit sphere on the view axis the switches fall near 59, 15 and 7 pixels of the sphere's own radius.</p>
 <p>Closed shapes must produce closed, outward-facing surfaces. Open or flat shapes (planes, polygons, paths, open revolves, <code>caps=&quot;false&quot;</code>) are rendered double-sided.</p>
 <h2 id="9-path-data">9. Path data</h2>
 <p><code>d</code> attributes use SVG path syntax with all commands, absolute and relative: <code>M L H V C S Q T A Z</code> (plus implicit repetition, <code>m</code> followed by implicit <code>l</code>, and the SVG separator rules). Arcs follow the SVG implementation notes (radii scaled up when too small). Coordinates are in the local XY plane, <strong>y up</strong>.</p>
@@ -481,11 +488,15 @@ Did you mean: radius?</code></pre>
 <tr><td>Warnings</td><td><code>W_LEGACY_ROOT</code>, <code>W_EXTENSION</code>, <code>W_DEF_WITHOUT_ID</code>, <code>W_MATERIAL_WITHOUT_ID</code>, <code>W_MULTIPLE_ENVIRONMENTS</code>, <code>W_MULTIPLE_CONTROLS</code>, <code>W_DEGENERATE_CONTOUR</code>, <code>W_SELF_INTERSECTION</code>, <code>W_EMPTY_FILL</code>, <code>W_TEXTURE</code></td></tr>
 </tbody></table></div>
 <p>Unknown names get a suggestion when a known name is within a small edit distance or shares a prefix (<code>raduis</code> → <code>radius</code>, <code>spotlight</code> → <code>spot</code>, <code>sphear</code> → <code>sphere</code>).</p>
+<p>The reference reader's human-readable report (<code>formatDiagnostics</code>, and the text from <code>validate</code>) shows a repeated warning once. Warnings group when they share a code, the element name written in the message (its first <code>&lt;name&gt;</code>), and the same message. The report keeps the first location and then says how many times that warning occurred:</p>
+<pre><code>Reported 906 times. Showing the first.</code></pre>
+<p>Every warning remains its own entry in the diagnostic list. <code>validate --json</code> prints that list. Errors are listed one by one.</p>
 <h2 id="16-extensibility-and-versioning">16. Extensibility and versioning</h2>
 <ul>
 <li>Elements whose names start with <code>x-</code> (and their subtrees) are vendor extensions: readers that do not understand them skip them with <code>W_EXTENSION</code>. Unknown elements without the prefix are errors, so typos are never mistaken for extensions.</li>
 <li>Unknown attributes are always errors. (A future version may reserve an <code>x-</code> attribute prefix as well.)</li>
 <li><code>version=&quot;1.x&quot;</code> documents must remain readable by version-1 readers; incompatible changes require version 2, which version-1 readers reject with <code>E_VERSION</code>.</li>
+<li>A processor that rewrites a document keeps <code>x-</code> elements, and keeps any element whose id is named by a token in an <code>x-</code> attribute. The reference optimizer treats a whitespace-separated token (an optional leading <code>#</code> is ignored) as a reference when that id exists, and updates the token when it merges a duplicate material.</li>
 </ul>
 <h2 id="17-file-names-and-media-types">17. File names and media types</h2>
 <div class="table-wrap"><table>
@@ -504,8 +515,9 @@ Did you mean: radius?</code></pre>
     <li>No plugin</li>
     <li><a href="https://github.com/bitilia/es3d/blob/HEAD/LICENSE">Apache 2.0</a></li>
   </ul>
-  <p><b>es3d.org</b>. Opens in a normal browser. No plugin, no cookies, no trackers.</p>
-  <p>Last updated 2026-10-15. ES3D 1.0.0 is free software under the Apache License 2.0.<br>
+  <p><b>es3d.org</b></p>
+  <p>We do not collect data. Cloudflare or GitHub might, and some pages embed content from other sites.</p>
+  <p>Last updated 2026-11-05. ES3D 1.1.2 is free software under the Apache License 2.0.<br>
   Questions, bugs, ideas: <a href="https://github.com/bitilia/es3d/issues">open an issue on GitHub</a>.</p>
 </footer>
 </div>

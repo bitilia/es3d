@@ -29,12 +29,17 @@
       "@id": "https://es3d.org/#organization",
       "name": "ES3D",
       "url": "https://es3d.org/",
+      "description": "ES3D (Extensible Scalable 3D) is a file format for 3D scenes you can write by hand, with a free converter, a browser editor and a WebGPU/WebGL2 renderer.",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://es3d.org/favicon.svg"
+        "url": "https://es3d.org/logo.png",
+        "contentUrl": "https://es3d.org/logo.png",
+        "width": 1216,
+        "height": 384
       },
       "sameAs": [
-        "https://github.com/bitilia/es3d"
+        "https://github.com/bitilia/es3d",
+        "https://www.youtube.com/@es3dfile"
       ]
     },
     {
@@ -42,6 +47,8 @@
       "@id": "https://es3d.org/#website",
       "url": "https://es3d.org/",
       "name": "ES3D",
+      "alternateName": "Extensible Scalable 3D",
+      "description": "ES3D (Extensible Scalable 3D) is a file format for 3D scenes you can write by hand, with a free converter, a browser editor and a WebGPU/WebGL2 renderer.",
       "publisher": {
         "@id": "https://es3d.org/#organization"
       },
@@ -60,7 +67,7 @@
         "@id": "https://es3d.org/#organization"
       },
       "inLanguage": "en",
-      "dateModified": "2026-10-15",
+      "dateModified": "2026-11-05T10:51:33+00:00",
       "primaryImageOfPage": {
         "@type": "ImageObject",
         "url": "https://es3d.org/images/studio-primitives.jpg",
@@ -92,14 +99,16 @@
   ]
 }
 </script>
-    <script type="module" crossorigin src="../assets/studio/index-CBkv81lW.js"></script>
+    <script type="module" crossorigin src="../assets/studio/index-Cc_ACZC6.js"></script>
     <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-P2Xu9kJm.js">
-    <link rel="modulepreload" crossorigin href="../assets/orbit-controls-BUn7A4nu.js">
+    <link rel="modulepreload" crossorigin href="../assets/orbit-controls-31PWDbRH.js">
     <link rel="modulepreload" crossorigin href="../assets/handoff-mtZVqaF7.js">
+    <link rel="modulepreload" crossorigin href="../assets/serializer-PRfWN_Pp.js">
     <link rel="modulepreload" crossorigin href="../assets/preload-helper-CRzLMJPS.js">
-    <link rel="modulepreload" crossorigin href="../assets/download-BqnNH0Un.js">
-    <link rel="modulepreload" crossorigin href="../assets/convert-B4o4PleO.js">
-    <link rel="modulepreload" crossorigin href="../assets/scene-tree-BX-8QTon.js">
+    <link rel="modulepreload" crossorigin href="../assets/convert-CEzTk0T5.js">
+    <link rel="modulepreload" crossorigin href="../assets/optimizer-KSPFatwY.js">
+    <link rel="modulepreload" crossorigin href="../assets/download-Cmpq7XQS.js">
+    <link rel="modulepreload" crossorigin href="../assets/scene-tree-Caxwyk33.js">
     <link rel="stylesheet" crossorigin href="../assets/scene-tree-CKpxE_JE.css">
   </head>
   <body>
@@ -109,8 +118,8 @@
       <div class="file"><span id="file-name">untitled.es3d</span><span id="syntax-label" class="pill"></span></div>
       <nav class="toolbar">
         <select id="examples" title="Load an example scene" aria-label="Example scene"></select>
-        <button id="btn-open" title="Open .es3d, .svg, .obj, .stl, .step, .gltf or .glb (or drop a file anywhere)">Open…</button>
-        <input type="file" id="file-input" accept=".es3d,.svg,.svgz,.obj,.stl,.step,.stp,.p21,.gltf,.glb,.json,.gz" hidden />
+        <button id="btn-open" title="Open .es3d, .svg, .obj, .stl, .step, .gltf, .glb, .x3d, .x3dv, .usda or .scad (or drop a file anywhere)">Open…</button>
+        <input type="file" id="file-input" accept=".es3d,.svg,.svgz,.obj,.stl,.step,.stp,.p21,.gltf,.glb,.json,.gz,.x3d,.x3dv,.usda,.scad" hidden />
         <button id="btn-format" title="Pretty-print the document">Format</button>
         <button id="btn-convert" title="Convert between markup and compact syntax">To compact</button>
         <button id="btn-optimize" title="Deduplicate, extract repeated parts, detect patterns">Optimise</button>
@@ -130,10 +139,15 @@
             <button data-export="glb-inst">GLB with GPU instancing</button>
             <button data-export="glb-q">GLB, instanced + quantized (KHR_mesh_quantization)</button>
             <hr />
+            <button data-export="x3dv">X3D Classic (.x3dv)</button>
+            <button data-export="usda">USD ASCII (.usda)</button>
+            <button data-export="scad">OpenSCAD (.scad)</button>
+            <button data-export="js">three.js module (.js)</button>
+            <hr />
             <button data-export="png">PNG screenshot</button>
           </div>
         </div>
-        <a class="button" href="../convert/" title="Convert SVG, OBJ, STL, STEP and glTF files to ES3D">Converter</a>
+        <a class="button" href="../convert/" title="Convert SVG, OBJ, STL, STEP, glTF, X3D, USDA and OpenSCAD to ES3D">Converter</a>
         <a class="button" href="../modeller/" title="Build a low-poly model from points and planes">Modeller</a>
       </nav>
       <div id="backend-label" class="backend">…</div>
@@ -181,7 +195,7 @@
         </section>
       </aside>
     </main>
-    <div id="drop-overlay" class="drop-overlay"><div>Drop an .es3d, .svg, .obj, .stl, .step, .gltf or .glb file</div></div>
+    <div id="drop-overlay" class="drop-overlay"><div>Drop an .es3d, .svg, .obj, .stl, .step, .gltf, .glb, .x3d, .usda or .scad file</div></div>
     <div id="toasts" class="toasts"></div>
   </body>
 </html>

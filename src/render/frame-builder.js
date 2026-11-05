@@ -22,6 +22,41 @@ function length3(x, y, z) {
 }
 
 /**
+ * Per-frame constants for `instancePixelsPerUnit`.
+ * `ppuFactor` is F = viewportHeight / (2 tan(verticalFov / 2)) for a perspective
+ * camera, or the constant scale for an orthographic one. `cornerStretch` is
+ * 1/cos^2 of the angle to the frustum's corner.
+ */
+export function lodFrameConstants(camera, viewportHeight) {
+  const aspect = camera.aspect || 1;
+  const tanV = Math.tan(camera.verticalFov(aspect) / 2);
+  return {
+    orthographic: camera.type === 'orthographic',
+    ppuFactor: camera.pixelsPerUnit(1, viewportHeight),
+    view: camera.view,
+    cornerStretch: 1 + tanV * tanV * (1 + aspect * aspect),
+  };
+}
+
+/**
+ * Largest projected size, in CSS pixels, of a unit length at the centre
+ * (cx, cy, cz) of an instance's bounding sphere; `d` is the distance from the
+ * eye to that centre. A flat image plane stretches a displacement at angle a
+ * from the view axis by up to 1/cos^2(a) = d^2/z^2 (z = depth along the axis)
+ * radially. Inside the view that never exceeds its value at the frustum's
+ * corners, which is also used when the centre is at or behind the eye plane
+ * while the sphere is still visible. Orthographic views do not stretch.
+ * Allocation-free: it runs once per instance.
+ */
+export function instancePixelsPerUnit(k, cx, cy, cz, d) {
+  if (k.orthographic) return k.ppuFactor;
+  const V = k.view;
+  const z = -(V[2] * cx + V[6] * cy + V[10] * cz + V[14]);
+  const stretch = z > 0 ? Math.min((d * d) / (z * z), k.cornerStretch) : k.cornerStretch;
+  return (k.ppuFactor * stretch) / Math.max(d, 1e-6);
+}
+
+/**
  * The level to draw while `lod` is not generated yet: the nearest coarser
  * level that exists, else the nearest finer one, else the coarsest level
  * (the cheapest to generate now).
@@ -159,8 +194,8 @@ export class FrameBuilder {
     const vh = p.viewportHeight;
     const bias = options.lodBias || 1;
     const fixedLod = options.autoLod === false ? options.fixedLod || 0 : -1;
-    // pixels per world unit at distance 1 (perspective) or everywhere (orthographic)
-    const ppuFactor = camera.pixelsPerUnit(1, vh);
+    // pixels per world unit: depth based for perspective, constant for orthographic
+    const lodK = lodFrameConstants(camera, vh);
 
     for (let i = 0; i < n; i++) {
       keys[i] = -1;
@@ -189,7 +224,7 @@ export class FrameBuilder {
         else {
           const dx = cx - camPos[0], dy = cy - camPos[1], dz = cz - camPos[2];
           const d = length3(dx, dy, dz);
-          const ppu = camera.type === 'orthographic' ? ppuFactor : ppuFactor / Math.max(d, 1e-6);
+          const ppu = instancePixelsPerUnit(lodK, cx, cy, cz, d);
           lod = selectLod(entry.lodDeviation, entry.lods, axisScale(scene.matrices, i), ppu, bias);
         }
       }
