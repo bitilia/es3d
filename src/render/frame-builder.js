@@ -171,23 +171,31 @@ export class FrameBuilder {
    */
   build(p) {
     const { scene, camera, pool, meshOf, options } = p;
-    const n = scene.count;
+    // A SceneSet draws several instance tables (the host and the fragments,
+    // scene-set.js); a RenderScene is one part whose indices need no map.
+    const parts = scene.parts ? scene.drawnParts() : [{ scene, geomMap: null, matMap: null, selectable: true }];
+    let n = 0;
+    for (const part of parts) n += part.scene.count;
     // reserve instance rows for: batches (<= n), bounding boxes (<= n), selection boxes
     let selCount = 0;
     if (options.selection && options.selection.size) {
-      for (let i = 0; i < n; i++) if (options.selection.has(scene.uid[i])) selCount++;
+      for (const part of parts) {
+        if (!part.selectable) continue;
+        const P = part.scene;
+        for (let i = 0; i < P.count; i++) if (options.selection.has(P.uid[i])) selCount++;
+      }
     }
     this.ensure(n + (options.bbox ? n : 0) + selCount + 64);
     const camPos = camera.position;
     const dist = (c) => Math.hypot(c[0] - camPos[0], c[1] - camPos[1], c[2] - camPos[2]);
-    const sw = this.lodStates(scene, camPos, dist);
     const planes = options.culling === false ? null : planesFrom(camera.viewProj);
-    const S = scene.spheres;
     const keys = this.keys;
     const lods = this.lods;
     const batchMap = new Map();
     const batches = [];
-    const nMat = Math.max(1, scene.materials.length);
+    const geometries = scene.geometries;
+    const materials = scene.materials;
+    const nMat = Math.max(1, materials.length);
     const lodHist = [0, 0, 0, 0];
     let visibleCount = 0;
     let culled = 0;
@@ -197,52 +205,64 @@ export class FrameBuilder {
     // pixels per world unit: depth based for perspective, constant for orthographic
     const lodK = lodFrameConstants(camera, vh);
 
-    for (let i = 0; i < n; i++) {
-      keys[i] = -1;
-      const ln = scene.lodNode[i];
-      if (ln >= 0 && !(sw.visible[ln] && sw.active[ln] === scene.lodChild[i])) continue;
-      const cx = S[i * 4], cy = S[i * 4 + 1], cz = S[i * 4 + 2], r = S[i * 4 + 3];
-      if (planes) {
-        let out = false;
-        for (let k = 0; k < 5; k++) {
-          const pl = planes[k];
-          if (pl[0] * cx + pl[1] * cy + pl[2] * cz + pl[3] < -r) {
-            out = true;
-            break;
+    // rows are numbered across the parts: part k's row r is base(k) + r
+    let base = 0;
+    for (const part of parts) {
+      const P = part.scene;
+      const gm = part.geomMap;
+      const mm = part.matMap;
+      const pn = P.count;
+      const sw = this.lodStates(P, camPos, dist);
+      const S = P.spheres;
+      for (let r = 0; r < pn; r++) {
+        const i = base + r;
+        keys[i] = -1;
+        const ln = P.lodNode[r];
+        if (ln >= 0 && !(sw.visible[ln] && sw.active[ln] === P.lodChild[r])) continue;
+        const cx = S[r * 4], cy = S[r * 4 + 1], cz = S[r * 4 + 2], rad = S[r * 4 + 3];
+        if (planes) {
+          let out = false;
+          for (let k = 0; k < 5; k++) {
+            const pl = planes[k];
+            if (pl[0] * cx + pl[1] * cy + pl[2] * cz + pl[3] < -rad) {
+              out = true;
+              break;
+            }
+          }
+          if (out) {
+            culled++;
+            continue;
           }
         }
-        if (out) {
-          culled++;
-          continue;
+        const gi = gm ? gm[P.geom[r]] : P.geom[r];
+        const entry = geometries[gi];
+        let lod = 0;
+        if (entry.lods > 1) {
+          if (fixedLod >= 0) lod = Math.min(fixedLod, entry.lods - 1);
+          else {
+            const dx = cx - camPos[0], dy = cy - camPos[1], dz = cz - camPos[2];
+            const d = length3(dx, dy, dz);
+            const ppu = instancePixelsPerUnit(lodK, cx, cy, cz, d);
+            lod = selectLod(entry.lodDeviation, entry.lods, axisScale(P.matrices, r), ppu, bias);
+          }
         }
-      }
-      const gi = scene.geom[i];
-      const entry = scene.geometries[gi];
-      let lod = 0;
-      if (entry.lods > 1) {
-        if (fixedLod >= 0) lod = Math.min(fixedLod, entry.lods - 1);
-        else {
-          const dx = cx - camPos[0], dy = cy - camPos[1], dz = cz - camPos[2];
-          const d = length3(dx, dy, dz);
-          const ppu = instancePixelsPerUnit(lodK, cx, cy, cz, d);
-          lod = selectLod(entry.lodDeviation, entry.lods, axisScale(scene.matrices, i), ppu, bias);
+        lods[i] = lod;
+        lodHist[lod]++;
+        const mirrored = P.flags[r] & 1;
+        const mi = mm ? mm[P.mat[r]] : P.mat[r];
+        const key = ((gi * 4 + lod) * nMat + mi) * 2 + mirrored;
+        let b = batchMap.get(key);
+        if (b === undefined) {
+          b = batches.length;
+          batchMap.set(key, b);
+          const material = materials[mi];
+          batches.push({ gi, entry, lod, mi, material, mirrored: !!mirrored, count: 0, firstInstance: 0, depth: 0, instances: null });
         }
+        batches[b].count++;
+        keys[i] = b;
+        visibleCount++;
       }
-      lods[i] = lod;
-      lodHist[lod]++;
-      const mirrored = scene.flags[i] & 1;
-      const mi = scene.mat[i];
-      const key = ((gi * 4 + lod) * nMat + mi) * 2 + mirrored;
-      let b = batchMap.get(key);
-      if (b === undefined) {
-        b = batches.length;
-        batchMap.set(key, b);
-        const material = scene.materials[mi];
-        batches.push({ gi, entry, lod, mi, material, mirrored: !!mirrored, count: 0, firstInstance: 0, depth: 0, instances: null });
-      }
-      batches[b].count++;
-      keys[i] = b;
-      visibleCount++;
+      base += pn;
     }
 
     // resolve meshes / pool ranges. Once this frame has spent its tessellation
@@ -288,27 +308,32 @@ export class FrameBuilder {
       b.cursor = b.firstInstance;
     }
     const data = this.instanceData;
-    const M = scene.matrices;
-    const transparentInstances = [];
-    for (let i = 0; i < n; i++) {
-      const k = keys[i];
-      if (k < 0) continue;
-      const b = batches[k];
-      if (b.transparent) {
-        transparentInstances.push(i);
-        continue;
-      }
-      const o = b.cursor++ * 16;
-      for (let j = 0; j < 16; j++) data[o + j] = M[i * 16 + j];
-    }
-    if (transparentInstances.length) {
-      const depthOf = (i) => -length3(S[i * 4] - camPos[0], S[i * 4 + 1] - camPos[1], S[i * 4 + 2] - camPos[2]);
-      transparentInstances.sort((a, b) => depthOf(a) - depthOf(b));
-      for (const i of transparentInstances) {
-        const b = batches[keys[i]];
+    const transparent = []; // {M, r, b, depth}: drawn back to front after the opaque rows
+    base = 0;
+    for (const part of parts) {
+      const P = part.scene;
+      const M = P.matrices;
+      const S = P.spheres;
+      for (let r = 0; r < P.count; r++) {
+        const k = keys[base + r];
+        if (k < 0) continue;
+        const b = batches[k];
+        if (b.transparent) {
+          transparent.push({ M, r, b, depth: -length3(S[r * 4] - camPos[0], S[r * 4 + 1] - camPos[1], S[r * 4 + 2] - camPos[2]) });
+          continue;
+        }
         const o = b.cursor++ * 16;
-        for (let j = 0; j < 16; j++) data[o + j] = M[i * 16 + j];
-        b.depth = Math.max(b.depth, -depthOf(i));
+        for (let j = 0; j < 16; j++) data[o + j] = M[r * 16 + j];
+      }
+      base += P.count;
+    }
+    if (transparent.length) {
+      transparent.sort((a, b) => a.depth - b.depth);
+      for (const t of transparent) {
+        const b = t.b;
+        const o = b.cursor++ * 16;
+        for (let j = 0; j < 16; j++) data[o + j] = t.M[t.r * 16 + j];
+        b.depth = Math.max(b.depth, -t.depth);
       }
       // farthest transparent batches first
       const opaque = order.filter((b) => !b.transparent);
@@ -326,12 +351,13 @@ export class FrameBuilder {
         if (options.normals) overlays.normals.push({ range: pool.normalRange(b.mesh), firstInstance: b.firstInstance, count: b.count });
       }
     }
-    const boxMatrix = (i, o) => {
-      const e = scene.geometries[scene.geom[i]];
+    const boxMatrix = (part, r, o) => {
+      const P = part.scene;
+      const e = geometries[part.geomMap ? part.geomMap[P.geom[r]] : P.geom[r]];
       const bb = e.bounds;
       const cx = (bb.min[0] + bb.max[0]) / 2, cy = (bb.min[1] + bb.max[1]) / 2, cz = (bb.min[2] + bb.max[2]) / 2;
       const sx = Math.max(bb.max[0] - bb.min[0], 1e-4), sy = Math.max(bb.max[1] - bb.min[1], 1e-4), sz = Math.max(bb.max[2] - bb.min[2], 1e-4);
-      const m = M.subarray(i * 16, i * 16 + 16);
+      const m = P.matrices.subarray(r * 16, r * 16 + 16);
       // world * T(c) * S(s)
       for (let k = 0; k < 3; k++) {
         data[o + k] = m[k] * sx;
@@ -346,22 +372,33 @@ export class FrameBuilder {
     };
     if (options.bbox) {
       const first = offset;
-      for (let i = 0; i < n; i++) {
-        if (keys[i] < 0) continue;
-        boxMatrix(i, offset * 16);
-        offset++;
+      base = 0;
+      for (const part of parts) {
+        for (let r = 0; r < part.scene.count; r++) {
+          if (keys[base + r] < 0) continue;
+          boxMatrix(part, r, offset * 16);
+          offset++;
+        }
+        base += part.scene.count;
       }
       overlays.bbox = { firstInstance: first, count: offset - first };
     }
     if (selCount) {
       const first = offset;
       const sel = options.selection;
-      for (let i = 0; i < n; i++) {
-        if (!sel.has(scene.uid[i])) continue;
-        // hidden level-of-detail alternatives are not highlighted
-        if (keys[i] < 0 && scene.lodNode[i] >= 0) continue;
-        boxMatrix(i, offset * 16);
-        offset++;
+      base = 0;
+      for (const part of parts) {
+        const P = part.scene;
+        if (part.selectable) {
+          for (let r = 0; r < P.count; r++) {
+            if (!sel.has(P.uid[r])) continue;
+            // hidden level-of-detail alternatives are not highlighted
+            if (keys[base + r] < 0 && P.lodNode[r] >= 0) continue;
+            boxMatrix(part, r, offset * 16);
+            offset++;
+          }
+        }
+        base += P.count;
       }
       overlays.selection = { firstInstance: first, count: offset - first };
     }

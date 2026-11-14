@@ -1,0 +1,39 @@
+name: Feature or change
+description: An idea for the library, the tools, the site or the format.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What you are trying to do, and what stops you today. Start from the problem, not the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What you suggest
+      description: How it could work. For the format, a short example document helps.
+  - type: dropdown
+    id: format
+    attributes:
+      label: Does it change what a document can contain?
+      description: The format stays version 1. A new element or attribute makes version-1 readers reject a document, so format ideas start as x- extensions (SPEC section 16).
+      options:
+        - "No: library, tools, site or documentation only"
+        - "Yes: the format itself"
+        - I am not sure
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you send it
+      options:
+        - label: I searched the existing issues.
+          required: true
+        - label: I would like to work on this myself.

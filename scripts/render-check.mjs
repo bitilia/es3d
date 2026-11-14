@@ -8,6 +8,11 @@
 //   - WebGPU with WebGL2 (both backends must draw the same picture).
 // Differences are written to test/render/out/ as <scene>-<backend>-diff.png.
 //
+// It also checks stage fragments (test/render/fragments.html) with the
+// one-file stage build: a host document plus tiles prepared in the stage's
+// worker must draw exactly the picture of one merged document, pixel for
+// pixel, on each backend.
+//
 //   npm run test:render                    compare (exit code 1 on a mismatch)
 //   npm run test:render -- --update        write new references (from WebGL2)
 //   npm run test:render -- --only gearbox  some scenes only
@@ -55,6 +60,61 @@ function args() {
     else if (a[i] === '--url') o.url = a[++i];
   }
   return o;
+}
+
+/**
+ * Draw test/render/fragments.html in both modes with every backend and
+ * require identical pictures. Returns the number of failures.
+ */
+async function checkFragments(launchFor, backends, compare) {
+  const { execFileSync } = await import('node:child_process');
+  const stageDir = path.join(OUT, 'stage');
+  execFileSync(process.execPath, [path.join(ROOT, 'scripts/build-stage.mjs')], { env: { ...process.env, ES3D_STAGE_OUT: stageDir }, stdio: 'ignore' });
+  const vite = await import('vite');
+  const server = await vite.createServer({ root: ROOT, configFile: false, logLevel: 'error', server: { port: 5196, strictPort: false, hmr: false, watch: null } });
+  await server.listen();
+  const base = server.resolvedUrls.local[0];
+  let failed = 0;
+  try {
+    for (const b of backends) {
+      const browser = await launchFor(b);
+      if (!browser) {
+        console.log(`fragments ${b.id}: not available, skipped`);
+        continue;
+      }
+      const shots = {};
+      const results = {};
+      try {
+        for (const mode of ['set', 'merged']) {
+          const page = await browser.newPage({ viewport: { width: WIDTH, height: HEIGHT }, deviceScaleFactor: 1 });
+          const q = new URLSearchParams({ mode, renderer: b.id, stage: '/test/render/out/stage/es3d-stage.min.js' });
+          await page.goto(`${base}test/render/fragments.html?${q}`);
+          await page.waitForFunction(() => window.__result, null, { timeout: 120000 });
+          results[mode] = await page.evaluate(() => window.__result);
+          shots[mode] = await page.locator('#viewport').screenshot({ type: 'png' });
+          fs.writeFileSync(path.join(OUT, `fragments-${mode}-${b.id}.png`), shots[mode]);
+          await page.close();
+        }
+      } finally {
+        await browser.close();
+      }
+      const errors = [...results.set.errors, ...results.merged.errors];
+      if (errors.length || results.set.kind !== b.id) {
+        console.log(`fragments ${b.id.padEnd(7)}        skipped: ${errors[0] || results.set.kind}`);
+        if (results.set.kind === b.id) failed++;
+        continue;
+      }
+      const r = await compare(shots.set, shots.merged);
+      const exact = !r.sizeMismatch && r.differing === 0 && r.mean === 0;
+      const worker = results.set.workers === 3 ? 'tiles compiled in the worker' : `only ${results.set.workers} of 3 tiles compiled in the worker`;
+      if (!exact || results.set.workers !== 3) failed++;
+      if (!exact && r.diff) fs.writeFileSync(path.join(OUT, `fragments-${b.id}-diff.png`), Buffer.from(r.diff, 'base64'));
+      console.log(`${`fragments ${b.id} vs merged`.padEnd(30)} ${exact && results.set.workers === 3 ? 'ok  ' : 'FAIL'} ${exact ? 'identical' : `${(r.differing * 100).toFixed(3)}% pixels differ`}, ${worker}`);
+    }
+  } finally {
+    await server.close();
+  }
+  return failed;
 }
 
 async function main() {
@@ -219,6 +279,9 @@ async function main() {
       }
       console.log(`${label.padEnd(30)} ${ok ? 'ok  ' : 'FAIL'} ${fmt(r)}`);
     };
+
+    // fragments: host + prepared tiles against the merged document, exactly
+    if (!opts.only || opts.only.includes('fragments')) failed += await checkFragments(launchFor, backends, compare);
 
     for (const scene of scenes) {
       const s = shots[scene] || {};

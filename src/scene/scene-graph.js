@@ -108,7 +108,7 @@ export function buildSceneGraph(doc, cache, opts = {}) {
   };
   collect(doc.root);
 
-  cache.beginBuild();
+  cache.beginBuild(opts.owner);
 
   const nodeFor = (el, depth = 0) => {
     if (memo.has(el)) return memo.get(el);

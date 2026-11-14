@@ -3,67 +3,57 @@
 <head>
 <!--#include virtual="head.html" -->
 <title>Download - ES3D</title>
-<meta name="description" content="Get ES3D: the JavaScript library, the es3d command-line tool and the source code. Free software under the Apache License 2.0.">
+<meta name="description" content="Get ES3D: npm install @es3d/es3d, a one-file build for web pages, the es3d command and the source code. Free software under the Apache License 2.0.">
 </head>
 <body>
 <!--#set var="page" value="download" -->
 <!--#set var="title" value="Download" -->
 <!--#include virtual="top.html" -->
 <h1>Download</h1>
-<p>Everything on this site is one free JavaScript project: the reference implementation, the renderer, ES3D Studio, the converter and the command-line tool. It is released under the <a href="https://github.com/bitilia/es3d/blob/HEAD/LICENSE">Apache License 2.0</a>, version <!--#echo var="VERSION" -->.</p>
-
-<h2>1. The JavaScript library (npm)</h2>
 <pre class="terminal">npm install @es3d/es3d</pre>
-<p>The library runs in browsers and in Node.js 22 or newer. Parsing, validation, conversion and the exporters work everywhere. The renderer needs a browser with WebGPU or WebGL2.</p>
-<pre><code>import { compile, createRenderer, Camera } from '@es3d/es3d';
+<p>Version <!--#echo var="VERSION" --> (<a href="../history/">what changed</a>). Apache License 2.0. Node.js 22 or newer, or any current browser.</p>
 
-const result = compile(text);                     // parse, validate, build the scene
-if (!result.ok) console.error(result.diagnostics.map((d) =&gt; d.format()).join('\n\n'));
-
-const renderer = await createRenderer(canvas);    // WebGPU, else WebGL2
-renderer.setScene(result.scene, (entry, lod) =&gt; result.cache.mesh(entry, lod));
-const camera = new Camera().frame(result.scene.bounds);
-renderer.render(camera, { width: canvas.clientWidth, height: canvas.clientHeight });</code></pre>
-
-<h2>2. The command-line tool</h2>
-<p>The npm package includes the <code>es3d</code> command:</p>
-<pre class="terminal">npx @es3d/es3d validate scene.es3d          # every error, with line, column and a hint
-npx @es3d/es3d minify scene.es3d -o small.es3d
-npx @es3d/es3d compact scene.es3d          # the short ES3D-C spelling of the same tree
-npx @es3d/es3d glb scene.es3d --instancing -o scene.glb
-npx @es3d/es3d obj scene.es3d -o scene.obj
-npx @es3d/es3d stl scene.es3d -o scene.stl
-npx @es3d/es3d step scene.es3d -o scene.step
-npx @es3d/es3d import drawing.svg -o drawing.es3d   # also .obj, .stl, .step, .gltf, .glb, .x3d, .x3dv, .usda, .scad
-npx @es3d/es3d x3d scene.es3d -o scene.x3dv        # also: usd, scad, js
-npx @es3d/es3d stats scene.es3d</pre>
-<p>Run <code>npx @es3d/es3d --help</code> for the full list.</p>
-
-<h2>3. The source code</h2>
-<pre class="terminal">git clone https://github.com/bitilia/es3d.git
-cd es3d
-npm install
-npm run dev        # this site, with Studio, the converter and the demo sites: http://localhost:5173
-npm test           # unit tests
-npm run build      # static site in dist/ (any web server can host it)</pre>
-<p>Browse it on <a href="https://github.com/bitilia/es3d">GitHub</a>. The public pages live in <code>docs/</code>.</p>
-
-<h2>4. File types</h2>
-<div class="table-wrap"><table>
-<thead><tr><th>Extension</th><th>Contents</th><th>Media type</th><th>How to recognize it</th></tr></thead>
+<h2>Pick an entry point</h2>
+<div class="table-wrap"><table class="entries">
+<thead><tr><th>Import</th><th>What it is</th><th>Use it for</th></tr></thead>
 <tbody>
-<tr><td><code>.es3d</code></td><td>UTF-8 text: markup (the canonical spelling) or the compact syntax ES3D-C</td><td><code>model/vnd.es3d</code></td><td>markup starts with <code>&lt;es3d</code> after an optional XML declaration and comments; compact syntax starts with <code>es3d</code> after optional <code>//</code> comments</td></tr>
-<tr><td><code>.es3d.gz</code></td><td>The same text, gzip-compressed</td><td>the type above, with content encoding gzip</td><td>gzip magic bytes <code>1F 8B</code></td></tr>
+<tr><td><code>@es3d/es3d</code></td><td>The whole library as ES modules</td><td>Node, a bundler, the converter in scripts</td></tr>
+<tr><td><code>@es3d/es3d/browser</code></td><td>Everything that runs in a browser, in one file</td><td>A page that parses, draws <i>and</i> converts files on the visitor's computer</td></tr>
+<tr><td><code>@es3d/es3d/stage</code></td><td>Only the stage, in one smaller file</td><td>A page that shows a scene: <a href="../stage/">stage API</a></td></tr>
 </tbody>
 </table></div>
-<p class="small">A web server can send <code>.es3d</code> as <code>text/plain; charset=utf-8</code>. Compression is ordinary gzip, <code>.es3d.gz</code>.</p>
 
-<h2>5. What you need</h2>
-<ul>
-  <li><b>To view and convert:</b> a current browser. WebGL2 is enough. WebGPU is used when the browser has it. No plugin.</li>
-  <li><b>To build the project:</b> Node.js 22 or newer, and npm.</li>
-  <li><b>To write ES3D:</b> any text editor. Markup highlights reasonably well if the editor treats <code>.es3d</code> as XML. No namespace is required.</li>
-</ul>
+<p>A page without a build step loads either file from a CDN:</p>
+<pre><code>&lt;canvas id="view"&gt;&lt;/canvas&gt;
+&lt;script type="module"&gt;
+  import { createStage } from 'https://cdn.jsdelivr.net/npm/@es3d/es3d@<!--#echo var="VERSION" -->/browser/es3d-stage.min.js';
+  const stage = await createStage(document.querySelector('#view'));
+  stage.show(await (await fetch('scene.es3d')).text());
+&lt;/script&gt;</code></pre>
+
+<p>Converting a file the visitor picks, without uploading it:</p>
+<pre><code>import { importFiles, exportFormat } from 'https://cdn.jsdelivr.net/npm/@es3d/es3d@<!--#echo var="VERSION" -->/browser/es3d.min.js';
+
+const scene = await importFiles(input.files);       // SVG, OBJ (+ .mtl), STL, STEP, glTF, X3D, USDA, OpenSCAD
+const { files } = exportFormat(scene.text, 'glb');  // or obj, stl, step, x3dv, usda, scad, js</code></pre>
+
+<h2>Command line</h2>
+<pre class="terminal">npx @es3d/es3d validate scene.es3d
+npx @es3d/es3d glb scene.es3d -o scene.glb
+npx @es3d/es3d import drawing.svg -o drawing.es3d
+npx @es3d/es3d --help</pre>
+
+<h2>Source</h2>
+<p>On <a href="https://github.com/bitilia/es3d">GitHub</a>. <code>npm install</code>, then <code>npm run dev</code> serves this site with Studio and the converter, and <code>npm test</code> runs the tests.</p>
+
+<h2>File types</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Extension</th><th>Contents</th><th>Media type</th></tr></thead>
+<tbody>
+<tr><td><code>.es3d</code></td><td>UTF-8 text: markup, or the compact syntax ES3D-C</td><td><code>model/vnd.es3d</code> (serve as <code>text/plain; charset=utf-8</code> until registered)</td></tr>
+<tr><td><code>.es3d.gz</code></td><td>The same text, gzip-compressed</td><td>the type above, gzip encoded</td></tr>
+</tbody>
+</table></div>
 <!--#include virtual="bottom.html" -->
 </body>
 </html>

@@ -29,8 +29,8 @@ const DEFAULT_IMAGE = 'studio-primitives.jpg';
  */
 export const PAGES = [
   { file: 'index.html', name: 'Home' },
-  { file: 'examples/index.html', name: 'Examples', image: 'studio-forest.jpg' },
-  { file: 'demo/index.html', name: 'Demo Sites', image: 'demo-ashby.jpg' },
+  { file: 'examples/index.html', name: 'Example files', image: 'studio-forest.jpg' },
+  { file: 'demo/index.html', name: 'Demos', image: 'demo-ashby.jpg' },
   { file: 'demo/ashby/index.html', name: 'Ashby', image: 'demo-ashby.jpg' },
   { file: 'demo/parcel/index.html', name: 'Parcel', image: 'demo-parcel.jpg' },
   { file: 'demo/spoke/index.html', name: 'Spoke', image: 'demo-spoke.jpg' },
@@ -40,6 +40,7 @@ export const PAGES = [
   { file: 'demo/castle/glTF/index.html', name: 'Castle, glTF', image: 'demo-castle.jpg' },
   { file: 'spec/index.html', name: 'Specification', image: 'studio-errors.jpg' },
   { file: 'reference/index.html', name: 'Element reference', image: 'studio-errors.jpg' },
+  { file: 'stage/index.html', name: 'Stage API' },
   { file: 'media/index.html', name: 'Media' },
   { file: 'media/why-es3d-came-to-be/index.html', name: 'Why ES3D came to be' },
   { file: 'media/making-the-web-3d/index.html', name: 'Making the Web 3D' },
@@ -63,6 +64,7 @@ export const PAGES = [
     },
   },
   { file: 'download/index.html', name: 'Download' },
+  { file: 'history/index.html', name: 'Release history' },
   { file: 'faq/index.html', name: 'FAQ' },
   { file: 'benchmark-devices/index.html', name: 'Benchmarks', image: 'studio-forest.jpg' },
   { file: 'convert/index.html', name: 'File converter' },

@@ -1,0 +1,56 @@
+name: Bug report
+description: Something draws, reads, converts or behaves wrongly.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. Please search [existing issues](https://github.com/bitilia/es3d/issues?q=is%3Aissue) first. The smallest document that shows the problem helps most.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: document
+    attributes:
+      label: The smallest document, or the steps
+      description: Paste the .es3d text (it is rendered as code), or the steps in Studio, the converter, a demo or your own page.
+      render: xml
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: ES3D version
+      description: "From `npm ls @es3d/es3d`, your package.json, or the footer of es3d.org."
+      placeholder: "1.2.0"
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser, its version, and the operating system
+      placeholder: "Chrome 140 on Windows 11"
+  - type: dropdown
+    id: renderer
+    attributes:
+      label: Renderer
+      description: Studio shows it at the top right; a stage has stage.kind.
+      options:
+        - WebGPU
+        - WebGL2
+        - Both
+        - Not about drawing
+        - I do not know
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you send it
+      options:
+        - label: I searched the existing issues.
+          required: true
+        - label: I have read this report and it describes what I saw (AI tools are welcome to help write it).
+          required: true

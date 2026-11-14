@@ -11,43 +11,56 @@
 <!--#include virtual="top.html" -->
 <h1>Frequently asked questions</h1>
 
-<dl class="faq">
-  <dt>What is ES3D?</dt>
-  <dd>A file format for 3D scenes. The file says how to build the geometry: boxes, spheres, SVG path outlines extruded or turned on a lathe, tubes swept along curves, gears, copies placed by repeat and scatter rules. The viewer creates the triangles, at the level of detail the screen needs. ES3D stands for <b>Extensible Scalable 3D</b>.</dd>
-
-  <dt>How is it like SVG?</dt>
-  <dd>You can read it and write it by hand. Shapes are elements with attributes. Outlines use SVG's path commands (<code>M L H V C S Q T A Z</code>). Transforms are written the SVG way. <code>&lt;defs&gt;</code> and <code>&lt;use&gt;</code> work the same way, and materials are inherited the way <code>fill</code> is. Two differences matter: it is 3D, and the y axis points up.</dd>
-
-  <dt>Why not just use glTF?</dt>
-  <dd>glTF carries finished meshes. ES3D describes a scene made of shapes and repetition: diagrams, technical models, architecture, generated worlds. Those files can be hundreds or thousands of times smaller. A scan is stored as a mesh, so it stays about the size of the original.</dd>
-
-  <dt>Can I convert my existing files?</dt>
-  <dd>Yes, with the <a href="../convert/">converter</a>. SVG drawings become real ES3D shapes, because their outlines are extruded. STEP solids from CAD software become ES3D shapes too: boxes, extrusions, cylinders, spheres, tori and revolves, or face by face paths and revolves, with exact arcs. Only free-form (NURBS) faces, which ES3D has no element for, are tessellated. OBJ, STL, glTF and tessellated STEP become <code>&lt;mesh&gt;</code> elements, about as large as the original. X3D, USDA and OpenSCAD become the solids those files name. An OpenSCAD difference or intersection is kept and named in the notes, because ES3D has no boolean. The other direction is glTF, OBJ, STL, STEP, X3D, USDA, OpenSCAD and a three.js module, so a slicer, a CAD tool or a 3D program can open the result. A three.js file is export only.</dd>
-
-  <dt>Does the converter upload my files?</dt>
-  <dd>No. It is JavaScript in your browser. The files are read, converted and saved on your own computer.</dd>
-
-  <dt>Which browsers work?</dt>
-  <dd>Any current browser with WebGL2, which is nearly all of them, on computers and on phones. If the browser also has WebGPU, the renderer uses that. Both draw the same picture. There is nothing to install.</dd>
-
-  <dt>Does it work on my phone?</dt>
-  <dd>Viewing and converting, yes. Drag with one finger to turn a scene, and pinch to zoom. Writing scenes in ES3D Studio is easier with a keyboard and a larger screen.</dd>
-
-  <dt>How fast is it?</dt>
-  <dd>On a PC with an RTX 5060 Ti the forest draws in 1.4 ms with ES3D's own level of detail, and in about 8 ms when three.js draws every triangle of the same scene from glTF. A Galaxy S25+ and a Motorola moto g54 5G are slower and the gap is wider. A scanned mesh is the other way round: there is nothing to simplify, and glTF is ready first. The figures are the median of ten passes, on the <a href="../#speed">home page</a> and in <a href="../benchmark-devices/">the full tables</a>.</dd>
-
-  <dt>What does "extensible" mean?</dt>
-  <dd>An element whose name starts with <code>x-</code> is an extension. A viewer that does not know it skips it and warns. Every other unknown element or attribute is an error, so a typo is an error. Documents carry a version number. The rules for later versions are in the specification. Version 1 is one set of elements.</dd>
-
-  <dt>What can't ES3D do?</dt>
-  <dd>Version 1 has no skeletal animation, no morph targets, no physics and no text. Animation moves, turns and scales things. Materials are a small physically based set: colour, metallic, roughness, opacity, emission, textures. The attribute is still named <code>color</code>. The file has no script.</dd>
-
-  <dt>Is it free?</dt>
-  <dd>Yes. The specification, the library, the tools and this site are free software under the Apache License 2.0. The source is on <a href="https://github.com/bitilia/es3d">GitHub</a>.</dd>
-
-  <dt>I found a bug. Where do I report it?</dt>
-  <dd>Please <a href="https://github.com/bitilia/es3d/issues">open an issue on GitHub</a>. If a file does not load, attach the file (or the smallest piece that still fails) and the error message, including the line and column.</dd>
-</dl>
+<div class="faq">
+  <details class="fold faq-item">
+    <summary>What is ES3D?</summary>
+    <p>A file format for 3D scenes. The file says how to build the geometry: boxes, spheres, SVG path outlines extruded or turned on a lathe, tubes swept along curves, gears, copies placed by repeat and scatter rules. The viewer creates the triangles, at the level of detail the screen needs. ES3D stands for <b>Extensible Scalable 3D</b>.</p>
+  </details>
+  <details class="fold faq-item">
+    <summary>How is it like SVG?</summary>
+    <p>You can read it and write it by hand. Shapes are elements with attributes. Outlines use SVG's path commands (<code>M L H V C S Q T A Z</code>). Transforms are written the SVG way. <code>&lt;defs&gt;</code> and <code>&lt;use&gt;</code> work the same way, and materials are inherited the way <code>fill</code> is. Two differences matter: it is 3D, and the y axis points up.</p>
+  </details>
+  <details class="fold faq-item">
+    <summary>Why not just use glTF?</summary>
+    <p>glTF carries finished meshes. ES3D describes a scene made of shapes and repetition: diagrams, technical models, architecture, generated worlds. Those files can be hundreds or thousands of times smaller. A scan is stored as a mesh, so it stays about the size of the original.</p>
+  </details>
+  <details class="fold faq-item">
+    <summary>Can I convert my existing files?</summary>
+    <p>Yes, with the <a href="../convert/">converter</a>. SVG drawings become real ES3D shapes, because their outlines are extruded. STEP solids from CAD software become ES3D shapes too: boxes, extrusions, cylinders, spheres, tori and revolves, or face by face paths and revolves, with exact arcs. Only free-form (NURBS) faces, which ES3D has no element for, are tessellated. OBJ, STL, glTF and tessellated STEP become <code>&lt;mesh&gt;</code> elements, about as large as the original. X3D, USDA and OpenSCAD become the solids those files name. An OpenSCAD difference or intersection is kept and named in the notes, because ES3D has no boolean. The other direction is glTF, OBJ, STL, STEP, X3D, USDA, OpenSCAD and a three.js module, so a slicer, a CAD tool or a 3D program can open the result. A three.js file is export only.</p>
+  </details>
+  <details class="fold faq-item">
+    <summary>Does the converter upload my files?</summary>
+    <p>No. It is JavaScript in your browser. The files are read, converted and saved on your own computer.</p>
+  </details>
+  <details class="fold faq-item">
+    <summary>Which browsers work?</summary>
+    <p>Any current browser with WebGL2, which is nearly all of them, on computers and on phones. If the browser also has WebGPU, the renderer uses that. Both draw the same picture. There is nothing to install.</p>
+  </details>
+  <details class="fold faq-item">
+    <summary>Does it work on my phone?</summary>
+    <p>Viewing and converting, yes. Drag with one finger to turn a scene, and pinch to zoom. Writing scenes in ES3D Studio is easier with a keyboard and a larger screen.</p>
+  </details>
+  <details class="fold faq-item">
+    <summary>How fast is it?</summary>
+    <p>On a PC with an RTX 5060 Ti the forest draws in 1.4 ms with ES3D's own level of detail, and in about 8 ms when three.js draws every triangle of the same scene from glTF. A Galaxy S25+ and a Motorola moto g54 5G are slower and the gap is wider. A scanned mesh is the other way round: there is nothing to simplify, and glTF is ready first. The figures are the median of ten passes, on the <a href="../#speed">home page</a> and in <a href="../benchmark-devices/">the full tables</a>.</p>
+  </details>
+  <details class="fold faq-item">
+    <summary>What does "extensible" mean?</summary>
+    <p>An element whose name starts with <code>x-</code> is an extension. A viewer that does not know it skips it and warns. Every other unknown element or attribute is an error, so a typo is an error. Documents carry a version number. The rules for later versions are in the specification. Version 1 is one set of elements.</p>
+  </details>
+  <details class="fold faq-item">
+    <summary>What can't ES3D do?</summary>
+    <p>Version 1 has no skeletal animation, no morph targets, no physics and no text. Animation moves, turns and scales things. Materials are a small physically based set: colour, metallic, roughness, opacity, emission, textures. The attribute is still named <code>color</code>. The file has no script.</p>
+  </details>
+  <details class="fold faq-item">
+    <summary>Is it free?</summary>
+    <p>Yes. The specification, the library, the tools and this site are free software under the Apache License 2.0. The source is on <a href="https://github.com/bitilia/es3d">GitHub</a>.</p>
+  </details>
+  <details class="fold faq-item">
+    <summary>I found a bug. Where do I report it?</summary>
+    <p>Please <a href="https://github.com/bitilia/es3d/issues/new/choose">open an issue on GitHub</a>; the form asks for what is needed. If a file does not load, paste the file (or the smallest piece that still fails) and the error message, with its line and column. To fix it yourself, <a href="https://github.com/bitilia/es3d/blob/HEAD/CONTRIBUTING.md">CONTRIBUTING.md</a> says how.</p>
+  </details>
+</div>
 
 <h2>Lessons from SVG's first decade</h2>
 <p>SVG became the vector format of the web, but the first decade was rough. A few of those failures are specific enough that a new format can just refuse them.</p>

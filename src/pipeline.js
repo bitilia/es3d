@@ -34,7 +34,8 @@ export function elementDiagnostic(doc, d) {
 /**
  * Parse, validate, build and flatten a document.
  * @param {string|ArrayBuffer|Uint8Array} input
- * @param {{cache?: GeometryCache, time?: number, progress?: number, maxInstances?: number}} [opts]
+ * @param {{cache?: GeometryCache, owner?: *, time?: number, progress?: number, maxInstances?: number}} [opts]
+ *   owner: whose build this is in a shared cache (GeometryCache.beginBuild); default the document
  */
 export function compile(input, opts = {}) {
   const t0 = now();

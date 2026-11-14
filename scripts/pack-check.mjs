@@ -18,7 +18,9 @@ try {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'inherit'],
   });
-  const info = JSON.parse(json)[0];
+  // npm 11 prints an array of packages, npm 12 an object keyed by package name
+  const packed = JSON.parse(json);
+  const info = Array.isArray(packed) ? packed[0] : Object.values(packed)[0];
   execFileSync('tar', ['-xzf', path.join(tmp, info.filename), '-C', tmp]);
   const pkg = JSON.parse(fs.readFileSync(path.join(tmp, 'package', 'package.json'), 'utf8'));
   const rel = (pkg.exports && pkg.exports['.']) || pkg.main;

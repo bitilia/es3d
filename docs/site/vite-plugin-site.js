@@ -8,6 +8,7 @@
 //   <!--#echo var="VERSION" -->                                   also LAST_MODIFIED
 //   <!--#markdown file="docs/SPEC.md" toc="2" -->
 //   <!--#examples -->
+//   <!--#releases -->                                             the release history (releases.js)
 //   <!--#filesize of="docs/public/es3d-logo.es3d" -->            size line: ES3D file, gzipped
 //   <!--#filesize of="demo/ashby" part="gzip" -->                one figure: es3d or gzip
 //
@@ -29,6 +30,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { renderMarkdown, tableOfContents, escapeHtml } from './markdown.js';
 import { sizeHtml, formatBytes } from './filesize.js';
+import { releaseHistory } from './releases.js';
 import { PREVIEW_IMAGES, breadcrumbItems, pageFor, pageUrl, previewImage, siteDate, siteDateTime, sitemapXml } from './pages.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -42,6 +44,7 @@ export const REPO_URL = 'https://github.com/bitilia/es3d';
 const DOC_PAGES = {
   'docs/SPEC.md': 'spec/',
   'docs/REFERENCE.md': 'reference/',
+  'docs/STAGE.md': 'stage/',
   'docs/benchmark-devices.md': 'benchmark-devices/',
   'README.md': '',
 };
@@ -104,6 +107,30 @@ export function siteLink(href, doc, fromDir) {
   const from = fromDir !== undefined ? fromDir : hostDir(doc);
   const url = from === null ? (target || './') : relUrl(from, target);
   return hash ? `${url}#${hash}` : url;
+}
+
+/**
+ * Wrap each section that starts with a heading of `level` (up to the next
+ * heading of that level or higher) in a fold: <details class="fold"> with the
+ * heading as its summary. The heading keeps its id, so links to it still
+ * work; site.js opens the fold a link points into.
+ */
+export function foldSections(html, level) {
+  const starts = [];
+  for (const m of html.matchAll(/<h([1-6])\b/g)) if (Number(m[1]) <= level) starts.push({ at: m.index, level: Number(m[1]) });
+  if (!starts.length) return html;
+  let out = html.slice(0, starts[0].at);
+  starts.forEach((s, i) => {
+    const part = html.slice(s.at, i + 1 < starts.length ? starts[i + 1].at : html.length);
+    if (s.level !== level) {
+      out += part;
+      return;
+    }
+    const end = `</h${level}>`;
+    const close = part.indexOf(end) + end.length;
+    out += `<details class="fold">\n<summary>${part.slice(0, close)}</summary>\n${part.slice(close).trim()}\n</details>\n`;
+  });
+  return out;
 }
 
 function parseToc(spec) {
@@ -190,16 +217,18 @@ export function expandPage(html, vars = {}) {
           let toc = '';
           if (a.toc) {
             const [lo, hi] = parseToc(a.toc);
-            toc = `<div class="toc"><b>Contents</b>\n${tableOfContents(headings, lo, hi)}\n</div>\n`;
+            toc = `<details class="fold toc"><summary>Contents</summary>\n${tableOfContents(headings, lo, hi)}\n</details>\n`;
           }
-          const intro = `<p class="source-note">Taken from <a href="${REPO_URL}/blob/HEAD/${doc}">${escapeHtml(doc)}</a>. This page and that file say the same thing.</p>\n${toc}`;
-          // The note and the contents sit directly under the document title.
-          const h1 = /<h1[^>]*>[\s\S]*?<\/h1>/.exec(body);
-          const out = h1 ? body.slice(0, h1.index + h1[0].length) + '\n' + intro + body.slice(h1.index + h1[0].length) : intro + body;
+          const folded = a.fold ? foldSections(body, Number(a.fold)) : body;
+          // the contents sit directly under the document title
+          const h1 = /<h1[^>]*>[\s\S]*?<\/h1>/.exec(folded);
+          const out = h1 ? folded.slice(0, h1.index + h1[0].length) + '\n' + toc + folded.slice(h1.index + h1[0].length) : toc + folded;
           return `<div class="doc">\n${out}\n</div>`;
         }
         case 'examples':
           return examplesGallery(env.ROOT || '');
+        case 'releases':
+          return releaseHistory();
         case 'filesize':
           return sizeFigure(a.of, a.part);
         default:
@@ -270,7 +299,7 @@ function organizationNode() {
     url: 'https://es3d.org/',
     description: SITE_DESCRIPTION,
     logo: LOGO,
-    sameAs: ['https://github.com/bitilia/es3d', YOUTUBE_CHANNEL],
+    sameAs: ['https://github.com/bitilia/es3d', 'https://www.npmjs.com/package/@es3d/es3d', YOUTUBE_CHANNEL],
   };
 }
 
@@ -295,12 +324,10 @@ function plainText(html) {
   return unescapeHtml(html.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
 }
 
-/** Questions from the FAQ definition list, for FAQPage markup. */
+/** Questions from the FAQ: each is a fold, the question its summary, for FAQPage markup. */
 function faqEntities(html) {
-  const dl = /<dl class="faq">([\s\S]*?)<\/dl>/.exec(html);
-  if (!dl) return null;
   const questions = [];
-  for (const m of dl[1].matchAll(/<dt>([\s\S]*?)<\/dt>\s*<dd>([\s\S]*?)<\/dd>/g)) {
+  for (const m of html.matchAll(/<details class="fold faq-item">\s*<summary>([\s\S]*?)<\/summary>([\s\S]*?)<\/details>/g)) {
     const name = plainText(m[1]);
     const text = plainText(m[2]);
     if (name && text) questions.push({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } });

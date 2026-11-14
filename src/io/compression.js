@@ -2,7 +2,10 @@
 // (zlib, which also provides brotli). Used for file-size statistics and the
 // benchmark, and for loading .gz files.
 
-const isNode = typeof process !== 'undefined' && !!(process.versions && process.versions.node) && typeof window === 'undefined';
+// The browser bundles (scripts/build-browser.mjs) define __ES3D_BROWSER__ as
+// true, so the Node branch and its zlib import are left out of them.
+const browserBuild = typeof __ES3D_BROWSER__ !== 'undefined' && __ES3D_BROWSER__;
+const isNode = !browserBuild && typeof process !== 'undefined' && !!(process.versions && process.versions.node) && typeof window === 'undefined';
 
 let zlibPromise = null;
 function zlib() {

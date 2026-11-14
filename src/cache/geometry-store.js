@@ -22,6 +22,10 @@
 //
 // Authored <mesh> data is not cached: hashing it costs about what computing
 // its normals does.
+//
+// A stage that shows fragments keeps one record per owner (the host document
+// and each fragment, GeometryCache.owned), named by that owner's entries
+// alone, so a tile's meshes are found again whatever else is on screen.
 
 import { sha256 } from './sha256.js';
 import { encodeBundle, decodeBundle } from './mesh-bundle.js';
@@ -84,11 +88,12 @@ async function digest(bytes, native) {
  * which a long-lived cache first saw them does not matter), and the name of
  * their record.
  * @param {import('../geometry/geometry-cache.js').GeometryCache} cache
- * @param {{native?: boolean}} [opts] native: false always uses sha256.js
+ * @param {{native?: boolean, entries?: Iterable<object>}} [opts] native: false always uses
+ *   sha256.js. entries: only these entries of the cache (one owner's), not all of them
  */
 export async function geometryKey(cache, opts = {}) {
   const entries = [];
-  for (const e of cache.entries.values()) if (e.identity) entries.push(e);
+  for (const e of opts.entries || cache.entries.values()) if (e.identity) entries.push(e);
   if (!entries.length) return { key: null, entries };
   entries.sort((a, b) => (a.identity < b.identity ? -1 : a.identity > b.identity ? 1 : 0));
   // identities are length-prefixed (registry.js), so their concatenation is unambiguous
@@ -118,7 +123,8 @@ const withTimeout = (promise, ms) =>
  * compile() and before the first frame; levels that exist already are kept.
  * @param {import('../geometry/geometry-cache.js').GeometryCache} cache
  * @param {object|Promise<object>} store from openGeometryStore() (null: nothing to do)
- * @param {{timeout?: number}} [opts] give up on a store slower than this (ms, default 250)
+ * @param {{timeout?: number, entries?: Iterable<object>}} [opts] timeout: give up on a store slower
+ *   than this (ms, default 250). entries: restore only these (one owner's, see geometryKey)
  * @returns {Promise<{hit: boolean, key: string|null, levels: number, bytes: number, ms: number, reason?: string}>}
  */
 export async function restoreGeometry(cache, store, opts = {}) {
@@ -126,7 +132,7 @@ export async function restoreGeometry(cache, store, opts = {}) {
   const done = (r) => ({ hit: false, key: null, levels: 0, bytes: 0, ...r, ms: now() - t0 });
   const s = await withTimeout(Promise.resolve(store), opts.timeout ?? 250);
   if (!s) return done({ reason: s === undefined ? 'store timed out' : 'no store' });
-  const { key, entries } = await geometryKey(cache);
+  const { key, entries } = await geometryKey(cache, { entries: opts.entries });
   if (!key) return done({ reason: 'nothing cacheable' });
   let buffer;
   try {
@@ -153,7 +159,7 @@ export async function restoreGeometry(cache, store, opts = {}) {
     for (const { lod, mesh, reports } of stored) if (cache.adopt(entries[i], lod, mesh, reports)) levels++;
   }
   // what the store holds: saving is worth it once the cache holds more
-  cache.persisted = `${key}:${held}`;
+  markPersisted(cache, `${key}:${held}`);
   return { hit: true, key, levels, bytes: buffer.byteLength, ms: now() - t0 };
 }
 
@@ -163,20 +169,30 @@ function countLevels(entries) {
   return n;
 }
 
+// cache.persisted is the record the cache last read or wrote (one document);
+// persistedSet remembers every one, for a cache that several owners share
+function markPersisted(cache, signature) {
+  cache.persisted = signature;
+  if (!cache.persistedSet) cache.persistedSet = new Set();
+  if (cache.persistedSet.size > 4096) cache.persistedSet.clear();
+  cache.persistedSet.add(signature);
+}
+
 /**
  * Store the meshes a cache holds for its current shapes, if it holds any the
  * store does not have yet. Call when the page is idle after drawing.
  * @param {import('../geometry/geometry-cache.js').GeometryCache} cache
  * @param {object|Promise<object>} store
+ * @param {{entries?: Iterable<object>}} [opts] entries: store only these (one owner's, see geometryKey)
  * @returns {Promise<{saved: boolean, key: string|null, bytes: number, reason?: string}>}
  */
-export async function saveGeometry(cache, store) {
+export async function saveGeometry(cache, store, opts = {}) {
   const s = await store;
   if (!s) return { saved: false, key: null, bytes: 0, reason: 'no store' };
-  const { key, entries } = await geometryKey(cache);
+  const { key, entries } = await geometryKey(cache, { entries: opts.entries });
   if (!key) return { saved: false, key: null, bytes: 0, reason: 'nothing cacheable' };
   const signature = `${key}:${countLevels(entries)}`;
-  if (cache.persisted === signature) return { saved: false, key, bytes: 0, reason: 'up to date' };
+  if (cache.persisted === signature || (cache.persistedSet && cache.persistedSet.has(signature))) return { saved: false, key, bytes: 0, reason: 'up to date' };
   const records = entries.map(storedLevels);
   if (!records.some((levels) => levels.length)) return { saved: false, key, bytes: 0, reason: 'nothing generated' };
   const buffer = encodeBundle(key, records);
@@ -186,7 +202,7 @@ export async function saveGeometry(cache, store) {
   } catch (e) {
     return { saved: false, key, bytes: buffer.byteLength, reason: `store failed: ${e && e.message ? e.message : e}` };
   }
-  cache.persisted = signature;
+  markPersisted(cache, signature);
   return { saved: true, key, bytes: buffer.byteLength };
 }
 
@@ -195,6 +211,10 @@ export async function saveGeometry(cache, store) {
  * compile() and changed() after drawing; meshes generated since the last save
  * are saved once nothing new has been generated for `delay` ms and the page
  * is idle.
+ *
+ * changed(cache, {owner, entries}) keeps one record per owner of a shared
+ * cache (the stage's host document and each fragment); every owner changed
+ * since the last save is saved then.
  * @param {object|Promise<object>|null} store null: both calls do nothing
  * @param {{delay?: number}} [opts]
  */
@@ -204,21 +224,39 @@ export function persistGeometry(store, opts = {}) {
   let timer = 0;
   let pending = null;
   let seen = -1;
+  const owners = new Map(); // owner -> {cache, entries}
+  const flush = () => {
+    const c = pending;
+    pending = null;
+    const list = [...owners.values()];
+    owners.clear();
+    if (c) saveGeometry(c, store).catch(() => {});
+    // one owner after the other: each save hashes and encodes that owner's meshes
+    list.reduce((p, o) => p.then(() => saveGeometry(o.cache, store, { entries: o.entries() }).catch(() => {})), Promise.resolve());
+  };
   return {
     store,
     restore(cache, restoreOpts) {
       return store ? restoreGeometry(cache, store, restoreOpts) : Promise.resolve(null);
     },
-    changed(cache) {
-      if (!store || (cache === pending && cache.stats.generated === seen)) return;
-      pending = cache;
-      seen = cache.stats.generated;
+    /**
+     * @param {object} cache
+     * @param {{owner: *, entries: () => Iterable<object>}} [part] one owner of a shared cache
+     */
+    changed(cache, part) {
+      if (!store) return;
+      if (part) owners.set(part.owner, { cache, entries: part.entries });
+      else {
+        if (cache === pending && cache.stats.generated === seen) return;
+        pending = cache;
+        seen = cache.stats.generated;
+      }
       clearTimeout(timer);
-      timer = setTimeout(() => idle(() => {
-        const c = pending;
-        pending = null;
-        if (c) saveGeometry(c, store).catch(() => {});
-      }), delay);
+      timer = setTimeout(() => idle(flush), delay);
+    },
+    /** Stop saving an owner that is gone. */
+    forget(owner) {
+      owners.delete(owner);
     },
   };
 }

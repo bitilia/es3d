@@ -84,10 +84,13 @@ function rayTriangles(o, d, mesh, best, facing = 0) {
  * @param {{isVisible?: (i:number)=>boolean, maxDistance?: number, skipFlags?: number, facing?: boolean}} [opts]
  *   skipFlags: instances with any of these flag bits are ignored. facing: only
  *   surfaces whose front side faces the origin (double-sided geometry always counts).
- * @returns {{index:number, uid:number, distance:number, point:number[], normal:number[]}|null}
- *   normal is the world-space surface normal turned against the ray.
+ * @returns {{index:number, uid:number, distance:number, point:number[], normal:number[], part?: object}|null}
+ *   normal is the world-space surface normal turned against the ray. A SceneSet
+ *   (scene-set.js) is searched part by part: isVisible(i, partScene) gets the
+ *   part's own scene, and the hit names the part it is in (index is that part's row).
  */
 export function raycast(scene, meshOf, origin, dir, opts = {}) {
+  if (scene && scene.parts) return raycastParts(scene, meshOf, origin, dir, opts);
   const { isVisible = null, maxDistance = Infinity, skipFlags = 0, facing = false } = opts;
   const cands = [];
   const S = scene.spheres;
@@ -147,6 +150,20 @@ export function raycast(scene, meshOf, origin, dir, opts = {}) {
   };
 }
 
+/** Nearest hit over the drawn parts of a scene set. */
+function raycastParts(set, meshOf, origin, dir, opts) {
+  let best = null;
+  for (const part of set.parts) {
+    if (!part.scene || !part.visible) continue;
+    const P = part.scene;
+    const isVisible = opts.isVisible ? (i) => opts.isVisible(i, P) : null;
+    const maxDistance = best ? best.distance : opts.maxDistance ?? Infinity;
+    const hit = raycast(P, meshOf, origin, dir, { ...opts, isVisible, maxDistance });
+    if (hit && (!best || hit.distance < best.distance)) best = { ...hit, part };
+  }
+  return best;
+}
+
 /**
  * Element under a ray (for selection).
  * @param {import('./flatten.js').RenderScene} scene
@@ -158,4 +175,16 @@ export function raycast(scene, meshOf, origin, dir, opts = {}) {
  */
 export function pick(scene, meshOf, origin, dir, isVisible = null) {
   return raycast(scene, meshOf, origin, dir, { isVisible });
+}
+
+/** Names (name or id) on an element and its ancestors, nearest first. */
+export function ancestorNames(doc, uid) {
+  const names = [];
+  let el = doc && doc.byUid.get(uid);
+  while (el) {
+    const n = el.values && (el.values.name || el.values.id);
+    if (n) names.push(n);
+    el = el.parent;
+  }
+  return names;
 }

@@ -53,8 +53,9 @@ function packInto(cwd, dest) {
   return Array.isArray(out) ? out[0] : Object.values(out)[0];
 }
 
-// The published ./stage entry is one file. Build it before packing so the tarball has it.
+// The published ./stage and ./browser entries are one file each. Build them before packing so the tarball has them.
 execFileSync(process.execPath, [path.join(ROOT, 'scripts/build-stage.mjs')], { cwd: ROOT, stdio: 'inherit' });
+execFileSync(process.execPath, [path.join(ROOT, 'scripts/build-browser.mjs')], { cwd: ROOT, stdio: 'inherit' });
 
 // 1-2. pack the repository and unpack it with the package README
 fs.mkdirSync(STAGING, { recursive: true });
@@ -100,6 +101,8 @@ const pkg = JSON.parse(fs.readFileSync(path.join(PKG, 'package.json'), 'utf8'));
 if (pkg.name !== '@es3d/es3d') problems.push(`package name is "${pkg.name}"; the public package is @es3d/es3d`);
 if (pkg.exports?.['./stage'] !== './browser/es3d-stage.min.js') problems.push('exports["./stage"] must be browser/es3d-stage.min.js');
 if (!files.some((f) => f.replaceAll('\\', '/').endsWith('browser/es3d-stage.min.js'))) problems.push('browser/es3d-stage.min.js is not in the package');
+if (pkg.exports?.['./browser'] !== './browser/es3d.min.js') problems.push('exports["./browser"] must be browser/es3d.min.js');
+if (!files.some((f) => f.replaceAll('\\', '/').endsWith('browser/es3d.min.js'))) problems.push('browser/es3d.min.js is not in the package');
 if (pkg.publishConfig?.access !== 'public') problems.push('publishConfig.access must be public');
 if (pkg.repository?.url !== 'git+https://github.com/bitilia/es3d.git') problems.push(`repository is "${pkg.repository?.url}"; GitHub stays github.com/bitilia/es3d`);
 if (pkg.private) problems.push('package.json has "private": true; npm would refuse to stage it');

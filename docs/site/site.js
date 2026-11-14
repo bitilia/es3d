@@ -77,5 +77,56 @@ function phoneMenu() {
   });
 }
 
+/**
+ * Blubert, a rag doll who peeks out from behind the page now and then (blubert.js).
+ * Loaded once the page is idle, and only with motion allowed and enough
+ * margin beside the panel for him to stand in.
+ */
+function blubert() {
+  const param = new URLSearchParams(location.search).get('blubert');
+  if (param === 'off') return;
+  const reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const panel = document.querySelector('.site');
+  if (!panel || (reduced && !param)) return;
+  const roomy = () => window.innerWidth - panel.getBoundingClientRect().width >= 2 * 96;
+  let started = false;
+  const start = () => {
+    if (started || !roomy()) return;
+    started = true;
+    removeEventListener('resize', start);
+    import('./blubert.js').then((m) => m.startBlubert({ only: param })).catch(() => {});
+  };
+  const whenIdle = () => (typeof requestIdleCallback === 'function' ? requestIdleCallback(start, { timeout: 5000 }) : setTimeout(start, 2000));
+  const later = () => setTimeout(whenIdle, param ? 0 : 2500);
+  if (document.readyState === 'complete') later();
+  else addEventListener('load', later, { once: true });
+  // a window made wider later gets him too
+  addEventListener('resize', start, { passive: true });
+}
+
+/**
+ * A link to something inside a closed fold (an element of the reference, a
+ * question of the FAQ) opens that fold first, so the target can be seen.
+ */
+function openFoldsForLinks() {
+  const reveal = () => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    let opened = false;
+    for (let el = target; el; el = el.parentElement) {
+      if (el.tagName === 'DETAILS' && !el.open) {
+        el.open = true;
+        opened = true;
+      }
+    }
+    if (opened) target.scrollIntoView();
+  };
+  addEventListener('hashchange', reveal);
+  reveal();
+}
+
 focusableScrollers();
 phoneMenu();
+openFoldsForLinks();
+blubert();

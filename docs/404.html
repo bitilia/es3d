@@ -8,17 +8,14 @@
 <body>
 <!--#set var="title" value="Page not found" -->
 <!--#include virtual="top.html" -->
+<div class="nf-sign" aria-hidden="true">
+  <span class="nf-text">404</span>
+  <canvas></canvas>
+</div>
 <h1>Page not found</h1>
-<p>There is no page at this address. It may have moved when the site was rearranged, or the link may have a typing mistake in it.</p>
-<p>These are the places most people are looking for:</p>
-<ul>
-  <li><a href="./"><b>Home</b></a></li>
-  <li><a href="examples/"><b>Examples</b></a>: thirteen scenes to open in ES3D Studio.</li>
-  <li><a href="convert/"><b>File converter</b></a>: SVG, OBJ, STL, STEP, glTF, X3D, USDA and OpenSCAD to ES3D, in the browser.</li>
-  <li><a href="spec/"><b>Specification</b></a> and <a href="reference/">element reference</a>.</li>
-  <li><a href="download/"><b>Download</b></a>: the library, the command-line tool and the source.</li>
-</ul>
-<p>If a link on this site brought you here, please <a href="https://github.com/bitilia/es3d/issues">open an issue on GitHub</a> and say which page it was on.</p>
+<p>Nothing lives at this address. Try the <a href="./">home page</a>, the <a href="demo/">demos</a> or the <a href="convert/">file converter</a>.</p>
+<p class="small">A broken link on this site? <a href="https://github.com/bitilia/es3d/issues">Tell us on GitHub</a>.</p>
 <!--#include virtual="bottom.html" -->
+<script type="module" src="./site/not-found.js"></script>
 </body>
 </html>

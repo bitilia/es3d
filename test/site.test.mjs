@@ -73,8 +73,13 @@ test('page directives: set, include, echo and the current navigation link', () =
   assert.match(html, /data-nav="home"/);
   assert.throws(() => expandPage('<!--#frobnicate -->'), /unknown directive/);
   const doc = expandPage('<!--#markdown file="docs/SPEC.md" toc="2" -->');
-  assert.match(doc, /<div class="toc"><b>Contents<\/b>/);
-  assert.match(doc, /Taken from <a href="https:\/\/github.com\/bitilia\/es3d\/blob\/HEAD\/docs\/SPEC.md">/);
+  assert.match(doc, /<details class="fold toc"><summary>Contents<\/summary>/);
+  assert.doesNotMatch(doc, /Taken from/);
+  // the element reference folds each element; the heading keeps its id for links
+  const ref = expandPage('<!--#markdown file="docs/REFERENCE.md" toc="2-3" fold="3" -->');
+  assert.match(ref, /<details class="fold">\n<summary><h3 id="box"><code>&lt;box&gt;<\/code><\/h3><\/summary>/);
+  assert.equal(ref.match(/<details class="fold">/g).length, (fs.readFileSync(path.join(process.cwd(), 'docs/REFERENCE.md'), 'utf8').match(/^### /gm) || []).length);
+  assert.match(ref, /<h2 id="shapes">/, 'groups stay open headings');
 });
 
 test('every page in docs/ is in the page list, and the sitemap has every public page', () => {
@@ -118,7 +123,7 @@ test('structured data: a page, the FAQ, an article breadcrumb, and nothing on th
   assert.match(page, /"@type": "BreadcrumbList"/);
   assert.match(page, /https:\/\/es3d.org\/download\//);
   assert.match(page, /"name": "Home"/);
-  const faq = structuredData('<head><title>FAQ and links - ES3D</title><meta name="description" content="Questions."></head><dl class="faq"><dt>What is ES3D?</dt><dd>A <b>file</b> format.</dd></dl>', 'faq/index.html');
+  const faq = structuredData('<head><title>FAQ and links - ES3D</title><meta name="description" content="Questions."></head><div class="faq"><details class="fold faq-item"><summary>What is ES3D?</summary><p>A <b>file</b> format.</p></details></div>', 'faq/index.html');
   assert.match(faq, /"FAQPage"/);
   assert.match(faq, /"name": "What is ES3D\?"/);
   assert.match(faq, /"text": "A file format\."/);
@@ -289,4 +294,29 @@ test('structured data on every public page is valid for Google rich results', ()
       assert.match(html, /"@type": "VideoObject"/);
     }
   }
+});
+
+test('release history: newest first, version and npm links, the latest marked, headings under the release', async () => {
+  const { releaseHistory, releaseVersion, loadReleases } = await import('../docs/site/releases.js');
+  const html = releaseHistory([
+    { tag: 'v1.1.0', name: 'v1.1.0', published: '2026-11-04T18:45:19Z', prerelease: false, url: 'https://github.com/bitilia/es3d/releases/tag/v1.1.0', body: '## Stage\n\n`setTransform(id, matrix)` moves a shape.' },
+    { tag: 'Release', name: 'v1.0.1', published: '2026-10-16T20:33:13Z', prerelease: false, url: 'https://github.com/bitilia/es3d/releases/tag/Release', body: 'First fix.' },
+    { tag: 'v1.0.1b', name: 'v1.0.1b', published: '2026-10-16T20:40:11Z', prerelease: false, url: 'https://github.com/bitilia/es3d/releases/tag/v1.0.1b', body: '' },
+  ]);
+  assert.match(html, /<article class="release" id="v1.1.0">/);
+  assert.match(html, /v1\.1\.0<\/a><span class="release-badge">Latest<\/span>/);
+  assert.equal(html.match(/release-badge">Latest/g).length, 1);
+  assert.match(html, /<time datetime="2026-11-04T18:45:19Z">4 November 2026<\/time>/);
+  assert.match(html, /href="https:\/\/www\.npmjs\.com\/package\/@es3d\/es3d\/v\/1\.1\.0">npm 1\.1\.0/);
+  assert.match(html, /<h3[^>]*>Stage<\/h3>/, 'a release heading sits under the version');
+  assert.doesNotMatch(html, /npm 1\.0\.1b/, 'no npm link for a version npm does not have');
+  assert.match(html, /tag <code>Release<\/code>/);
+  assert.match(html, /No notes\./);
+  assert.equal(releaseVersion({ tag: 'Release', name: 'v1.0.1' }), 'v1.0.1');
+  assert.equal(releaseVersion({ tag: 'v2.0.0', name: 'Big one' }), 'v2.0.0');
+  // the committed notes load and are newest first
+  const list = loadReleases();
+  assert.ok(list.length >= 6);
+  for (let i = 1; i < list.length; i++) assert.ok(list[i - 1].published >= list[i].published);
+  assert.match(expandPage('<!--#releases -->'), /class="releases"/);
 });

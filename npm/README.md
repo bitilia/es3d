@@ -67,6 +67,21 @@ stage.show(source);
 
 `background: true` runs the clock and leaves the camera still. `stage.setTransform(id, matrix)` replaces the local matrix of an element that is placed once (column-major, the same layout as `matrix()`). `stage.setTransforms([[id, matrix], ...])` stores every matrix, walks each affected part of the scene once, and returns a boolean for each entry. A shared definition or a `<repeat>` / `<scatter>` copy is left unchanged and that entry is false. `stage.reducedMotion` follows the visitor's reduced-motion preference, and the clock stays still while it matches. `clock: 'always'` runs the clock when the document has no `<animate>`. `mulberry32`, `es3dSin` and `es3dCos` are the reader's placement functions. The format stays version 1.
 
+### Fragments
+
+A page that streams content (map tiles, rooms, a route) adds whole documents to the one on screen. Only that document is compiled:
+
+```js
+const tile = stage.add(await stage.prepare(tileSource), { id: 'tile-1' }); // compiled in a worker
+await tile.ready;
+tile.visible = false;
+tile.replace(newSource);
+tile.remove();
+await stage.drawn(); // the next frame that shows every change
+```
+
+Every option and call is in [docs/STAGE.md](https://github.com/bitilia/es3d/blob/HEAD/docs/STAGE.md) and on [es3d.org/stage](https://es3d.org/stage/).
+
 ## Compile, check and convert
 
 ```js
@@ -77,6 +92,15 @@ if (!result.ok) console.error(result.diagnostics.map((d) => d.format()).join('\n
 
 const { text } = await importFiles([{ name: 'logo.svg', bytes }]); // SVG, OBJ, STL, STEP, glTF, X3D, USDA, OpenSCAD → ES3D
 const { files } = exportFormat(text, 'glb');                         // ES3D → glTF, OBJ, STL, STEP, X3D, USDA, OpenSCAD, three.js
+```
+
+In a web page, `@es3d/es3d/browser` is all of that in one file, and `importFiles` takes the visitor's files as they come from an `<input type="file">`. Nothing is uploaded:
+
+```js
+import { importFiles, exportFormat } from '@es3d/es3d/browser';
+
+const { text } = await importFiles(input.files);
+const { files } = exportFormat(text, 'stl');
 ```
 
 Every error has a line, a column, a code and, where it can, a "did you mean" suggestion. Repeated warnings that share a code, an element name and a message are printed once, with a count. `validate --json` still lists every warning.

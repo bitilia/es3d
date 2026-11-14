@@ -1,0 +1,22 @@
+# Rebuilds the website when a release is published, edited or deleted, so the
+# release history page (docs/history/) shows its notes. The website is built
+# from main, as on every push: this starts that workflow on main rather than
+# building from the release's tag. A workflow_dispatch made with GITHUB_TOKEN
+# does start a run.
+name: Website after a release
+
+on:
+  release:
+    types: [published, edited, deleted]
+
+permissions:
+  actions: write
+
+jobs:
+  rebuild:
+    if: github.repository == 'bitilia/es3d'
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh workflow run pages.yml --ref main --repo "$GITHUB_REPOSITORY"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

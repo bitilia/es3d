@@ -4,6 +4,8 @@ name: Website
 on:
   push:
     branches: [main]
+  # also started on main by release-site.yml when a release is published,
+  # edited or deleted, so the release history page (docs/history/) follows GitHub
   workflow_dispatch:
 
 permissions:
@@ -30,6 +32,10 @@ jobs:
         uses: actions/configure-pages@v6
       - run: npm ci
       - run: npm test
+      # the notes for the release history page; on failure the committed ones stay
+      - run: npm run releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # the 404 page is served at any depth, so it links from the site's
       # base path: "" on a custom domain, "/<repository>" on a project site
       - run: npm run build

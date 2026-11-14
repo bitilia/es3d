@@ -78,3 +78,9 @@ if (box && source) {
     }),
   );
 }
+
+// Blubert climbs up behind the top of the page, leans over and falls back:
+// once per visit, a few seconds after the page has loaded (site/blubert.js)
+const leanSoon = () => setTimeout(() => import('./blubert.js').then((m) => m.leanOverTop()).catch(() => {}), 2500);
+if (document.readyState === 'complete') leanSoon();
+else addEventListener('load', leanSoon, { once: true });

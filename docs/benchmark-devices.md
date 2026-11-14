@@ -1,5 +1,7 @@
 # ES3D on real graphics chips
 
+> Measured with ES3D **1.0.0**.
+
 Each cell is **ready / frame**, in milliseconds. Ready is the load plus the first frame. Frame is one frame while the camera orbits. Both are the median of ten passes. Every device drew the same 960×540 picture.
 
 In each row, the fastest ready time and the fastest frame time are green. A tie is marked on every cell that shares it.

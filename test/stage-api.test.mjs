@@ -155,13 +155,15 @@ test('the package exports the placement functions', () => {
   assert.equal(typeof es3dSin(0), 'number');
   const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
   assert.equal(pkg.exports['./stage'], './browser/es3d-stage.min.js');
-  assert.equal(pkg.version, '1.1.2');
+  assert.equal(pkg.version, '1.2.0');
 });
 
 test('the stage bundle is one file', async () => {
   execFileSync(process.execPath, [path.join(root, 'scripts/build-stage.mjs')], { cwd: root, stdio: 'pipe' });
   const dir = path.join(root, 'browser');
-  assert.deepEqual(fs.readdirSync(dir), ['es3d-stage.min.js']);
+  // browser/ also holds the full browser bundle (test/browser-bundle.test.mjs)
+  assert.ok(fs.readdirSync(dir).includes('es3d-stage.min.js'));
+  assert.deepEqual(fs.readdirSync(dir).filter((f) => !['es3d-stage.min.js', 'es3d.min.js'].includes(f)), []);
   const text = fs.readFileSync(path.join(dir, 'es3d-stage.min.js'), 'utf8');
   assert.doesNotMatch(text, /from\s*["']\./);
   assert.doesNotMatch(text, /sourceMappingURL/);

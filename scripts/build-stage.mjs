@@ -16,14 +16,19 @@ await vite.build({
   configFile: false,
   root: ROOT,
   logLevel: 'warn',
+  // the browser branch of io/compression.js; its Node branch (zlib) is left out
+  define: { __ES3D_BROWSER__: 'true' },
   build: {
     outDir,
-    emptyOutDir: true,
+    emptyOutDir: false, // browser/ also holds es3d.min.js (build-browser.mjs)
     minify: true,
     target: 'es2022',
     sourcemap: false,
     copyPublicDir: false,
     modulePreload: false,
+    // library mode leaves whitespace and region comments in an ES module;
+    // a page loads this file as it is, so it is minified completely
+    rolldownOptions: { output: { minify: true, comments: false } },
     lib: {
       entry: path.join(ROOT, 'src/stage.js'),
       formats: ['es'],

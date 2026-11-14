@@ -1,0 +1,47 @@
+{
+  "repository": "bitilia/es3d",
+  "releases": [
+    {
+      "tag": "v1.1.2",
+      "name": "v1.1.2",
+      "published": "2026-11-05T11:25:06Z",
+      "url": "https://github.com/bitilia/es3d/releases/tag/v1.1.2",
+      "body": "Bugfix. Automatic LOD off the view axis was chosen from distance, so the surface could sit more than a pixel from the true shape. It now follows the flat image plane. On the view axis the switches are unchanged."
+    },
+    {
+      "tag": "v1.1.1",
+      "name": "v1.1.1",
+      "published": "2026-11-04T21:05:22Z",
+      "url": "https://github.com/bitilia/es3d/releases/tag/v1.1.1",
+      "body": "Fix three.js, USD and X3D converter bugs in 1.1.1.\n\nA material first used inside a repeat stays in scope for the rest of the three.js module, and flattened copies share one geometry. USDA references keep the prototype type, a parent keeps its own transform, and X3D Classic geometry USE is drawn again."
+    },
+    {
+      "tag": "v1.1.0",
+      "name": "v1.1.0",
+      "published": "2026-11-04T18:45:19Z",
+      "url": "https://github.com/bitilia/es3d/releases/tag/v1.1.0",
+      "body": "@es3d/es3d/stage lets a page move its own shapes. setTransform(id, matrix) writes a column-major matrix onto an element that appears once. A shared definition, or a <repeat> or <scatter> copy, is left as the file drew it.\n\nThe converter, Studio and the es3d command now read and write X3D, USDA and OpenSCAD, and write a three.js module. X3D export is Classic (.x3dv). USD is USDA text. OpenSCAD is read. The three.js file is export only. --flatten writes the same triangles as glTF.\n\nSome of these convertors are a bit shaky, so I expect there may be need to update them later down the line."
+    },
+    {
+      "tag": "v1.0.2",
+      "name": "v1.0.2",
+      "published": "2026-10-31T17:23:41Z",
+      "url": "https://github.com/bitilia/es3d/releases/tag/v1.0.2",
+      "body": "Version 1.0.2 groups repeated warnings in the human-readable report. Warnings that share a code, the element name in the message, and the same message are shown once, at the first location, with Reported N times. Showing the first. The summary line still counts every warning. doc.diagnostics and validate --json still list each one. Errors stay one by one.\n\nThe optimizer treats a token in an x- attribute as a reference when it names an existing id, and updates that token when it merges a duplicate material. A definition named only by an extension is kept.\n\nThe format is unchanged. version=\"1.1\" still opens, a new attribute or a new value is still an error, and x- elements inside polygon, line, use, and animate still round-trip in all three syntaxes and draw the ordinary shapes.\n\nnpm to v1.0.2\n\nThis will set the stage for the v1.1.0 release! Thank you for taking the time to look at the ES3D project!"
+    },
+    {
+      "tag": "v1.0.1b",
+      "name": "v1.0.1b",
+      "published": "2026-10-16T20:40:11Z",
+      "url": "https://github.com/bitilia/es3d/releases/tag/v1.0.1b",
+      "body": "createStage followed the detached canvas after a WebGPU fallback, so the live canvas stayed 300x150 or stopped tracking its parent. It now sizes the canvas that is actually drawn on. That canvas is replaced only when WebGPU or a 2D context was created.\n\nWebGL2 dispose no longer loses the context, so the same canvas can be used again. A restored context rebuilds its GL objects, and a still scene redraws when the device pixel ratio changes.\n\nnpm to v1.0.1\n\nThank you for visiting my first ES3D bug-fix!\n\nThis contains a publish.yml fix regarding npm permissions."
+    },
+    {
+      "tag": "Release",
+      "name": "v1.0.1",
+      "published": "2026-10-16T20:33:13Z",
+      "url": "https://github.com/bitilia/es3d/releases/tag/Release",
+      "body": "createStage followed the detached canvas after a WebGPU fallback, so the live canvas stayed 300x150 or stopped tracking its parent. It now sizes the canvas that is actually drawn on. That canvas is replaced only when WebGPU or a 2D context was created.\n\nWebGL2 dispose no longer loses the context, so the same canvas can be used again. A restored context rebuilds its GL objects, and a still scene redraws when the device pixel ratio changes.\n\nnpm to v1.0.1\n\nThank you for visiting my first ES3D bug-fix!"
+    }
+  ]
+}

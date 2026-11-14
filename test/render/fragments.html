@@ -1,0 +1,93 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>ES3D stage fragments</title>
+<style>
+  html, body { margin: 0; background: #000; }
+  #box { width: 480px; height: 300px; }
+</style>
+<div id="box"><canvas id="viewport"></canvas></div>
+<script type="module">
+// Driven by scripts/render-check.mjs. Draws, with the one-file stage build
+// (so its worker starts from that one file, as on a real page):
+//   ?mode=set     a host document, then tiles prepared in the worker and added
+//   ?mode=merged  one document holding the host's children and every tile's
+// and sets window.__result once the picture is final (stage.drawn()). The two
+// pictures must be identical, pixel for pixel, on each backend.
+const q = new URLSearchParams(location.search);
+// ?stage= a freshly built stage file (render-check.mjs builds one into test/render/out/)
+const { createStage } = await import(q.get('stage') || '/browser/es3d-stage.min.js');
+const backend = q.get('renderer') || 'webgl2';
+const mode = q.get('mode') || 'set';
+
+const doc = (parts) => {
+  const defs = parts.map((p) => p.defs || '').join('');
+  return `<es3d version="1">${defs ? `<defs>${defs}</defs>` : ''}${parts.map((p) => p.body).join('')}</es3d>`;
+};
+const HOST = {
+  defs: '<group id="h-post"><cylinder radius="0.1" height="2"/></group>',
+  body: `<environment background="#202830"/>
+    <camera position="0,9,22" target="0,0,-3"/>
+    <light type="directional" direction="-1,-2,-1" intensity="2"/>
+    <material id="h-ground" color="#556b2f" roughness="0.9"/>
+    <material id="h-brick" color="#a0522d" roughness="0.8"/>
+    <plane material="h-ground" scale="40,1,40"/>
+    <box id="hall" material="h-brick" size="4,3,4" position="0,1.5,4"/>
+    <use ref="h-post" position="3,1,6"/><use ref="h-post" position="-3,1,6"/>`,
+};
+const tile = (k, dx) => ({
+  defs: `<group id="t${k}-tree"><cylinder radius="0.15" height="1" position="0,0.5,0"/><sphere radius="0.6" position="0,1.4,0" material="t${k}-leaf"/></group>`,
+  body: `<material id="t${k}-brick" color="#a0522d" roughness="0.8"/>
+    <material id="t${k}-leaf" color="#2e8b57" roughness="0.7"/>
+    <material id="t${k}-glass" color="#88ccff" opacity="0.4"/>
+    <group position="${dx},0,-6">
+      <extrude d="M -1 -1 L 1 -1 L 1.4 0.5 L 0 1.6 L -1.4 0.5 Z" depth="2.5" rotation="-90,0,0" material="t${k}-brick"/>
+      <box size="1,1,1" position="2,0.5,0" scale="-1,1,1" material="t${k}-brick"/>
+      <repeat count="24" step="translate(0.5,0,0)"><box size="0.1,0.6,0.1" position="-6,0.3,2"/></repeat>
+      <scatter count="12" area="6,4" seed="${k}"><use ref="t${k}-tree"/></scatter>
+      <lod distances="30"><cylinder radius="0.5" height="6" position="-3,3,0" material="t${k}-brick"/><box size="1,6,1" position="-3,3,0"/></lod>
+      <plane material="t${k}-glass" rotation="90,0,0" position="0,1,1.3" scale="1.5,1,1.5"/>
+      <light type="point" position="0,3,0" color="#ffddaa" intensity="1" range="8"/>
+    </group>`,
+});
+const TILES = [tile(1, -9), tile(2, 0), tile(3, 9)];
+
+const result = { mode, backend, workers: 0, errors: [] };
+try {
+  const stage = await createStage(document.getElementById('viewport'), {
+    backend,
+    present: backend === 'webgpu' ? 'readback' : 'canvas',
+    geometryStore: false,
+    autoOrbit: false,
+    playing: false,
+    interactive: false,
+    onError: (m) => result.errors.push(m),
+  });
+  result.kind = stage.kind;
+  if (mode === 'merged') {
+    stage.show(doc([HOST, ...TILES]));
+  } else {
+    stage.show(doc([HOST]));
+    // a tile shown, hidden and removed must leave no trace
+    const extra = stage.add(doc([tile(9, 0)]), { id: 'extra', immediate: true });
+    extra.visible = false;
+    extra.remove();
+    window.__step = 'prepare';
+    const prepared = await Promise.all(TILES.map((t) => stage.prepare(doc([t]))));
+    result.workers = prepared.filter((p) => p.payload).length;
+    const t0 = performance.now();
+    window.__step = 'add';
+    const tiles = prepared.map((p, i) => stage.add(p, { id: `tile-${i}` }));
+    const ready = await Promise.all(tiles.map((f) => f.ready));
+    result.addMs = performance.now() - t0;
+    result.ready = ready.map((r) => r.ok);
+  }
+  window.__step = 'drawn';
+  result.stats = await stage.drawn();
+  // one more frame after the last, so the picture on the canvas is that frame's
+  await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+  await stage.renderer.finish();
+} catch (e) {
+  result.errors.push(String(e && e.stack ? e.stack : e));
+}
+window.__result = result;
+</script>

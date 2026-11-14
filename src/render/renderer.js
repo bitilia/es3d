@@ -5,7 +5,7 @@
 // The facade is the only renderer API used by the application and the
 // benchmark; backends never see the ES3D document, only a RenderScene.
 
-import { GeometryPool } from './geometry-pool.js';
+import { GeometryPool, VERTEX_BYTES } from './geometry-pool.js';
 import { FrameBuilder } from './frame-builder.js';
 import { TextureCache } from './texture-cache.js';
 import { FRAME_FLOATS, packFrameUniforms } from './lighting.js';
@@ -106,12 +106,38 @@ export class Renderer {
   setScene(scene, meshOf, { keepGeometry = true } = {}) {
     this.scene = scene;
     this.meshOf = meshOf;
-    if (!scene || !keepGeometry || this.pool.byteSize > POOL_REPACK_BYTES) {
+    if (!scene || !keepGeometry || (!scene.parts && this.pool.byteSize > POOL_REPACK_BYTES)) {
       this.pool.reset();
+      this.pool.unusedBytes = 0;
       this.cubeRange = this.pool.meshRange(this.cube);
     }
     this.backend.releaseMaterials(new Set(scene ? scene.materials : []));
     this.stats.totalUploadBytes = 0;
+  }
+
+  /**
+   * The scene set being drawn changed (a fragment placed, hidden or removed):
+   * keep every packed mesh, free the materials no part uses, and repack the
+   * pool only once most of what it holds is geometry no part draws any more.
+   * Cheap: nothing here is proportional to the scene.
+   * @param {import('../scene/scene-set.js').SceneSet} set
+   */
+  updateScene(set) {
+    for (const entry of set.takeReleased()) {
+      if (set.geomIndex.has(entry)) continue; // taken again by another part
+      for (const mesh of entry.meshes) {
+        if (!mesh) continue;
+        const r = this.pool.ranges.get(mesh);
+        if (r) this.pool.unusedBytes = (this.pool.unusedBytes || 0) + mesh.vertexCount * VERTEX_BYTES + r.indexCount * 4;
+      }
+    }
+    if (this.pool.byteSize > POOL_REPACK_BYTES && (this.pool.unusedBytes || 0) * 2 > this.pool.byteSize) {
+      this.pool.reset();
+      this.pool.unusedBytes = 0;
+      this.cubeRange = this.pool.meshRange(this.cube);
+    }
+    if (this.materialsSeen !== set.materials.length || set.freeMaterials.length) this.backend.releaseMaterials(new Set(set.materials));
+    this.materialsSeen = set.materials.length;
   }
 
   /**

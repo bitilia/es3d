@@ -87,6 +87,16 @@ export function detectKind(name, bytes) {
 }
 
 /** Options of the importers, with their defaults. */
+/** {name, bytes} for each file: a File or Blob is read, a {name, bytes} object passes through. */
+async function readFiles(files) {
+  return Promise.all(Array.from(files || [], async (f) => {
+    // a File has a bytes() method of its own (Blob.bytes), so test for data, not the name
+    if (f && f.bytes && typeof f.bytes === 'object') return f;
+    if (f && typeof f.arrayBuffer === 'function') return { name: f.name || 'file', bytes: new Uint8Array(await f.arrayBuffer()) };
+    throw new TypeError('importFiles takes {name, bytes} objects or File objects.');
+  }));
+}
+
 export const IMPORT_DEFAULTS = {
   svg: { size: 10, depth: 0.04, bevel: 0, strokes: true, base: false },
   mesh: { precision: 'auto', normals: 'auto', uvs: true, smooth: 30 },
@@ -95,11 +105,14 @@ export const IMPORT_DEFAULTS = {
 
 /**
  * Convert input files into an ES3D document.
- * @param {{name: string, bytes: Uint8Array}[]} files the main file plus companions (.mtl, .bin)
+ * @param {Iterable<{name: string, bytes: Uint8Array}|Blob>} files the main file plus companions
+ *   (.mtl, .bin): {name, bytes} objects, or the File objects of an <input type="file">
+ *   or a drop (a FileList works too), which are read here
  * @param {{svg?: object, mesh?: object, stl?: object}} [opts] see IMPORT_DEFAULTS
  * @returns {Promise<{kind: string, name: string, title: string, text: string, warnings: string[], notes: string[]}>}
  */
 export async function importFiles(files, opts = {}) {
+  files = await readFiles(files);
   if (!files.length) throw new Error('No file was given.');
   const list = [];
   for (const f of files) {

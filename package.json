@@ -1,6 +1,6 @@
 {
   "name": "@es3d/es3d",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "ES3D (Extensible Scalable 3D): a declarative, SVG-inspired 3D scene format with a WebGPU/WebGL2 reference renderer, editor and converter.",
   "type": "module",
   "license": "Apache-2.0",
@@ -29,7 +29,8 @@
   "main": "src/index.js",
   "exports": {
     ".": "./src/index.js",
-    "./stage": "./browser/es3d-stage.min.js"
+    "./stage": "./browser/es3d-stage.min.js",
+    "./browser": "./browser/es3d.min.js"
   },
   "bin": {
     "es3d": "scripts/es3d-cli.mjs"
@@ -42,8 +43,10 @@
     "!src/main.js",
     "scripts/es3d-cli.mjs",
     "browser/es3d-stage.min.js",
+    "browser/es3d.min.js",
     "docs/SPEC.md",
-    "docs/REFERENCE.md"
+    "docs/REFERENCE.md",
+    "docs/STAGE.md"
   ],
   "scripts": {
     "dev": "vite",
@@ -57,6 +60,8 @@
     "parcel": "node scripts/make-parcel.mjs",
     "wasm": "node scripts/build-wasm.mjs",
     "build:stage": "node scripts/build-stage.mjs",
+    "build:browser": "node scripts/build-browser.mjs",
+    "releases": "node scripts/fetch-releases.mjs",
     "bench": "node --expose-gc scripts/bench.mjs",
     "bench:lan": "node benchmark/server.mjs",
     "bench:lan:10": "node benchmark/server.mjs --repeat 10",

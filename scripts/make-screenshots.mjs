@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Renders the pictures in README.md and the docs (docs/images/*.jpg): ES3D
-// Studio with a few examples, and the demo sites. Each is taken in headless
+// Studio with a few examples, and the demo sites, the castle among them. Each is taken in headless
 // Chromium at a fixed size and pixel ratio with the WebGL2 renderer on
 // SwiftShader, so a rerun after a change gives comparable pictures on any
 // machine. The example gallery thumbnails have their own script
@@ -21,6 +21,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(ROOT, 'docs/images');
 const STUDIO = { width: 1600, height: 900 };
 const DEMO = { width: 1280, height: 800 };
+const WIDE = { width: 1280, height: 720 }; // 1600×900 at the pixel ratio below, the link-preview size
 
 /**
  * Each picture: the page, how long to let it settle, and an optional step
@@ -45,16 +46,19 @@ const SHOTS = [
   // Ashby's fly-through: the approach, and the view from the square
   { name: 'demo-ashby', url: 'demo/ashby/', size: DEMO, wait: 4000, reducedMotion: true },
   { name: 'demo-ashby-square', url: 'demo/ashby/', size: DEMO, wait: 3000, reducedMotion: true, before: (page) => scrollToStop(page, '0.5') },
+  // the castle's ES3D flight: the island over the lake, and the court
+  { name: 'demo-castle', url: 'demo/castle/es3d/', size: WIDE, wait: 12000, reducedMotion: true, before: (page) => scrollToStop(page, '0.15', 6000) },
+  { name: 'demo-castle-court', url: 'demo/castle/es3d/', size: WIDE, wait: 12000, reducedMotion: true, before: (page) => scrollToStop(page, '0.43', 6000) },
 ];
 
-/** Scroll until the paragraph pinned to a scroll-tour stop is centred, and let the view settle. */
-async function scrollToStop(page, stop) {
-  const y = await page.$eval(`#tour [data-es3d-stop="${stop}"]`, (el) => {
+/** Scroll until the element pinned to a scroll-tour stop is centred, and let the view settle. */
+async function scrollToStop(page, stop, settle = 2000) {
+  const y = await page.$eval(`[data-es3d-stop="${stop}"]`, (el) => {
     const r = el.getBoundingClientRect();
     return r.top + scrollY + r.height / 2 - innerHeight / 2;
   });
   await page.evaluate((top) => scrollTo(0, top), y);
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(settle);
 }
 
 async function main() {
