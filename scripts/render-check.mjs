@@ -85,9 +85,11 @@ async function checkFragments(launchFor, backends, compare) {
       const shots = {};
       const results = {};
       try {
-        for (const mode of ['set', 'merged']) {
+        // 'grow' is the set again, after the geometry pool has grown several times
+        for (const mode of ['set', 'merged', 'grow']) {
           const page = await browser.newPage({ viewport: { width: WIDTH, height: HEIGHT }, deviceScaleFactor: 1 });
-          const q = new URLSearchParams({ mode, renderer: b.id, stage: '/test/render/out/stage/es3d-stage.min.js' });
+          const q = new URLSearchParams({ mode: mode === 'grow' ? 'set' : mode, renderer: b.id, stage: '/test/render/out/stage/es3d-stage.min.js' });
+          if (mode === 'grow') q.set('grow', '1');
           await page.goto(`${base}test/render/fragments.html?${q}`);
           await page.waitForFunction(() => window.__result, null, { timeout: 120000 });
           results[mode] = await page.evaluate(() => window.__result);
@@ -98,18 +100,30 @@ async function checkFragments(launchFor, backends, compare) {
       } finally {
         await browser.close();
       }
-      const errors = [...results.set.errors, ...results.merged.errors];
+      const errors = [...results.set.errors, ...results.merged.errors, ...results.grow.errors];
       if (errors.length || results.set.kind !== b.id) {
         console.log(`fragments ${b.id.padEnd(7)}        skipped: ${errors[0] || results.set.kind}`);
         if (results.set.kind === b.id) failed++;
         continue;
       }
-      const r = await compare(shots.set, shots.merged);
-      const exact = !r.sizeMismatch && r.differing === 0 && r.mean === 0;
-      const worker = results.set.workers === 3 ? 'tiles compiled in the worker' : `only ${results.set.workers} of 3 tiles compiled in the worker`;
-      if (!exact || results.set.workers !== 3) failed++;
-      if (!exact && r.diff) fs.writeFileSync(path.join(OUT, `fragments-${b.id}-diff.png`), Buffer.from(r.diff, 'base64'));
-      console.log(`${`fragments ${b.id} vs merged`.padEnd(30)} ${exact && results.set.workers === 3 ? 'ok  ' : 'FAIL'} ${exact ? 'identical' : `${(r.differing * 100).toFixed(3)}% pixels differ`}, ${worker}`);
+      /** Compare one run with the merged picture; `problems` are extra failed conditions. */
+      const against = async (mode, label, problems, notes) => {
+        const r = await compare(shots[mode], shots.merged);
+        const exact = !r.sizeMismatch && r.differing === 0 && r.mean === 0;
+        const ok = exact && problems.length === 0;
+        if (!ok) failed++;
+        if (!exact && r.diff) fs.writeFileSync(path.join(OUT, `fragments-${mode === 'set' ? '' : `${mode}-`}${b.id}-diff.png`), Buffer.from(r.diff, 'base64'));
+        const verdict = [exact ? 'identical' : `${(r.differing * 100).toFixed(3)}% pixels differ`, ...(problems.length ? problems : notes)].join(', ');
+        console.log(`${`fragments ${b.id} ${label}`.padEnd(34)} ${ok ? 'ok  ' : 'FAIL'} ${verdict}`);
+      };
+      const workers = results.set.workers;
+      await against('set', 'vs merged', workers === 3 ? [] : [`only ${workers} of 3 tiles compiled in the worker`], ['tiles compiled in the worker']);
+      // the same set after the pool grew several times (buffers grown by a GPU-side copy)
+      const g = results.grow.grow || { growths: 0, poolBytes: 0, reuploadedBytes: NaN };
+      const growProblems = [];
+      if (g.growths < 3) growProblems.push(`the pool grew only ${g.growths} times`);
+      if (g.reuploadedBytes !== 0) growProblems.push(`${(g.reuploadedBytes / 2 ** 20).toFixed(1)} MB uploaded twice`);
+      await against('grow', 'grown vs merged', growProblems, [`pool grew ${g.growths} times to ${(g.poolBytes / 2 ** 20).toFixed(1)} MB, no byte uploaded twice`]);
     }
   } finally {
     await server.close();

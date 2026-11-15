@@ -254,30 +254,61 @@ export class WebGPUBackend {
     });
   }
 
+  /**
+   * Upload geometry appended to the pool since the last sync.
+   *
+   * A new pool generation (reset, repack) reallocates both buffers and uploads
+   * everything. A pool that only grew keeps its content: the buffer that ran
+   * out of room is replaced by a larger one, the bytes already uploaded are
+   * copied on the GPU, and only new data is sent.
+   */
   syncPool(pool) {
     const d = this.device;
-    const vBytes = pool.vertices.byteLength;
-    const iBytes = pool.indices.byteLength;
+    const vBytes = pool.vertexCapacityBytes;
+    const iBytes = pool.indexCapacityBytes;
+    const vUsage = GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC;
+    const iUsage = GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC;
     let uploaded = 0;
-    if (pool.generation !== this.poolGeneration || !this.vertexBuffer || this.vertexBuffer.size < vBytes || this.indexBuffer.size < iBytes) {
+    if (pool.generation !== this.poolGeneration || !this.vertexBuffer) {
       if (this.vertexBuffer) this.vertexBuffer.destroy();
       if (this.indexBuffer) this.indexBuffer.destroy();
-      this.vertexBuffer = d.createBuffer({ size: pow2(vBytes, 1 << 16), usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST });
-      this.indexBuffer = d.createBuffer({ size: pow2(iBytes, 1 << 16), usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST });
+      this.vertexBuffer = d.createBuffer({ size: pow2(vBytes, 1 << 16), usage: vUsage });
+      this.indexBuffer = d.createBuffer({ size: pow2(iBytes, 1 << 16), usage: iUsage });
       this.poolGeneration = pool.generation;
       pool.uploadedVertices = 0;
       pool.uploadedIndices = 0;
+    } else {
+      let encoder = null;
+      const grow = (old, bytes, usage, keep) => {
+        const next = d.createBuffer({ size: pow2(bytes, 1 << 16), usage });
+        if (keep > 0) {
+          encoder ||= d.createCommandEncoder();
+          encoder.copyBufferToBuffer(old, 0, next, 0, keep);
+        }
+        return next;
+      };
+      const oldV = this.vertexBuffer.size < vBytes ? this.vertexBuffer : null;
+      const oldI = this.indexBuffer.size < iBytes ? this.indexBuffer : null;
+      if (oldV) this.vertexBuffer = grow(oldV, vBytes, vUsage, pool.uploadedVertices * VERTEX_BYTES);
+      if (oldI) this.indexBuffer = grow(oldI, iBytes, iUsage, pool.uploadedIndices * 4);
+      // the copy is queued before the writes below, so the new data lands after it;
+      // destroying a buffer waits for submitted work that reads it
+      if (encoder) d.queue.submit([encoder.finish()]);
+      if (oldV) oldV.destroy();
+      if (oldI) oldI.destroy();
     }
     const p = pool.pending();
     if (p.vertexEnd > p.vertexStart) {
-      const src = pool.vertices.subarray(p.vertexStart * 8, p.vertexEnd * 8);
-      d.queue.writeBuffer(this.vertexBuffer, p.vertexStart * VERTEX_BYTES, src.buffer, src.byteOffset, src.byteLength);
-      uploaded += src.byteLength;
+      pool.forEachVertices(p.vertexStart, p.vertexEnd, (first, src) => {
+        d.queue.writeBuffer(this.vertexBuffer, first * VERTEX_BYTES, src.buffer, src.byteOffset, src.byteLength);
+        uploaded += src.byteLength;
+      });
     }
     if (p.indexEnd > p.indexStart) {
-      const src = pool.indices.subarray(p.indexStart, p.indexEnd);
-      d.queue.writeBuffer(this.indexBuffer, p.indexStart * 4, src.buffer, src.byteOffset, src.byteLength);
-      uploaded += src.byteLength;
+      pool.forEachIndices(p.indexStart, p.indexEnd, (first, src) => {
+        d.queue.writeBuffer(this.indexBuffer, first * 4, src.buffer, src.byteOffset, src.byteLength);
+        uploaded += src.byteLength;
+      });
     }
     pool.markUploaded();
     return uploaded;

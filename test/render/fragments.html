@@ -13,6 +13,11 @@
 //   ?mode=merged  one document holding the host's children and every tile's
 // and sets window.__result once the picture is final (stage.drawn()). The two
 // pictures must be identical, pixel for pixel, on each backend.
+//   &grow=1       (set mode) first streams dense fragments that are drawn and then
+//                 hidden, so the geometry pool grows several times with content
+//                 already on the GPU before the tiles go in. Grown buffers are
+//                 copied on the GPU, which must not change a pixel, and every
+//                 byte goes up once: result.grow.reuploadedBytes must be 0.
 const q = new URLSearchParams(location.search);
 // ?stage= a freshly built stage file (render-check.mjs builds one into test/render/out/)
 const { createStage } = await import(q.get('stage') || '/browser/es3d-stage.min.js');
@@ -71,6 +76,31 @@ try {
     const extra = stage.add(doc([tile(9, 0)]), { id: 'extra', immediate: true });
     extra.visible = false;
     extra.remove();
+    if (q.get('grow')) {
+      const pool = stage.renderer.pool;
+      const stats = stage.renderer.stats;
+      await stage.drawn(); // the host is on the GPU
+      const start = { uploaded: stats.totalUploadBytes, pooled: pool.byteSize, chunks: pool.vertexStore.chunks.length + pool.indexStore.chunks.length };
+      // spheres share one unit mesh per segment count, so each sphere gets its
+      // own count (24..119): about 13 MB in all. Hidden fragments keep their
+      // meshes, so the pool only grows.
+      for (let k = 0; k < 12; k++) {
+        const body = Array.from({ length: 8 }, (_, j) => `<sphere segments="${24 + k * 8 + j}" radius="0.4" position="${j * 1.2 - 4},1,0"/>`).join('');
+        const f = stage.add(doc([{ body }]), { id: `filler-${k}` });
+        await f.ready;
+        await stage.drawn();
+        // drawn at least once, so its meshes are in the pool and on the GPU
+        await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+        f.visible = false;
+      }
+      result.grow = {
+        // each growth added a vertex or an index chunk
+        growths: pool.vertexStore.chunks.length + pool.indexStore.chunks.length - start.chunks,
+        poolBytes: pool.byteSize,
+        // geometry uploaded beyond what the pool gained: 0 when nothing went up twice
+        reuploadedBytes: stats.totalUploadBytes - start.uploaded - (pool.byteSize - start.pooled),
+      };
+    }
     window.__step = 'prepare';
     const prepared = await Promise.all(TILES.map((t) => stage.prepare(doc([t]))));
     result.workers = prepared.filter((p) => p.payload).length;

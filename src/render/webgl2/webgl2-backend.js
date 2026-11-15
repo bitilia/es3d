@@ -171,12 +171,8 @@ export class WebGL2Backend {
     this.vao = gl.createVertexArray();
     gl.bindVertexArray(this.vao);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-    gl.enableVertexAttribArray(0);
-    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, VERTEX_BYTES, 0);
-    gl.enableVertexAttribArray(1);
-    gl.vertexAttribPointer(1, 3, gl.FLOAT, false, VERTEX_BYTES, 12);
-    gl.enableVertexAttribArray(2);
-    gl.vertexAttribPointer(2, 2, gl.FLOAT, false, VERTEX_BYTES, 24);
+    for (let k = 0; k < 3; k++) gl.enableVertexAttribArray(k);
+    this.bindVertexAttributes();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.instanceBuffer);
     for (let k = 0; k < 4; k++) {
       gl.enableVertexAttribArray(3 + k);
@@ -215,14 +211,28 @@ export class WebGL2Backend {
     this.gl.deleteTexture(t);
   }
 
-  /** Upload geometry appended to the pool since the last sync. */
+  /** Point the VAO's vertex attributes at the vertex buffer bound to ARRAY_BUFFER. */
+  bindVertexAttributes() {
+    const gl = this.gl;
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, VERTEX_BYTES, 0);
+    gl.vertexAttribPointer(1, 3, gl.FLOAT, false, VERTEX_BYTES, 12);
+    gl.vertexAttribPointer(2, 2, gl.FLOAT, false, VERTEX_BYTES, 24);
+  }
+
+  /**
+   * Upload geometry appended to the pool since the last sync.
+   *
+   * A new pool generation (reset, repack, rebuilt context) reallocates both
+   * buffers and uploads everything. A pool that only grew keeps its content:
+   * the buffer that ran out of room is replaced by a larger one, the bytes
+   * already uploaded are copied on the GPU, and only new data is sent.
+   */
   syncPool(pool) {
     const gl = this.gl;
-    const vBytes = pool.vertices.byteLength;
-    const iBytes = pool.indices.byteLength;
-    const realloc = pool.generation !== this.poolGeneration || vBytes !== this.vertexCapacity || iBytes !== this.indexCapacity;
+    const vBytes = pool.vertexCapacityBytes;
+    const iBytes = pool.indexCapacityBytes;
     let uploaded = 0;
-    if (realloc) {
+    if (pool.generation !== this.poolGeneration) {
       gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, vBytes, gl.STATIC_DRAW);
       gl.bindVertexArray(this.vao);
@@ -234,23 +244,65 @@ export class WebGL2Backend {
       this.poolGeneration = pool.generation;
       pool.uploadedVertices = 0;
       pool.uploadedIndices = 0;
+    } else {
+      if (vBytes > this.vertexCapacity) {
+        const old = this.vertexBuffer;
+        const next = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, next);
+        gl.bufferData(gl.ARRAY_BUFFER, vBytes, gl.STATIC_DRAW);
+        gl.bindVertexArray(this.vao);
+        this.bindVertexAttributes();
+        gl.bindVertexArray(null);
+        this.copyBuffer(old, next, pool.uploadedVertices * VERTEX_BYTES);
+        gl.deleteBuffer(old);
+        this.vertexBuffer = next;
+        this.vertexCapacity = vBytes;
+      }
+      if (iBytes > this.indexCapacity) {
+        // An index buffer must first be bound as ELEMENT_ARRAY_BUFFER (WebGL2
+        // types buffers on first bind); bind it through the VAO, which keeps it.
+        const old = this.indexBuffer;
+        const next = gl.createBuffer();
+        gl.bindVertexArray(this.vao);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, next);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, iBytes, gl.STATIC_DRAW);
+        gl.bindVertexArray(null);
+        this.copyBuffer(old, next, pool.uploadedIndices * 4);
+        gl.deleteBuffer(old);
+        this.indexBuffer = next;
+        this.indexCapacity = iBytes;
+      }
     }
     const p = pool.pending();
     if (p.vertexEnd > p.vertexStart) {
       gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-      const f = 8;
-      gl.bufferSubData(gl.ARRAY_BUFFER, p.vertexStart * VERTEX_BYTES, pool.vertices.subarray(p.vertexStart * f, p.vertexEnd * f));
-      uploaded += (p.vertexEnd - p.vertexStart) * VERTEX_BYTES;
+      pool.forEachVertices(p.vertexStart, p.vertexEnd, (first, data) => {
+        gl.bufferSubData(gl.ARRAY_BUFFER, first * VERTEX_BYTES, data);
+        uploaded += data.byteLength;
+      });
     }
     if (p.indexEnd > p.indexStart) {
       gl.bindVertexArray(this.vao);
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-      gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, p.indexStart * 4, pool.indices.subarray(p.indexStart, p.indexEnd));
+      pool.forEachIndices(p.indexStart, p.indexEnd, (first, data) => {
+        gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, first * 4, data);
+        uploaded += data.byteLength;
+      });
       gl.bindVertexArray(null);
-      uploaded += (p.indexEnd - p.indexStart) * 4;
     }
     pool.markUploaded();
     return uploaded;
+  }
+
+  /** Copy the first `bytes` of one buffer into another, on the GPU. */
+  copyBuffer(from, to, bytes) {
+    if (bytes <= 0) return;
+    const gl = this.gl;
+    gl.bindBuffer(gl.COPY_READ_BUFFER, from);
+    gl.bindBuffer(gl.COPY_WRITE_BUFFER, to);
+    gl.copyBufferSubData(gl.COPY_READ_BUFFER, gl.COPY_WRITE_BUFFER, 0, 0, bytes);
+    gl.bindBuffer(gl.COPY_READ_BUFFER, null);
+    gl.bindBuffer(gl.COPY_WRITE_BUFFER, null);
   }
 
   uploadInstances(data, count) {
