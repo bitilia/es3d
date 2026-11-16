@@ -274,9 +274,11 @@ test('structured data on every public page is valid for Google rich results', ()
         assert.equal(node.numberOfItems, node.itemListElement.length);
         const urls = node.itemListElement.map((item) => item.url);
         assert.deepEqual(urls, [
+          'https://bitilia.com/blog/procedural-file-format-navigation-software/',
           'https://es3d.org/media/making-the-web-lighter/',
-          'https://zenodo.org/records/23403919',
+          'https://news.ycombinator.com/item?id=50147011',
           'https://dev.to/pavkode/optimizing-3d-file-formats-for-web-performance-by-reducing-precision-and-complexity-2i8i',
+          'https://zenodo.org/records/23403919',
           'https://es3d.org/media/why-es3d-came-to-be/',
           'https://es3d.org/media/making-the-web-3d/',
         ]);

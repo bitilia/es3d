@@ -764,29 +764,98 @@ table.gallery img {
   color: var(--muted);
 }
 
-/* Media: square tiles, newest first. A tile grows when its text needs more room. */
+/* Media: a bento of tiles, newest first. A wide tile spans two columns and a
+   tall one two rows; dense flow fills the gaps. Two themes: the author's own
+   pieces on mint paper, and pieces written outside the project on ink with an
+   amber "Independent" badge, so the difference never rests on colour alone. */
 
 .media-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  grid-auto-flow: row dense;
   gap: 14px;
   margin: 0 0 16px;
 }
 
+.media-wide {
+  grid-column: span 2;
+}
+
+.media-tall {
+  grid-row: span 2;
+}
+
 .media-item {
+  --tile-bg: color-mix(in srgb, var(--note-bg) 65%, var(--page));
+  --tile-line: color-mix(in srgb, var(--heading) 14%, transparent);
+  --tile-line-hover: color-mix(in srgb, var(--heading) 34%, transparent);
+  --tile-text: var(--text);
+  --tile-muted: var(--muted);
+  --tile-link: var(--link);
+  --tile-shadow: rgba(14, 61, 58, 0.45);
   position: relative;
   display: flex;
   flex-direction: column;
-  aspect-ratio: 1 / 1;
+  min-height: 190px;
   padding: 16px 18px 18px;
-  border: 1px solid color-mix(in srgb, var(--heading) 14%, transparent);
+  border: 1px solid var(--tile-line);
   border-radius: 14px;
-  background: color-mix(in srgb, var(--note-bg) 65%, var(--page));
+  background: var(--tile-bg);
+  color: var(--tile-text);
   overflow-wrap: anywhere;
+  transition:
+    transform 200ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 200ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 200ms ease;
 }
 
-.media-item:hover {
-  border-color: color-mix(in srgb, var(--heading) 32%, transparent);
+.media-independent {
+  --tile-bg: #1d2427;
+  --tile-line: #1d2427;
+  --tile-line-hover: #f2c14e;
+  --tile-text: #e8eeec;
+  --tile-muted: #a9b5b2;
+  --tile-link: #ffffff;
+  --tile-shadow: rgba(0, 0, 0, 0.55);
+}
+
+.media-item:hover,
+.media-item:has(h2 a:focus-visible) {
+  border-color: var(--tile-line-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px -14px var(--tile-shadow);
+}
+
+.media-independent :focus-visible {
+  outline-color: #f2c14e;
+}
+
+.media-item a,
+.media-item a:visited,
+.media-item a:active {
+  color: var(--tile-link);
+}
+
+/* what the piece is: Article, Video, Paper, Post, Discussion */
+.media-kind {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  color: var(--tile-muted);
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.media-badge {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #f2c14e;
+  color: #1d2427;
+  letter-spacing: 0.04em;
 }
 
 .media-item h2 {
@@ -795,6 +864,12 @@ table.gallery img {
   border: 0;
   font-size: 1rem;
   line-height: 1.3;
+}
+
+.media-wide h2 {
+  max-width: 32ch;
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
 }
 
 /* the whole tile opens the piece; the links inside stay their own */
@@ -812,25 +887,94 @@ table.gallery img {
 }
 
 .media-item > p:last-child {
-  margin: auto 0 0;
+  margin: 0;
   font-size: 14px;
   line-height: 1.45;
 }
 
-/* one tile per row on a phone: a square there would be mostly empty */
-@media (max-width: 560px) {
-  .media-item {
-    aspect-ratio: auto;
+.media-wide > p:last-child {
+  max-width: 62ch;
+  font-size: 15px;
+}
+
+/* a picture across the top of a tile; it takes whatever height the tile has spare */
+.media-shot {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 150px;
+  margin: -16px -18px 14px;
+  border-radius: 13px 13px 0 0;
+  overflow: hidden;
+  background: var(--term-bg);
+}
+
+.media-shot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  transition: transform 400ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.media-item:hover .media-shot img {
+  transform: scale(1.04);
+}
+
+/* the play mark says the tile is a video */
+.media-shot::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12'%3E%3Cpath d='M0 0L10 6L0 12Z' fill='%230e3d3a'/%3E%3C/svg%3E") no-repeat 56% 50% / 13px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-item,
+  .media-shot img {
+    transition: border-color 200ms ease;
   }
 
-  .media-item > p:last-child {
-    margin-top: 6px;
+  .media-item:hover,
+  .media-item:has(h2 a:focus-visible),
+  .media-item:hover .media-shot img {
+    transform: none;
+  }
+}
+
+/* one column on a phone; a tile is as tall as its text */
+@media (max-width: 560px) {
+  .media-list {
+    grid-template-columns: 1fr;
+  }
+
+  .media-wide,
+  .media-tall {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .media-item {
+    min-height: 0;
+  }
+
+  /* the picture is drawn 4:5; at 5:6 almost nothing is cut */
+  .media-shot {
+    flex: none;
+    min-height: 0;
+    aspect-ratio: 5 / 6;
   }
 }
 
 .media-by {
   margin: 0 0 10px;
-  color: var(--muted);
+  color: var(--tile-muted, var(--muted));
   font-size: 13px;
   line-height: 1.4;
 }

@@ -1,0 +1,81 @@
+name: Media submission
+description: An article, post, video, paper or talk about ES3D, to list on es3d.org/media/.
+title: "Media: "
+labels: [media]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. Pieces on the [media page](https://es3d.org/media/) are listed newest first. Pieces written outside the project are marked Independent.
+  - type: input
+    id: link
+    attributes:
+      label: Link
+      placeholder: "https://"
+    validations:
+      required: true
+  - type: input
+    id: title
+    attributes:
+      label: Title
+      description: As it was published.
+    validations:
+      required: true
+  - type: input
+    id: author
+    attributes:
+      label: Author
+      description: The name to show on the tile.
+    validations:
+      required: true
+  - type: input
+    id: published
+    attributes:
+      label: Date published
+      placeholder: "17 October 2026"
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where it was published
+      placeholder: "DEV Community, a personal blog, YouTube, a conference"
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - Article
+        - Post
+        - Video
+        - Paper
+        - Talk
+        - Podcast
+        - Discussion
+    validations:
+      required: true
+  - type: dropdown
+    id: independent
+    attributes:
+      label: Is the author part of the ES3D project?
+      options:
+        - "No: written independently"
+        - "Yes: a maintainer or contributor"
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: One sentence for the tile
+      description: What the piece covers. It may be shortened.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you send it
+      options:
+        - label: I searched the existing issues.
+          required: true
+        - label: The link opens without signing in.
+          required: true

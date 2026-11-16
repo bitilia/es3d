@@ -3,7 +3,7 @@
 <head>
 <!--#include virtual="head.html" -->
 <title>Media - ES3D</title>
-<meta name="description" content="A paper, posts and a short video about ES3D: the white paper, Why ES3D came to be, Making the Web 3D, Making the web lighter, and Pavel Kostromin's post on DEV Community.">
+<meta name="description" content="A paper, posts, a short video and a discussion about ES3D: the white paper, a navigation benchmark, Why ES3D came to be, Making the Web 3D, Making the web lighter, the Hacker News thread, and Pavel Kostromin's independent post on DEV Community.">
 <link rel="canonical" href="https://es3d.org/media/">
 <script type="application/ld+json">
 {
@@ -42,7 +42,7 @@
       "@id": "https://es3d.org/media/#webpage",
       "url": "https://es3d.org/media/",
       "name": "Media",
-      "description": "A paper, posts and a short video about ES3D: the white paper, Why ES3D came to be, Making the Web 3D, Making the web lighter, and Pavel Kostromin's post on DEV Community.",
+      "description": "A paper, posts, a short video and a discussion about ES3D: the white paper, a navigation benchmark, Why ES3D came to be, Making the Web 3D, Making the web lighter, the Hacker News thread, and Pavel Kostromin's independent post on DEV Community.",
       "isPartOf": { "@id": "https://es3d.org/#website" },
       "publisher": { "@id": "https://es3d.org/#organization" },
       "breadcrumb": { "@id": "https://es3d.org/media/#breadcrumb" },
@@ -50,11 +50,25 @@
       "dateModified": "<!--#echo var="LAST_MODIFIED_TIME" -->",
       "mainEntity": {
         "@type": "ItemList",
-        "numberOfItems": 5,
+        "numberOfItems": 7,
         "itemListElement": [
           {
             "@type": "ListItem",
             "position": 1,
+            "name": "How a Procedural File Format Could Be a Better Fit for Navigation Software",
+            "url": "https://bitilia.com/blog/procedural-file-format-navigation-software/",
+            "item": {
+              "@type": "CreativeWork",
+              "name": "How a Procedural File Format Could Be a Better Fit for Navigation Software",
+              "url": "https://bitilia.com/blog/procedural-file-format-navigation-software/",
+              "datePublished": "2026-11-16",
+              "author": { "@type": "Person", "name": "Ilia Kalina", "url": "https://orcid.org/0009-0002-0510-6261" },
+              "publisher": { "@type": "Organization", "name": "bitilia", "url": "https://bitilia.com" }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
             "name": "Making the web lighter",
             "url": "https://es3d.org/media/making-the-web-lighter/",
             "item": {
@@ -67,7 +81,35 @@
           },
           {
             "@type": "ListItem",
-            "position": 2,
+            "position": 3,
+            "name": "ES3D – An SVG like file format for 3D scenes",
+            "url": "https://news.ycombinator.com/item?id=50147011",
+            "item": {
+              "@type": "CreativeWork",
+              "name": "ES3D – An SVG like file format for 3D scenes",
+              "url": "https://news.ycombinator.com/item?id=50147011",
+              "datePublished": "2026-10-19",
+              "author": { "@type": "Person", "name": "Ilia Kalina", "url": "https://orcid.org/0009-0002-0510-6261" },
+              "publisher": { "@type": "Organization", "name": "Hacker News", "url": "https://news.ycombinator.com" }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "Optimizing 3D File Formats for Web Performance by Reducing Precision and Complexity",
+            "url": "https://dev.to/pavkode/optimizing-3d-file-formats-for-web-performance-by-reducing-precision-and-complexity-2i8i",
+            "item": {
+              "@type": "CreativeWork",
+              "name": "Optimizing 3D File Formats for Web Performance by Reducing Precision and Complexity",
+              "url": "https://dev.to/pavkode/optimizing-3d-file-formats-for-web-performance-by-reducing-precision-and-complexity-2i8i",
+              "author": { "@type": "Person", "name": "Pavel Kostromin", "url": "https://dev.to/pavkode" },
+              "datePublished": "2026-10-17",
+              "publisher": { "@type": "Organization", "name": "DEV Community", "url": "https://dev.to" }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 5,
             "name": "Extensible Scalable 3D - Describing three-dimensional web scenes by parameters: the ES3D format and its reference implementation",
             "url": "https://zenodo.org/records/23403919",
             "item": {
@@ -84,21 +126,7 @@
           },
           {
             "@type": "ListItem",
-            "position": 3,
-            "name": "Optimizing 3D File Formats for Web Performance by Reducing Precision and Complexity",
-            "url": "https://dev.to/pavkode/optimizing-3d-file-formats-for-web-performance-by-reducing-precision-and-complexity-2i8i",
-            "item": {
-              "@type": "CreativeWork",
-              "name": "Optimizing 3D File Formats for Web Performance by Reducing Precision and Complexity",
-              "url": "https://dev.to/pavkode/optimizing-3d-file-formats-for-web-performance-by-reducing-precision-and-complexity-2i8i",
-              "author": { "@type": "Person", "name": "Pavel Kostromin", "url": "https://dev.to/pavkode" },
-              "datePublished": "2026-10-17",
-              "publisher": { "@type": "Organization", "name": "DEV Community", "url": "https://dev.to" }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 4,
+            "position": 6,
             "name": "Why ES3D came to be",
             "url": "https://es3d.org/media/why-es3d-came-to-be/",
             "item": {
@@ -106,12 +134,12 @@
               "name": "Why ES3D came to be",
               "url": "https://es3d.org/media/why-es3d-came-to-be/",
               "datePublished": "2026-10-15",
-              "author": { "@type": "Person", "name": "The founder of ES3D", "url": "https://www.youtube.com/@es3dfile" }
+              "author": { "@type": "Person", "name": "Ilia Kalina", "url": "https://orcid.org/0009-0002-0510-6261" }
             }
           },
           {
             "@type": "ListItem",
-            "position": 5,
+            "position": 7,
             "name": "Making the Web 3D",
             "url": "https://es3d.org/media/making-the-web-3d/",
             "item": {
@@ -119,7 +147,7 @@
               "name": "Making the Web 3D",
               "url": "https://es3d.org/media/making-the-web-3d/",
               "datePublished": "2026-10-15",
-              "author": { "@type": "Person", "name": "The founder of ES3D", "url": "https://www.youtube.com/@es3dfile" }
+              "author": { "@type": "Person", "name": "Ilia Kalina", "url": "https://orcid.org/0009-0002-0510-6261" }
             }
           }
         ]
@@ -134,36 +162,58 @@
 <!--#set var="title" value="Media" -->
 <!--#include virtual="top.html" -->
 <h1>Media</h1>
-<p>A paper, posts and a short video about ES3D.</p>
+<p>A paper, posts, a short video and a discussion about ES3D.</p>
 
 <div class="media-list">
-  <article class="media-item">
+  <article class="media-item media-wide">
+    <p class="media-kind">Article</p>
+    <h2><a href="https://bitilia.com/blog/procedural-file-format-navigation-software/">How a Procedural File Format Could Be a Better Fit for Navigation Software</a></h2>
+    <p class="media-by">Ilia Kalina, 16 November 2026. Post on the bitilia blog</p>
+    <p>A four-city driving benchmark against MapLibre GL JS and CesiumJS: data the size of vector tiles with full 3D geometry, and a slower first view.</p>
+  </article>
+  <article class="media-item media-tall">
+    <!-- the castle demo (demo/castle/scene/castle.es3d) from camera position=-70,70,330 target=0,115,0 fov=38, rendered 800x1000 -->
+    <span class="media-shot"><img src="../images/making-the-web-lighter.jpg" alt="" width="800" height="1000" loading="lazy" decoding="async"></span>
+    <p class="media-kind">Video</p>
     <h2><a href="making-the-web-lighter/">Making the web lighter</a></h2>
     <p class="media-by">The <a href="https://www.youtube.com/@es3dfile">ES3D channel</a>, 24 October 2026. A 41-second short on YouTube</p>
     <p>It shows the <a href="../demo/castle/">castle demo</a>.</p>
   </article>
   <article class="media-item">
+    <p class="media-kind">Discussion</p>
+    <h2><a href="https://news.ycombinator.com/item?id=50147011">ES3D – An SVG like file format for 3D scenes</a></h2>
+    <p class="media-by">Ilia Kalina, 19 October 2026. Thread on Hacker News</p>
+    <p>Where the format saves space, and where it does not: scenes made only of meshes, and organic shapes.</p>
+  </article>
+  <article class="media-item media-independent">
+    <p class="media-kind">Post <span class="media-badge">Independent</span></p>
+    <h2><a href="https://dev.to/pavkode/optimizing-3d-file-formats-for-web-performance-by-reducing-precision-and-complexity-2i8i">Optimizing 3D File Formats for Web Performance by Reducing Precision and Complexity</a></h2>
+    <p class="media-by">Pavel Kostromin, 17 October 2026. Post on DEV Community</p>
+    <p>Trading precision for speed, and when the format is the right tool for the web.</p>
+  </article>
+  <article class="media-item">
+    <p class="media-kind">Paper</p>
     <h2><a href="https://zenodo.org/records/23403919">Extensible Scalable 3D: describing three-dimensional web scenes by parameters</a></h2>
     <p class="media-by">Ilia Kalina, 15 October 2026. Preprint on Zenodo, <a href="https://doi.org/10.5281/zenodo.23403919">doi:10.5281/zenodo.23403919</a></p>
     <p>The white paper: the ES3D format and its reference implementation (PDF, CC BY 4.0).</p>
   </article>
   <article class="media-item">
-    <h2><a href="https://dev.to/pavkode/optimizing-3d-file-formats-for-web-performance-by-reducing-precision-and-complexity-2i8i">Optimizing 3D File Formats for Web Performance by Reducing Precision and Complexity</a></h2>
-    <p class="media-by">Pavel Kostromin, 17 October 2026. Post on DEV Community</p>
-    <p>The first piece about ES3D written outside the project: trading precision for speed, and when the format is the right tool for the web.</p>
-  </article>
-  <article class="media-item">
+    <p class="media-kind">Post</p>
     <h2><a href="why-es3d-came-to-be/">Why ES3D came to be</a></h2>
-    <p class="media-by">The founder of ES3D, 15 October 2026</p>
+    <p class="media-by">Ilia Kalina, 15 October 2026</p>
     <p>A slow preview of the Benchy, a start-up homepage, and the first prototype.</p>
   </article>
   <article class="media-item">
+    <p class="media-kind">Post</p>
     <h2><a href="making-the-web-3d/">Making the Web 3D</a></h2>
-    <p class="media-by">The founder of ES3D, 15 October 2026</p>
+    <p class="media-by">Ilia Kalina, 15 October 2026</p>
     <p>A short introduction to the format.</p>
   </article>
   <!--
-    Add another piece by copying an article above.
+    Add another piece by copying an article above, newest first.
+    media-wide spans two columns and media-tall two rows; the grid fills any gap.
+    A piece written outside the project gets media-independent and the
+    <span class="media-badge">Independent</span> badge.
   -->
 </div>
 <!--#include virtual="bottom.html" -->
