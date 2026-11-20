@@ -6,7 +6,7 @@
 // features and light setup, cull mode, winding, blending, topology). Each
 // batch is one drawIndexed call using firstInstance.
 
-import { meshShader, LINE_WGSL } from '../shaders/wgsl.js';
+import { meshShader, LINE_WGSL, DEPTH_WGSL } from '../shaders/wgsl.js';
 import { FRAME_BYTES, MATERIAL_FLOATS, packMaterial, packOverlay, lightTypes } from '../lighting.js';
 import { VERTEX_BYTES } from '../geometry-pool.js';
 import { buildMips } from '../textures.js';
@@ -115,7 +115,10 @@ export class WebGPUBackend {
     this.pipelineLayout = device.createPipelineLayout({ bindGroupLayouts: [this.frameLayout, this.materialLayout] });
     device.pushErrorScope('validation');
     this.lineModule = device.createShaderModule({ code: LINE_WGSL, label: 'es3d lines' });
-    for (const [name, mod] of [['mesh', this.meshModule(0, '0')], ['lines', this.lineModule]]) {
+    this.depthModule = device.createShaderModule({ code: DEPTH_WGSL, label: 'es3d depth' });
+    // the depth pre-pass reads only the frame group
+    this.depthLayout = device.createPipelineLayout({ bindGroupLayouts: [this.frameLayout] });
+    for (const [name, mod] of [['mesh', this.meshModule(0, '0')], ['lines', this.lineModule], ['depth', this.depthModule]]) {
       const info2 = await mod.getCompilationInfo();
       const errs = info2.messages.filter((m) => m.type === 'error');
       if (errs.length) throw new Error(`WGSL ${name} shader error: ${errs.map((m) => `${m.lineNum}:${m.linePos} ${m.message}`).join('; ')}`);
@@ -197,6 +200,24 @@ export class WebGPUBackend {
       },
       primitive: { topology: isMesh ? 'triangle-list' : 'line-list', cullMode: isMesh ? cull : 'none', frontFace },
       depthStencil: { format: 'depth24plus', depthWriteEnabled: depthWrite, depthCompare },
+      multisample: { count: SAMPLE_COUNT },
+    });
+    this.pipelines.set(key, p);
+    return p;
+  }
+
+  /** Depth-only pipeline of the pre-pass, with the colour pass's culling. */
+  depthPipeline(cull, frontFace) {
+    const key = `depth|${cull}|${frontFace}`;
+    let p = this.pipelines.get(key);
+    if (p) return p;
+    p = this.device.createRenderPipeline({
+      label: key,
+      layout: this.depthLayout,
+      vertex: { module: this.depthModule, entryPoint: 'vs_depth', buffers: VERTEX_LAYOUTS },
+      fragment: { module: this.depthModule, entryPoint: 'fs_depth', targets: [{ format: this.format, writeMask: 0 }] },
+      primitive: { topology: 'triangle-list', cullMode: cull, frontFace },
+      depthStencil: { format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'less-equal' },
       multisample: { count: SAMPLE_COUNT },
     });
     this.pipelines.set(key, p);
@@ -448,6 +469,16 @@ export class WebGPUBackend {
     if (this.vertexBuffer) {
       let boundGroup = null;
       const lights = lightTypes(frameData);
+      // depth pre-pass (frame-builder.js depthPrepass): the opaque surfaces'
+      // depth with the colour pass's culling, so the colour pass shades each
+      // pixel once and draws the same picture
+      if (draw.depthPrepass) {
+        for (const b of draw.batches) {
+          if (!b.prepass) continue;
+          setPipe(this.depthPipeline(b.doubleSided ? 'none' : 'back', b.mirrored ? 'cw' : 'ccw'));
+          pass.drawIndexed(b.range.indexCount, b.count, b.range.firstIndex, 0, b.firstInstance);
+        }
+      }
       for (const b of draw.batches) {
         const lines = b.kind === 'lines';
         const binding = this.materialBinding(b.material, ctx.textures, b.doubleSided && !b.material.doubleSided);

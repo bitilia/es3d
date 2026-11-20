@@ -7,6 +7,7 @@
 // backend uploads with one buffer write per frame.
 
 import { colorToLinear } from '../format/colors.js';
+import { FINER_LEVEL } from '../geometry/geometry-cache.js';
 
 // A level is used only while its surface stays within this many pixels of the
 // true shape. Each geometry carries that distance in canonical units
@@ -97,6 +98,20 @@ export function selectLod(deviation, lods, scale, pixelsPerUnit, bias) {
     }
   }
   return lod;
+}
+
+/**
+ * The level to draw where level 0 projects to more than the budget (a
+ * close-up): 0 while level 0 passes, else FINER_LEVEL + i for the coarsest
+ * finer level `finer[i]` that passes, else the finest one there is.
+ */
+export function selectFiner(deviation0, finer, scale, pixelsPerUnit, bias) {
+  if (!finer) return 0;
+  const budget = SURFACE_ERROR_PX / (bias > 0 ? bias : 1);
+  const k = scale * pixelsPerUnit;
+  if (deviation0 * k <= budget) return 0;
+  for (let i = 0; i < finer.length; i++) if (finer[i] * k <= budget) return FINER_LEVEL + i;
+  return FINER_LEVEL + finer.length - 1;
 }
 
 function planesFrom(m) {
@@ -197,6 +212,7 @@ export class FrameBuilder {
     const materials = scene.materials;
     const nMat = Math.max(1, materials.length);
     const lodHist = [0, 0, 0, 0];
+    let finer = 0; // instances drawn finer than level 0 (counted in lodHist[0] too)
     let visibleCount = 0;
     let culled = 0;
     const vh = p.viewportHeight;
@@ -243,14 +259,20 @@ export class FrameBuilder {
             const dx = cx - camPos[0], dy = cy - camPos[1], dz = cz - camPos[2];
             const d = length3(dx, dy, dz);
             const ppu = instancePixelsPerUnit(lodK, cx, cy, cz, d);
-            lod = selectLod(entry.lodDeviation, entry.lods, axisScale(P.matrices, r), ppu, bias);
+            const scale = axisScale(P.matrices, r);
+            lod = selectLod(entry.lodDeviation, entry.lods, scale, ppu, bias);
+            // a close-up where even level 0 is over the budget: a finer level, made on demand
+            if (lod === 0 && entry.finerDeviation) lod = selectFiner(entry.lodDeviation[0], entry.finerDeviation, scale, ppu, bias);
           }
         }
         lods[i] = lod;
-        lodHist[lod]++;
+        if (lod >= FINER_LEVEL) {
+          lodHist[0]++;
+          finer++;
+        } else lodHist[lod]++;
         const mirrored = P.flags[r] & 1;
         const mi = mm ? mm[P.mat[r]] : P.mat[r];
-        const key = ((gi * 4 + lod) * nMat + mi) * 2 + mirrored;
+        const key = ((gi * 16 + lod) * nMat + mi) * 2 + mirrored;
         let b = batchMap.get(key);
         if (b === undefined) {
           b = batches.length;
@@ -275,10 +297,17 @@ export class FrameBuilder {
     let generated = 0;
     let refining = 0;
     let triangles = 0;
+    let prepassTriangles = 0;
     for (const b of batches) {
       let lod = b.lod;
       const have = b.entry.meshes;
-      if (progressive && have && !have[lod]) {
+      if (lod >= FINER_LEVEL) {
+        // a finer level not made yet is drawn as level 0 (or its stand-in) until it is
+        if (progressive && !b.entry.finer[lod - FINER_LEVEL] && generated && performance.now() - start >= budget) {
+          lod = have[0] ? 0 : standIn(have, 0);
+          refining++;
+        } else if (!b.entry.finer[lod - FINER_LEVEL]) generated++;
+      } else if (progressive && have && !have[lod]) {
         if (generated && performance.now() - start >= budget) {
           lod = standIn(have, lod);
           refining++;
@@ -290,7 +319,14 @@ export class FrameBuilder {
       b.range = pool.meshRange(mesh);
       b.doubleSided = !!(b.entry.doubleSided || b.material.doubleSided);
       b.transparent = b.material.transparent;
-      if (b.kind === 'triangles') triangles += (b.range.indexCount / 3) * b.count;
+      // opaque surfaces whose fragments all write depth go into the depth pre-pass;
+      // an alpha-masked material discards some, so its depth comes from the colour pass only
+      b.prepass = b.kind === 'triangles' && !b.transparent && b.material.alphaMode !== 'mask';
+      if (b.kind === 'triangles') {
+        const t = (b.range.indexCount / 3) * b.count;
+        triangles += t;
+        if (b.prepass) prepassTriangles += t;
+      }
     }
 
     // order: opaque by pipeline then material, transparent back to front
@@ -408,6 +444,8 @@ export class FrameBuilder {
       overlays,
       instanceData: this.instanceData,
       instanceCount: offset,
+      prepassTriangles,
+      depthPrepass: false, // set by the renderer: depthPrepass()
       lights: scene.lights,
       environment: scene.environment,
       stats: {
@@ -418,12 +456,30 @@ export class FrameBuilder {
         drawCalls: order.length + overlays.wireframe.length + overlays.normals.length + (overlays.bbox ? 1 : 0) + (overlays.selection ? 1 : 0),
         triangles,
         lodHistogram: lodHist,
+        finer,
         refining,
       },
     };
     this.last = result;
     return result;
   }
+}
+
+/**
+ * Whether a frame draws the depth of its opaque surfaces first, so the colour
+ * pass shades each covered pixel once instead of once per overlapping surface.
+ * The picture does not change: the colour pass keeps its order and its
+ * less-or-equal test, so each pixel still shows the last surface drawn at the
+ * nearest depth. Both passes compute the position with one invariant
+ * expression, so their depths are identical. Only worth a second geometry pass
+ * while the geometry costs less than the pixels: no more pre-pass triangles
+ * than the drawing buffer has pixels.
+ * @param {{prepassTriangles?: number}} draw result of FrameBuilder.build
+ * @param {number} pixels width × height of the drawing buffer
+ */
+export function depthPrepass(draw, pixels) {
+  const t = draw.prepassTriangles || 0;
+  return t > 0 && t <= pixels;
 }
 
 /** Environment defaults in linear space for the shaders. */

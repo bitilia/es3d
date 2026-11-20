@@ -5,6 +5,10 @@
 //               that differ only in size share the same mesh (see `unit`)
 //   unit        matrix from the canonical mesh space into element space
 //   lods        number of tessellation levels (1 = no level of detail)
+//   lodDeviation chordal error of each level, in canonical units
+//   finerDeviation (optional) chordal error of level 0 generated at 2, 4 and
+//               8 times the quality: the levels a close-up asks for when
+//               level 0 is still more than a pixel off (FINER_FACTORS)
 //   kind        'triangles' | 'lines'
 //   doubleSided render back faces (flat or open surfaces)
 //   bounds      conservative canonical bounds, known without tessellating
@@ -25,7 +29,7 @@ import { buildRegions } from '../path/shapes.js';
 import { unitBox, roundedBox, unitSphere, unitCylinder, unitCapsule, unitPlane, unitTorus, lineMesh, lodSegments } from './primitives.js';
 import {
   sphereDeviation, cylinderDeviation, capsuleDeviation, torusDeviation, roundedBoxDeviation,
-  gearDeviation, pathFlattenDeviation, bevelDeviation, circleSagitta,
+  gearDeviation, pathFlattenDeviation, bevelDeviation, circleSagitta, FINER_FACTORS,
 } from './lod-error.js';
 import { flatMesh, extrudeMesh } from './extrude.js';
 import { revolveMesh } from './revolve.js';
@@ -43,6 +47,18 @@ function lodList(fn) {
 
 function segsAt(base, min, fixed) {
   return fixed ? [fixed] : lodList((lod) => lodSegments(base, lod, 1, min));
+}
+
+// Levels finer than level 0 (FINER_FACTORS, lod-error.js): every generator
+// scales its segment counts by the quality and divides its path tolerance by it,
+// so level 0 at a multiple of the quality is that much finer.
+function finerList(fn) {
+  return FINER_FACTORS.map(fn);
+}
+
+/** Bounds of the finer levels of a shape whose level 0 has `base` segments; none when fixed. */
+function finerSegs(base, min, fixed, deviation) {
+  return fixed ? null : finerList((f) => deviation(lodSegments(base, 0, f, min)));
 }
 
 const registry = new Map();
@@ -176,6 +192,7 @@ registerGeometry('box', (el) => {
       doubleSided: false,
       bounds: box3(-size[0] / 2, -size[1] / 2, -size[2] / 2, size[0] / 2, size[1] / 2, size[2] / 2),
       lodDeviation: segsAt(4, 1, fixed).map((n) => roundedBoxDeviation(r, n)),
+      finerDeviation: finerSegs(4, 1, fixed, (n) => roundedBoxDeviation(r, n)),
       generate: (lod, q) => roundedBox(size[0], size[1], size[2], r, fixed || lodSegments(4, lod, q, 1)),
     };
   }
@@ -202,6 +219,7 @@ registerGeometry('sphere', (el) => {
     doubleSided: false,
     bounds: box3(-1, -1, -1, 1, 1, 1),
     lodDeviation: segsAt(48, 8, fixed).map(sphereDeviation),
+    finerDeviation: finerSegs(48, 8, fixed, sphereDeviation),
     generate: (lod, q) => unitSphere(fixed || lodSegments(48, lod, q, 8)),
   };
 });
@@ -221,6 +239,7 @@ function cylinderLike(el, top) {
     doubleSided: !caps,
     bounds: box3(-m, -0.5, -m, m, 0.5, m),
     lodDeviation: segsAt(48, 8, fixed).map((n) => cylinderDeviation(t, n)),
+    finerDeviation: finerSegs(48, 8, fixed, (n) => cylinderDeviation(t, n)),
     generate: (lod, q) => unitCylinder(t, fixed || lodSegments(48, lod, q, 8), caps),
   };
 }
@@ -246,6 +265,7 @@ registerGeometry('capsule', (el) => {
     doubleSided: false,
     bounds: box3(-1, -(L / 2 + 1), -1, 1, L / 2 + 1, 1),
     lodDeviation: segsAt(32, 8, fixed).map(capsuleDeviation),
+    finerDeviation: finerSegs(32, 8, fixed, capsuleDeviation),
     generate: (lod, q) => unitCapsule(L, fixed || lodSegments(32, lod, q, 8)),
   };
 });
@@ -279,6 +299,7 @@ registerGeometry('torus', (el) => {
     doubleSided: false,
     bounds: box3(-(1 + t), -t, -(1 + t), 1 + t, t, 1 + t),
     lodDeviation: (fs && ft ? [0] : lodList((lod) => 0)).map((_, lod) => torusDeviation(t, arc, fs || lodSegments(64, lod, 1, 8), ft || lodSegments(24, lod, 1, 6))),
+    finerDeviation: fs && ft ? null : finerList((f) => torusDeviation(t, arc, fs || lodSegments(64, 0, f, 8), ft || lodSegments(24, 0, f, 6))),
     generate: (lod, q) => unitTorus(t, arc, fs || lodSegments(64, lod, q, 8), ft || lodSegments(24, lod, q, 6)),
   };
 });
@@ -326,6 +347,7 @@ registerGeometry('line', (el) => {
       doubleSided: false,
       bounds: box3(-1, -0.5, -1, 1, 0.5, 1),
       lodDeviation: segsAt(48, 8, fixed).map((n) => cylinderDeviation(1, n)),
+      finerDeviation: finerSegs(48, 8, fixed, (n) => cylinderDeviation(1, n)),
       generate: (lod, q) => unitCylinder(1, fixed || lodSegments(48, lod, q, 8), true),
     };
   }
@@ -376,7 +398,12 @@ registerGeometry('polyline', (el) => {
     const cb = pathControlBounds(d.segments);
     bounds = box3(cb.minX - r, cb.minY - r, -r, cb.maxX + r, cb.maxY + r, r);
   }
+  // error of the spine (or of the line itself) at a level and quality, as polylines() makes it
+  const spineError = (lod, q) => (pts
+    ? Math.hypot(bounds.max[0] - bounds.min[0], bounds.max[1] - bounds.min[1], bounds.max[2] - bounds.min[2]) * (smooth ? 0.05 / lodSegments(12, lod, q, 2) : 0)
+    : pathFlattenDeviation(pathDiag(d.segments), lod) / q);
   if (r > 0) {
+    const tubeError = (lod, q) => spineError(lod, q) + r * circleSagitta(fixed || lodSegments(24, lod, q, 6));
     return {
       key: `tube:${keyBase}:${r}:${closed}:${smooth}:${fixed || ''}`,
       unit: null,
@@ -384,12 +411,8 @@ registerGeometry('polyline', (el) => {
       kind: 'triangles',
       doubleSided: false,
       bounds,
-      lodDeviation: lodList((lod) => {
-        const spine = pts
-          ? Math.hypot(bounds.max[0] - bounds.min[0], bounds.max[1] - bounds.min[1], bounds.max[2] - bounds.min[2]) * (smooth ? 0.05 / lodSegments(12, lod, 1, 2) : 0)
-          : pathFlattenDeviation(pathDiag(d.segments), lod);
-        return spine + r * circleSagitta(fixed || lodSegments(24, lod, 1, 6));
-      }),
+      lodDeviation: lodList((lod) => tubeError(lod, 1)),
+      finerDeviation: finerList((f) => tubeError(0, f)),
       generate: (lod, q, report) => sweepMesh({ kind: 'circle', radius: r, segments: fixed || lodSegments(24, lod, q, 6) }, polylines(lod, q), { caps: true }, report).mesh,
     };
   }
@@ -400,11 +423,8 @@ registerGeometry('polyline', (el) => {
     kind: 'lines',
     doubleSided: false,
     bounds,
-    lodDeviation: smooth || d
-      ? lodList((lod) => (pts
-        ? Math.hypot(bounds.max[0] - bounds.min[0], bounds.max[1] - bounds.min[1], bounds.max[2] - bounds.min[2]) * (smooth ? 0.05 / lodSegments(12, lod, 1, 2) : 0)
-        : pathFlattenDeviation(pathDiag(d.segments), lod)))
-      : [0],
+    lodDeviation: smooth || d ? lodList((lod) => spineError(lod, 1)) : [0],
+    finerDeviation: smooth || d ? finerList((f) => spineError(0, f)) : null,
     generate: (lod, q) => {
       const list = polylines(lod, q);
       if (list.length === 1) return lineMesh(list[0].points, list[0].closed);
@@ -458,6 +478,7 @@ registerGeometry('path', (el) => {
     doubleSided: true,
     bounds: box3(cb.minX, cb.minY, 0, cb.maxX, cb.maxY, 0),
     lodDeviation: lodList((lod) => pathFlattenDeviation(pathDiag(src.path.segments), lod)),
+    finerDeviation: finerList((f) => pathFlattenDeviation(pathDiag(src.path.segments), 0) / f),
     generate: (lod, q, report) => flatMesh(regionsFor(src, lod, q, report).regions, report),
   };
 });
@@ -479,6 +500,8 @@ registerGeometry('extrude', (el) => {
     doubleSided: false,
     bounds: box3(cb.minX, cb.minY, z0, cb.maxX, cb.maxY, z0 + depth),
     lodDeviation: lodList((lod) => pathFlattenDeviation(pathDiag(src.path.segments), lod) + bevelDeviation(bevel, Math.max(1, Math.round(bevelSegments / (lod >= 2 ? 2 : 1))))),
+    // the bevel keeps level 0's segment count at every quality
+    finerDeviation: finerList((f) => pathFlattenDeviation(pathDiag(src.path.segments), 0) / f + bevelDeviation(bevel, Math.max(1, Math.round(bevelSegments)))),
     generate: (lod, q, report) =>
       extrudeMesh(regionsFor(src, lod, q, report), { depth, bevel, bevelSegments: Math.max(1, Math.round(bevelSegments / (lod >= 2 ? 2 : 1))), center }, report),
   };
@@ -491,6 +514,10 @@ registerGeometry('revolve', (el) => {
   const fixed = el.values.segments;
   const cb = pathControlBounds(src.path.segments);
   const R = Math.max(Math.abs(cb.maxX), Math.abs(cb.minX));
+  const revolveError = (lod, q) => {
+    const segs = fixed || Math.max(3, Math.round(lodSegments(48, lod, q, 8) * Math.min(1, angle / 360) + (angle < 360 ? 1 : 0)));
+    return pathFlattenDeviation(pathDiag(src.path.segments), lod) / q + R * circleSagitta(segs);
+  };
   return {
     key: `revolve:${hashString(src.raw)}:${angle}:${fixed || ''}`,
     unit: null,
@@ -498,10 +525,8 @@ registerGeometry('revolve', (el) => {
     kind: 'triangles',
     doubleSided: subpathsOpen(src.path.segments),
     bounds: box3(-R, cb.minY, -R, R, cb.maxY, R),
-    lodDeviation: lodList((lod) => {
-      const segs = fixed || Math.max(3, Math.round(lodSegments(48, lod, 1, 8) * Math.min(1, angle / 360) + (angle < 360 ? 1 : 0)));
-      return pathFlattenDeviation(pathDiag(src.path.segments), lod) + R * circleSagitta(segs);
-    }),
+    lodDeviation: lodList((lod) => revolveError(lod, 1)),
+    finerDeviation: finerList((f) => revolveError(0, f)),
     generate: (lod, q, report) => {
       const contours = flattenPath(src.path.segments, { tolerance: pathTolerance(src.path.segments, lod, q) });
       const segs = fixed || Math.max(3, Math.round(lodSegments(48, lod, q, 8) * Math.min(1, angle / 360) + (angle < 360 ? 1 : 0)));
@@ -550,6 +575,12 @@ registerGeometry('sweep', (el) => {
   const pad = profileR * Math.max(1, taper) * 1.5;
   const spineOpen = spine.kind === 'helix' || (spine.kind === 'path' ? subpathsOpen(spine.segments) : !(spine.points.length > 6 && spine.points[0] === spine.points[spine.points.length - 3] && spine.points[1] === spine.points[spine.points.length - 2] && spine.points[2] === spine.points[spine.points.length - 1]));
   const spineSize = Math.hypot(sb.max[0] - sb.min[0], sb.max[1] - sb.min[1], sb.max[2] - sb.min[2]) || 1;
+  const sweepError = (lod, q) => {
+    const profileErr = src
+      ? pathFlattenDeviation(pathDiag(src.path.segments), lod) / q
+      : (radius || 0) * circleSagitta(fixed || lodSegments(24, lod, q, 6));
+    return pathFlattenDeviation(spineSize, lod) / q + profileErr;
+  };
   return {
     key: `sweep:${src ? hashString(src.raw) + ':' + src.fillRule : 'r' + radius}:${hashString(rawOf(el, 'along'))}:${smooth}:${twist}:${taper}:${caps}:${fixed || ''}`,
     unit: null,
@@ -557,12 +588,8 @@ registerGeometry('sweep', (el) => {
     kind: 'triangles',
     doubleSided: !caps && spineOpen,
     bounds: box3(sb.min[0] - pad, sb.min[1] - pad, sb.min[2] - pad, sb.max[0] + pad, sb.max[1] + pad, sb.max[2] + pad),
-    lodDeviation: lodList((lod) => {
-      const profileErr = src
-        ? pathFlattenDeviation(pathDiag(src.path.segments), lod)
-        : (radius || 0) * circleSagitta(fixed || lodSegments(24, lod, 1, 6));
-      return pathFlattenDeviation(spineSize, lod) + profileErr;
-    }),
+    lodDeviation: lodList((lod) => sweepError(lod, 1)),
+    finerDeviation: finerList((f) => sweepError(0, f)),
     generate: (lod, q, report) => {
       const spines = spinePolylines(spine, {
         tolerance: pathFlattenDeviation(spineSize, lod) / q,
@@ -596,6 +623,7 @@ registerGeometry('gear', (el) => {
     doubleSided: false,
     bounds: box3(-ra, -ra, z0, ra, ra, z0 + depth),
     lodDeviation: lodList((lod) => gearDeviation(teeth, lodSegments(8, lod, 1, 2)) + bevelDeviation(bevel, lod >= 2 ? 1 : 2)),
+    finerDeviation: finerList((f) => gearDeviation(teeth, lodSegments(8, 0, f, 2)) + bevelDeviation(bevel, 2)),
     generate: (lod, q, report) => {
       const flank = lodSegments(8, lod, q, 2);
       const arc = lodSegments(4, lod, q, 2);

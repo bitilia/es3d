@@ -5,8 +5,8 @@
 // Compiles every generated mesh shader (each combination of material feature
 // flags, under several light setups) with WebGL2 and, where available, WebGPU.
 // Driven by scripts/shader-check.mjs; the result is window.__result.
-import { meshVertexShader, meshFragmentShader, TEXTURE_FLAGS } from '/src/render/shaders/glsl.js';
-import { meshShader } from '/src/render/shaders/wgsl.js';
+import { meshVertexShader, meshFragmentShader, TEXTURE_FLAGS, DEPTH_VS, DEPTH_FS } from '/src/render/shaders/glsl.js';
+import { meshShader, DEPTH_WGSL } from '/src/render/shaders/wgsl.js';
 import {
   MAT_FLAG_MAP, MAT_FLAG_NORMAL_MAP, MAT_FLAG_DOUBLE_SIDED, MAT_FLAG_UNLIT, MAT_FLAG_MR_MAP,
   MAT_FLAG_OCCLUSION, MAT_FLAG_EMISSIVE_MAP, MAT_FLAG_ALPHA_MASK,
@@ -38,6 +38,19 @@ for (const flags of flagSets) {
     gl.deleteProgram(p);
     gl.deleteShader(fs);
   }
+}
+{
+  // the depth pre-pass program
+  const p = gl.createProgram();
+  for (const [type, src] of [[gl.VERTEX_SHADER, DEPTH_VS], [gl.FRAGMENT_SHADER, DEPTH_FS]]) {
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) result.errors.push(`GLSL depth: ${gl.getShaderInfoLog(sh)}`);
+    gl.attachShader(p, sh);
+  }
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) result.errors.push(`GLSL depth: ${gl.getProgramInfoLog(p)}`);
 }
 
 const adapter = navigator.gpu ? await navigator.gpu.requestAdapter() : null;
@@ -72,6 +85,20 @@ if (adapter) {
       else result.errors.push(`WGSL ${flags}|${lights}: ${messages.map((m) => `${m.lineNum}:${m.linePos} ${m.message}`).join('; ')} ${error ? error.message : ''}`);
     }
   }
+  // the depth pre-pass pipeline: frame group only, colour target not written
+  device.pushErrorScope('validation');
+  const depth = device.createShaderModule({ code: DEPTH_WGSL });
+  const depthMessages = (await depth.getCompilationInfo()).messages.filter((m) => m.type === 'error');
+  device.createRenderPipeline({
+    layout: device.createPipelineLayout({ bindGroupLayouts: [frameLayout] }),
+    vertex: { module: depth, entryPoint: 'vs_depth', buffers },
+    fragment: { module: depth, entryPoint: 'fs_depth', targets: [{ format: 'rgba8unorm', writeMask: 0 }] },
+    primitive: { topology: 'triangle-list' },
+    depthStencil: { format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'less-equal' },
+    multisample: { count: 4 },
+  });
+  const depthError = await device.popErrorScope();
+  if (depthMessages.length || depthError) result.errors.push(`WGSL depth: ${depthMessages.map((m) => `${m.lineNum}:${m.linePos} ${m.message}`).join('; ')} ${depthError ? depthError.message : ''}`);
 }
 result.expected = flagSets.length * LIGHTS.length;
 window.__result = result;

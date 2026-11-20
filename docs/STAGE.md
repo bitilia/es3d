@@ -20,7 +20,7 @@ stage.show(source);
 | `playing` | `true` | Play clock animations. |
 | `autoOrbit` | `true` | Turn slowly around the target until someone drags. |
 | `orbitSpeed` | `0.22` | Radians per second. |
-| `interactive` | `true` | `false`: no dragging, whatever the document says. |
+| `interactive` | `true` | `false`: no dragging, whatever the document says. Touch scrolling then passes through the canvas to the page. |
 | `background` | `false` | A still camera and a running clock, for a page that moves shapes itself. |
 | `clock` | `'document'` | `'always'` runs the clock in a document with no `<animate>`. |
 | `scroll` | the page | The section whose scroll position drives `timeline="scroll"` animations. |

@@ -66,7 +66,8 @@ fn worldNormal(inp: VSIn) -> vec3f {
 /** Vertex stage of the mesh modules; texture coordinates only for textured materials. */
 const meshVertex = (textured) => /* wgsl */ `
 struct VSOut {
-  @builtin(position) pos: vec4f,
+  // the depth pre-pass (DEPTH_WGSL) computes the same position the same way
+  @invariant @builtin(position) pos: vec4f,
   @location(0) world: vec3f,
   @location(1) normal: vec3f,
   ${textured ? '@location(2) uv: vec2f,' : ''}
@@ -222,6 +223,32 @@ function lightTerm(type, i) {
     color = color + shade(N, V, L, frame.lightColor[${i}].rgb * PI * att, NdotV, f0, diffuse, a);
   }`;
 }
+
+/**
+ * Depth pre-pass: the opaque surfaces' depth only, before the colour pass.
+ * The position is vs_main's, by the same expression and invariant in both, so
+ * the colour pass finds exactly these depths. Its colour target is not written.
+ */
+export const DEPTH_WGSL = /* wgsl */ `
+${STRUCTS}
+struct DepthOut {
+  @invariant @builtin(position) pos: vec4f,
+};
+
+@vertex
+fn vs_depth(inp: VSIn) -> DepthOut {
+  let M = mat4x4f(inp.m0, inp.m1, inp.m2, inp.m3);
+  let wp = M * vec4f(inp.position, 1.0);
+  var out: DepthOut;
+  out.pos = frame.viewProj * wp;
+  return out;
+}
+
+@fragment
+fn fs_depth() -> @location(0) vec4f {
+  return vec4f(0.0);
+}
+`;
 
 export const LINE_WGSL = /* wgsl */ `
 ${STRUCTS}

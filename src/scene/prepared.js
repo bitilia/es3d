@@ -34,6 +34,7 @@ import { compile, elementDiagnostic } from '../pipeline.js';
 import { Diagnostic, LineIndex } from '../format/errors.js';
 import { GeometryCache } from '../geometry/geometry-cache.js';
 import { Mesh } from '../geometry/mesh.js';
+import { FINER_FACTORS } from '../geometry/lod-error.js';
 import { Material } from '../material/materials.js';
 import { RenderScene } from './flatten.js';
 
@@ -115,11 +116,14 @@ function packGeometries(entries, cache, sent) {
   const keys = new Array(n);
   const identities = new Array(n);
   const lods = new Uint8Array(n);
-  const flags = new Uint8Array(n); // 1 double-sided, 2 has bounds, 4 failed somewhere
+  const flags = new Uint8Array(n); // 1 double-sided, 2 has bounds, 4 failed somewhere, 8 has finer levels
   const kinds = new Uint8Array(n);
   const bounds = new Float64Array(n * 6);
   const deviation = new Float64Array(n * maxLods);
   const devLength = new Uint8Array(n);
+  // bounds of the levels finer than level 0 (made on demand, never sent)
+  const F = FINER_FACTORS.length;
+  const finer = new Float64Array(n * F);
   const levels = new Int32Array(n * maxLods).fill(-1);
   const reports = []; // [g, l, reports] for levels that reported something
   const failed = []; // [g, l]
@@ -129,7 +133,8 @@ function packGeometries(entries, cache, sent) {
     identities[g] = e.identity;
     lods[g] = e.lods;
     kinds[g] = kindCode(e.kind);
-    flags[g] = (e.doubleSided ? 1 : 0) | (e.bounds ? 2 : 0);
+    flags[g] = (e.doubleSided ? 1 : 0) | (e.bounds ? 2 : 0) | (e.finerDeviation ? 8 : 0);
+    if (e.finerDeviation) for (let i = 0; i < F; i++) finer[g * F + i] = e.finerDeviation[i];
     if (e.bounds) bounds.set([...e.bounds.min, ...e.bounds.max], g * 6);
     devLength[g] = Math.min(e.lodDeviation.length, maxLods);
     for (let l = 0; l < devLength[g]; l++) deviation[g * maxLods + l] = e.lodDeviation[l];
@@ -173,9 +178,9 @@ function packGeometries(entries, cache, sent) {
     uvs.set(m.uvs, table[k * 8 + 4]);
     indices.set(m.indices, table[k * 8 + 6]);
   });
-  const columns = { keys, identities, lods, flags, kinds, bounds, deviation, devLength, levels, maxLods, reports, failed };
+  const columns = { keys, identities, lods, flags, kinds, bounds, deviation, devLength, finer, levels, maxLods, reports, failed };
   const packed = { table, meshKinds, positions, normals, uvs, indices };
-  const buffers = [lods, flags, kinds, bounds, deviation, devLength, levels, table, meshKinds, positions, normals, uvs, indices].map((a) => a.buffer);
+  const buffers = [lods, flags, kinds, bounds, deviation, devLength, finer, levels, table, meshKinds, positions, normals, uvs, indices].map((a) => a.buffer);
   return { columns, packed, buffers };
 }
 
@@ -370,6 +375,7 @@ export function sceneFromPayload(payload, cache, owner, realDescriptor) {
       doubleSided: !!(c.flags[g] & 1),
       bounds: c.flags[g] & 2 ? { min: [b[g * 6], b[g * 6 + 1], b[g * 6 + 2]], max: [b[g * 6 + 3], b[g * 6 + 4], b[g * 6 + 5]] } : null,
       lodDeviation,
+      finerDeviation: c.flags[g] & 8 ? Array.from(c.finer.subarray(g * FINER_FACTORS.length, (g + 1) * FINER_FACTORS.length)) : null,
       generate: (lod, quality, report) => realDescriptor(key).generate(lod, quality, report),
     };
     const entry = cache.acquire(desc, null);

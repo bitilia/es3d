@@ -6,7 +6,7 @@
 // benchmark; backends never see the ES3D document, only a RenderScene.
 
 import { GeometryPool, VERTEX_BYTES } from './geometry-pool.js';
-import { FrameBuilder } from './frame-builder.js';
+import { FrameBuilder, depthPrepass } from './frame-builder.js';
 import { TextureCache } from './texture-cache.js';
 import { FRAME_FLOATS, packFrameUniforms } from './lighting.js';
 import { Mesh } from '../geometry/mesh.js';
@@ -125,7 +125,7 @@ export class Renderer {
   updateScene(set) {
     for (const entry of set.takeReleased()) {
       if (set.geomIndex.has(entry)) continue; // taken again by another part
-      for (const mesh of entry.meshes) {
+      for (const mesh of entry.finer ? [...entry.meshes, ...entry.finer] : entry.meshes) {
         if (!mesh) continue;
         const r = this.pool.ranges.get(mesh);
         if (r) this.pool.unusedBytes = (this.pool.unusedBytes || 0) + mesh.vertexCount * VERTEX_BYTES + r.indexCount * 4;
@@ -159,7 +159,7 @@ export class Renderer {
     if (scene) {
       draw = this.buildFrame(camera, view, h);
     } else {
-      draw = { batches: [], overlays: { wireframe: [], normals: [], bbox: null, selection: null }, instanceData: new Float32Array(16), instanceCount: 0, stats: { instances: 0, visible: 0, culled: 0, batches: 0, drawCalls: 0, triangles: 0, lodHistogram: [0, 0, 0, 0], refining: 0 } };
+      draw = { batches: [], overlays: { wireframe: [], normals: [], bbox: null, selection: null }, instanceData: new Float32Array(16), instanceCount: 0, stats: { instances: 0, visible: 0, culled: 0, batches: 0, drawCalls: 0, triangles: 0, lodHistogram: [0, 0, 0, 0], finer: 0, refining: 0 } };
     }
     const radius = Math.hypot(bounds.max[0] - bounds.min[0], bounds.max[1] - bounds.min[1], bounds.max[2] - bounds.min[2]) / 2 || 1;
     this.lightInfo = packFrameUniforms(this.frameData, {
@@ -179,6 +179,7 @@ export class Renderer {
       this.gpuEpoch = epoch;
       for (const entry of this.textures.entries.values()) entry.gpu = null;
     }
+    draw.depthPrepass = depthPrepass(draw, w * h);
     this.backend.render(draw, this.frameData, {
       background: env.background,
       textures: this.textures,
@@ -197,6 +198,8 @@ export class Renderer {
     s.culled = draw.stats.culled;
     s.batches = draw.stats.batches;
     s.lodHistogram = draw.stats.lodHistogram;
+    s.finer = draw.stats.finer || 0;
+    s.depthPrepass = !!draw.depthPrepass;
     s.refining = draw.stats.refining || 0;
     s.geometryBytes = this.pool.byteSize;
     s.instanceBytes = draw.instanceCount * 64;

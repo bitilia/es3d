@@ -12,8 +12,17 @@
 // meshes of the host or of other tiles: an entry goes once no owner holds it.
 
 import { Mesh } from './mesh.js';
+import { FINER_FACTORS } from './lod-error.js';
 
 let nextEntryId = 1;
+
+/**
+ * Level numbers from FINER_LEVEL up are the levels finer than level 0 that a
+ * close-up asks for (registry.js FINER_FACTORS): FINER_LEVEL + i is level 0
+ * generated at FINER_FACTORS[i] times the quality. They are made on demand,
+ * kept beside the stored levels and never written to the persistent cache.
+ */
+export const FINER_LEVEL = 8;
 
 export class GeometryEntry {
   constructor(desc, owner) {
@@ -28,6 +37,9 @@ export class GeometryEntry {
     this.bounds = desc.bounds;
     this.lodDeviation = desc.lodDeviation || [0];
     this.meshes = new Array(desc.lods).fill(null);
+    // finer than level 0, for close-ups: bounds, and meshes made on demand
+    this.finerDeviation = desc.lods > 1 && desc.finerDeviation && desc.finerDeviation.length ? desc.finerDeviation : null;
+    this.finer = this.finerDeviation ? new Array(this.finerDeviation.length).fill(null) : null;
     // diagnostics reported while generating each level, kept so that a mesh
     // restored from the persistent cache reports them again
     this.reports = new Array(desc.lods).fill(null);
@@ -170,6 +182,7 @@ export class GeometryCache {
     this.quality = q;
     for (const e of this.entries.values()) {
       e.meshes.fill(null);
+      if (e.finer) e.finer.fill(null);
       e.reports.fill(null);
       e.failedLods = 0;
     }
@@ -178,6 +191,7 @@ export class GeometryCache {
 
   /** Mesh of an entry at a level of detail, generated on demand. */
   mesh(entry, lod = 0) {
+    if (lod >= FINER_LEVEL && entry.finer) return this.finerMesh(entry, Math.min(lod - FINER_LEVEL, entry.finer.length - 1));
     const l = Math.min(Math.max(lod, 0), entry.lods - 1);
     let m = entry.meshes[l];
     if (m) return m;
@@ -204,6 +218,29 @@ export class GeometryCache {
     entry.meshes[l] = m;
     entry.reports[l] = reports.length ? reports : null;
     if (this.onGenerate) this.onGenerate(entry);
+    return m;
+  }
+
+  /**
+   * Level 0 generated at the i-th finer quality (FINER_LEVEL + i). Its
+   * diagnostics repeat level 0's and are not reported again; a level that
+   * fails is drawn as level 0. Not offered to the persistent cache.
+   */
+  finerMesh(entry, i) {
+    let m = entry.finer[i];
+    if (m) return m;
+    const t0 = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    const factor = FINER_FACTORS[i];
+    try {
+      m = entry.desc.generate(0, this.quality * factor, () => {});
+    } catch {
+      m = null;
+    }
+    if (!m) m = this.mesh(entry, 0);
+    const t1 = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    this.stats.generated++;
+    this.stats.generateMs += t1 - t0;
+    entry.finer[i] = m;
     return m;
   }
 

@@ -64,6 +64,8 @@ ${INSTANCE_INPUTS}
 out vec3 vWorld;
 out vec3 vNormal;
 ${textured ? 'out vec2 vUv;' : ''}
+// the depth pre-pass (DEPTH_VS) computes the same position the same way
+invariant gl_Position;
 void main() {
   mat4 M = mat4(iM0, iM1, iM2, iM3);
   vec4 wp = M * vec4(aPosition, 1.0);
@@ -76,6 +78,31 @@ void main() {
   vWorld = wp.xyz;
   ${textured ? 'vUv = aUv;' : ''}
   gl_Position = uViewProj * wp;
+}
+`;
+
+/**
+ * Depth pre-pass: the opaque surfaces' depth only, written before the colour
+ * pass. The position is the mesh vertex shader's, by the same expression and
+ * invariant in both, so the colour pass finds exactly these depths.
+ */
+export const DEPTH_VS = /* glsl */ `#version 300 es
+precision highp float;
+${FRAME_BLOCK}
+${INSTANCE_INPUTS}
+invariant gl_Position;
+void main() {
+  mat4 M = mat4(iM0, iM1, iM2, iM3);
+  vec4 wp = M * vec4(aPosition, 1.0);
+  gl_Position = uViewProj * wp;
+}
+`;
+
+export const DEPTH_FS = /* glsl */ `#version 300 es
+precision highp float;
+out vec4 outColor;
+void main() {
+  outColor = vec4(0.0);
 }
 `;
 

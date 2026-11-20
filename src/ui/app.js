@@ -848,6 +848,7 @@ export class App {
       visible: s.visible,
       culled: s.culled,
       lodHistogram: s.lodHistogram,
+      finer: s.finer,
       geometryBytes: s.geometryBytes,
       instanceBytes: s.instanceBytes,
       genVertices: genV,

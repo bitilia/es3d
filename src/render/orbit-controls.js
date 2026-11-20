@@ -13,7 +13,8 @@ export class OrbitControls {
   constructor(element, camera) {
     this.el = element;
     this.camera = camera;
-    this.enabled = true;
+    this._enabled = true;
+    element.style.touchAction = 'none';
     this.enableZoom = true;
     this.enablePan = true;
     this.limits = null; // scene.controls: distance, angle and target limits, collision
@@ -47,7 +48,18 @@ export class OrbitControls {
     element.addEventListener('wheel', this._wheel, { passive: false });
     element.addEventListener('contextmenu', this._ctx);
     element.addEventListener('dblclick', this._dbl);
-    element.style.touchAction = 'none';
+  }
+
+  /** Whether dragging moves the camera. Every assignment, from configure() or from
+   * outside (a stage with interactive: false), keeps touch-action in step: a canvas
+   * that does not orbit must let touch scrolling through to the page. */
+  get enabled() {
+    return this._enabled;
+  }
+
+  set enabled(on) {
+    this._enabled = !!on;
+    this.el.style.touchAction = this._enabled ? 'none' : 'auto';
   }
 
   dispose() {
@@ -74,8 +86,6 @@ export class OrbitControls {
     this.enabled = opts.ignoreMode || mode === 'orbit';
     this.enableZoom = !spec || spec.zoom !== false;
     this.enablePan = !spec || spec.pan !== false;
-    // a canvas that does not orbit must let touch scrolling through to the page
-    this.el.style.touchAction = this.enabled ? 'none' : 'auto';
   }
 
   changed() {

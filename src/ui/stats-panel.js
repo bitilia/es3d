@@ -53,6 +53,7 @@ export class StatsPanel {
     row('Triangles drawn', formatCount(d.triangles));
     row('Visible / culled', `${formatCount(d.visible)} / ${formatCount(d.culled)}`);
     if (d.lodHistogram) row('LOD 0/1/2/3', d.lodHistogram.map(formatCount).join(' / '));
+    if (d.finer) row('Finer than LOD 0', formatCount(d.finer));
     if (this.compare) {
       section('Equivalent formats');
       for (const c of this.compare) row(c.label, c.gzip ? `${formatBytes(c.raw)} (gz ${formatBytes(c.gzip)})` : formatBytes(c.raw));

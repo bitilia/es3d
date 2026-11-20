@@ -14,7 +14,7 @@
 // into our own 4x framebuffer and resolved into the canvas, which costs two
 // full-screen copies per frame.
 
-import { meshVertexShader, meshFragmentShader, TEXTURE_FLAGS, LINE_VS, NORMAL_VS, LINE_FS } from '../shaders/glsl.js';
+import { meshVertexShader, meshFragmentShader, TEXTURE_FLAGS, LINE_VS, NORMAL_VS, LINE_FS, DEPTH_VS, DEPTH_FS } from '../shaders/glsl.js';
 import { FRAME_BYTES, MATERIAL_FLOATS, packMaterial, packOverlay, lightTypes } from '../lighting.js';
 import { VERTEX_BYTES } from '../geometry-pool.js';
 
@@ -160,6 +160,7 @@ export class WebGL2Backend {
 
     this.lineProgram = program(gl, LINE_VS, LINE_FS, 'line');
     this.normalProgram = program(gl, NORMAL_VS, LINE_FS, 'normals');
+    this.depthProgram = program(gl, DEPTH_VS, DEPTH_FS, 'depth');
 
     this.vertexBuffer = gl.createBuffer();
     this.indexBuffer = gl.createBuffer();
@@ -525,19 +526,34 @@ export class WebGL2Backend {
     let cull = -1; // 0 none, 1 back faces of CCW triangles, 2 of CW (mirrored)
     let bound = null;
     gl.cullFace(gl.BACK);
+    const setCull = (c) => {
+      if (c === cull) return;
+      if (c === 0) gl.disable(gl.CULL_FACE);
+      else {
+        if (cull <= 0) gl.enable(gl.CULL_FACE);
+        gl.frontFace(c === 2 ? gl.CW : gl.CCW);
+      }
+      cull = c;
+    };
+    // depth pre-pass (frame-builder.js depthPrepass): the opaque surfaces'
+    // depth with the colour pass's culling, so the colour pass shades each
+    // pixel once and draws the same picture
+    if (draw.depthPrepass) {
+      gl.colorMask(false, false, false, false);
+      use(this.depthProgram);
+      for (const b of draw.batches) {
+        if (!b.prepass) continue;
+        setCull(b.doubleSided ? 0 : b.mirrored ? 2 : 1);
+        this.setInstanceOffset(b.firstInstance);
+        gl.drawElementsInstanced(gl.TRIANGLES, b.range.indexCount, gl.UNSIGNED_INT, b.range.firstIndex * 4, b.count);
+      }
+      gl.colorMask(true, true, true, true);
+    }
     for (const b of draw.batches) {
       const lines = b.kind === 'lines';
       const binding = b.doubleSided && !b.material.doubleSided ? this.doubleSidedBinding(b.material, ctx.textures) : this.materialBinding(b.material, ctx.textures);
       use(lines ? this.lineProgram : this.meshProgram(binding.flags, lights));
-      const c = b.doubleSided || lines ? 0 : b.mirrored ? 2 : 1;
-      if (c !== cull) {
-        if (c === 0) gl.disable(gl.CULL_FACE);
-        else {
-          if (cull <= 0) gl.enable(gl.CULL_FACE);
-          gl.frontFace(c === 2 ? gl.CW : gl.CCW);
-        }
-        cull = c;
-      }
+      setCull(b.doubleSided || lines ? 0 : b.mirrored ? 2 : 1);
       if (b.transparent !== blending) {
         blending = b.transparent;
         if (blending) {
@@ -624,6 +640,7 @@ export class WebGL2Backend {
     for (const p of this.meshPrograms.values()) gl.deleteProgram(p);
     if (this.lineProgram) gl.deleteProgram(this.lineProgram);
     if (this.normalProgram) gl.deleteProgram(this.normalProgram);
+    if (this.depthProgram) gl.deleteProgram(this.depthProgram);
     if (this.whiteTex) gl.deleteTexture(this.whiteTex);
     if (this.flatNormalTex) gl.deleteTexture(this.flatNormalTex);
     gl.deleteVertexArray(this.vao);

@@ -8,6 +8,12 @@
 
 import { sphereDeviationWasm } from '../wasm/kernels.js';
 
+/**
+ * Levels finer than level 0, made on demand for close-ups (frame-builder.js):
+ * level 0 generated at these multiples of the quality.
+ */
+export const FINER_FACTORS = [2, 4, 8];
+
 /** Sagitta of a unit circle drawn with n equal chords, as a fraction of the radius. */
 export function circleSagitta(n) {
   const s = Math.max(3, n);
