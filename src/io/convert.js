@@ -71,7 +71,8 @@ export function detectKind(name, bytes) {
   const head = decode(bytes.subarray(0, 4096));
   if (isSTEP(head)) return 'step';
   if (isBinarySTL(bytes) && !['es3d', 'svg', 'obj', 'gltf'].includes(ext)) return 'stl';
-  const es3dText = /^\s*(<\?xml[^>]*\?>\s*)?(<!--[\s\S]*?-->\s*)*<es3d[\s>/]/.test(head) || /^\s*((\/\/[^\n]*|\/\*[\s\S]*?\*\/)\s*)*es3d\b/.test(head);
+  // markup, compact, or the JsonML form (["es3d", {...}, ...])
+  const es3dText = /^\s*(<\?xml[^>]*\?>\s*)?(<!--[\s\S]*?-->\s*)*<es3d[\s>/]/.test(head) || /^\s*((\/\/[^\n]*|\/\*[\s\S]*?\*\/)\s*)*es3d\b/.test(head) || /^\s*\[\s*"es3d"/.test(head);
   if (ext === 'es3d' || es3dText) return 'es3d';
   if (ext === 'svg' || /<svg[\s>/]/.test(head)) return 'svg';
   if (ext === 'stl' || isAsciiSTL(bytes)) return 'stl';
@@ -86,7 +87,6 @@ export function detectKind(name, bytes) {
   return null;
 }
 
-/** Options of the importers, with their defaults. */
 /** {name, bytes} for each file: a File or Blob is read, a {name, bytes} object passes through. */
 async function readFiles(files) {
   return Promise.all(Array.from(files || [], async (f) => {
@@ -97,6 +97,7 @@ async function readFiles(files) {
   }));
 }
 
+/** Options of the importers, with their defaults. */
 export const IMPORT_DEFAULTS = {
   svg: { size: 10, depth: 0.04, bevel: 0, strokes: true, base: false },
   mesh: { precision: 'auto', normals: 'auto', uvs: true, smooth: 30 },

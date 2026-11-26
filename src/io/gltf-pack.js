@@ -1,4 +1,4 @@
-// Packed glTF binary written by the file converter (`es3d glb`).
+// Packed glTF binary written by `es3d glb --pack` (the castle demo's castle.glb).
 //
 // The binary is the same world as the document: every instance, material,
 // light, camera and animation. Meshes are instanced, quantized

@@ -19,6 +19,7 @@ import { compile } from '../src/pipeline.js';
 import { exportOBJ } from '../src/io/obj.js';
 import { exportSTL } from '../src/io/stl.js';
 import { exportSTEP } from '../src/io/step.js';
+import { exportGLB } from '../src/io/gltf.js';
 import { detectKind, importFiles, exportFormat } from '../src/io/convert.js';
 import { exportableInstances } from '../src/io/external-scene.js';
 import { optimize, expandProcedural } from '../src/optimize/optimizer.js';
@@ -36,7 +37,7 @@ Commands
   optimize   run the optimizer and print its report to stderr
   expand     replace <repeat>/<scatter> with explicit elements
   obj        export Wavefront OBJ (+ .mtl next to -o) (--lod <0-3>)
-  glb        packed glTF binary                     (instances, LODs, lights, cameras, animation)
+  glb        export glTF binary                     (--lod <0-3>, --instancing, --quantize, --pack)
   stl        export STL for 3D printing, Z-up        (--lod <0-3>, --ascii)
   step       export tessellated STEP (AP242), Z-up  (--lod <0-3>)
   x3d        export X3D Classic (.x3dv)            (--lod <0-3>, --flatten)
@@ -55,8 +56,11 @@ Options
   --precision <n>    round numbers to n decimals when writing text
   --lod <n>          level of detail for mesh export (default 0 = finest)
   --flatten          x3d, usd, scad, js: write triangles instead of primitives
-  --instancing       glb always writes EXT_mesh_gpu_instancing
-  --quantize         glb always writes KHR_mesh_quantization
+  --instancing       glb: write repeated shapes with EXT_mesh_gpu_instancing
+  --quantize         glb: write KHR_mesh_quantization (int16 positions; lossy)
+  --pack             glb: the packed demo file (instanced, quantized, meshopt, WebP
+                     textures, MSFT_lod, lights, cameras, animation). Needs the
+                     optional packages meshoptimizer and sharp; ignores --lod
   --min / --pretty   force minified / pretty output
   --json             validate/stats: machine readable output
   --ascii            STL: write ASCII instead of binary
@@ -71,32 +75,46 @@ Options
   -h, --help         this text`;
 
 function parseArgs(argv) {
-  const o = { cmd: null, input: null, out: null, precision: null, lod: 0, instancing: false, quantize: 0, min: false, pretty: false, json: false, ascii: false, flatten: false, svg: {}, mesh: {}, stl: {} };
+  const o = { cmd: null, input: null, out: null, precision: null, lod: 0, instancing: false, quantize: false, pack: false, min: false, pretty: false, json: false, ascii: false, flatten: false, svg: {}, mesh: {}, stl: {} };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const val = () => {
       if (i + 1 >= argv.length) fail(`${a} needs a value`);
       return argv[++i];
     };
+    // a number option: a typo fails instead of silently becoming NaN (and being ignored)
+    const num = (min = -Infinity, max = Infinity, integer = false) => {
+      const s = val();
+      const n = Number(s);
+      if (s.trim() === '' || !Number.isFinite(n) || n < min || n > max || (integer && !Number.isInteger(n))) {
+        fail(`${a} needs ${integer ? 'an integer' : 'a number'}${min > -Infinity ? ` from ${min}` : ''}${max < Infinity ? ` to ${max}` : ''}, not '${s}'`);
+      }
+      return n;
+    };
     if (a === '-h' || a === '--help') o.help = true;
     else if (a === '-o' || a === '--out') o.out = val();
-    else if (a === '--precision') o.precision = Number(val());
-    else if (a === '--lod') o.lod = Number(val());
+    else if (a === '--precision') o.precision = num(0, 20, true);
+    else if (a === '--lod') o.lod = num(0, 3, true);
     else if (a === '--instancing') o.instancing = true;
     else if (a === '--quantize') o.quantize = true;
+    else if (a === '--pack') o.pack = true;
     else if (a === '--min') o.min = true;
     else if (a === '--pretty') o.pretty = true;
     else if (a === '--json') o.json = true;
     else if (a === '--ascii') o.ascii = true;
     else if (a === '--flatten') o.flatten = true;
-    else if (a === '--size') o.svg.size = Number(val());
-    else if (a === '--depth') o.svg.depth = Number(val()) / 100;
-    else if (a === '--bevel') o.svg.bevel = Number(val()) / 100;
+    else if (a === '--size') o.svg.size = num(Number.MIN_VALUE);
+    else if (a === '--depth') o.svg.depth = num(0) / 100;
+    else if (a === '--bevel') o.svg.bevel = num(0) / 100;
     else if (a === '--flat') o.svg.depth = 0;
     else if (a === '--no-strokes') o.svg.strokes = false;
     else if (a === '--plate') o.svg.base = true;
-    else if (a === '--smooth') o.mesh.smooth = Number(val());
-    else if (a === '--up') o.stl.up = val() === 'y' ? 'y' : 'z';
+    else if (a === '--smooth') o.mesh.smooth = num(0, 180);
+    else if (a === '--up') {
+      const up = val().toLowerCase();
+      if (up !== 'y' && up !== 'z') fail(`--up needs y or z, not '${up}'`);
+      o.stl.up = up;
+    }
     else if (a.startsWith('-') && a !== '-') fail(`unknown option ${a}`);
     else if (!o.cmd) o.cmd = a;
     else if (!o.input) o.input = a;
@@ -246,7 +264,7 @@ function stats(input, opts) {
   ].join('\n');
 }
 
-const COMMANDS = ['validate', 'fmt', 'minify', 'compact', 'markup', 'xml', 'json', 'optimize', 'expand', 'obj', 'glb', 'stl', 'step', 'import', 'stats'];
+const COMMANDS = ['validate', 'fmt', 'minify', 'compact', 'markup', 'xml', 'json', 'optimize', 'expand', 'obj', 'glb', 'stl', 'step', 'x3d', 'usd', 'scad', 'js', 'import', 'stats'];
 
 async function main() {
   // output piped into head & co.: stop quietly when the reader goes away
@@ -272,7 +290,7 @@ async function main() {
       else {
         const text = formatDiagnostics(r);
         if (text) process.stderr.write(text + '\n\n');
-        console.log(`${opts.input}: ${errors} error${errors === 1 ? '' : 's'}, ${warnings} warning${warnings === 1 ? '' : 's'}${errors ? '' : `, ${r.scene.count.toLocaleString('en-US')} instances`}`);
+        console.log(`${opts.input}: ${errors} error${errors === 1 ? '' : 's'}, ${warnings} warning${warnings === 1 ? '' : 's'}${errors ? '' : `, ${r.scene.count.toLocaleString('en-US')} instance${r.scene.count === 1 ? '' : 's'}`}`);
       }
       process.exit(errors ? 1 : 0);
       break;
@@ -280,7 +298,9 @@ async function main() {
     case 'fmt': {
       const input = es3dInput(bytes);
       const doc = parsed(input);
-      const syntax = typeof input === 'string' && detectSyntax(input) === 'compact' ? 'compact' : 'xml';
+      // keep the input's syntax: markup, compact or JSON
+      const detected = detectSyntax(input);
+      const syntax = detected === 'compact' || detected === 'json' ? detected : 'xml';
       write(opts, serialize(doc, textOpts(syntax, !opts.min)));
       break;
     }
@@ -309,7 +329,7 @@ async function main() {
     case 'obj': {
       const r = compiled(es3dInput(bytes));
       const name = opts.out ? path.basename(opts.out).replace(/\.obj$/i, '') : 'scene';
-      const o = exportOBJ(r.scene, (e, l) => r.cache.mesh(e, l), { lod: opts.lod, name });
+      const o = exportOBJ(r.scene, (e, l) => r.cache.mesh(e, Math.min(l, e.lods - 1)), { lod: opts.lod, name });
       write(opts, o.obj);
       if (opts.out) {
         const mtl = opts.out.replace(/\.obj$/i, '') + '.mtl';
@@ -319,11 +339,17 @@ async function main() {
       break;
     }
     case 'glb': {
+      if (!opts.pack) {
+        const r = compiled(es3dInput(bytes));
+        const meshOf = (e, l) => r.cache.mesh(e, Math.min(l, e.lods - 1));
+        write(opts, exportGLB(r.scene, meshOf, { lod: opts.lod, instancing: opts.instancing, quantize: opts.quantize }));
+        break;
+      }
       let exportPackedGLB;
       try {
         ({ exportPackedGLB } = await import('../src/io/gltf-pack.js'));
       } catch (e) {
-        fail(`glb could not load the packer (${e.message})`, 1);
+        fail(`glb --pack needs the optional packages meshoptimizer and sharp (npm install meshoptimizer sharp): ${e.message}`, 1);
       }
       const baseDir = opts.input === '-' ? '' : path.dirname(path.resolve(opts.input));
       const sourceName = opts.input === '-' ? 'stdin' : `${path.basename(path.dirname(opts.input))}/${path.basename(opts.input)}`;
@@ -337,6 +363,7 @@ async function main() {
       break;
     }
     case 'stl': {
+      if (!opts.ascii && !opts.out) fail('binary STL needs -o <file> (or use --ascii)');
       const r = compiled(es3dInput(bytes));
       const name = opts.out ? path.basename(opts.out).replace(/\.stl$/i, '') : 'es3d';
       let out;
@@ -345,7 +372,6 @@ async function main() {
       } catch (e) {
         fail(e.message, 1);
       }
-      if (!opts.ascii && !opts.out) fail('binary STL needs -o <file> (or use --ascii)');
       write(opts, out.data);
       process.stderr.write(`${out.triangles.toLocaleString('en-US')} triangles\n`);
       break;

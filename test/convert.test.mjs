@@ -248,6 +248,8 @@ test('the converter detects, imports and exports every supported kind', async ()
   assert.ok(withoutMtl.warnings.some((w) => /rock\.mtl was not given/.test(w)));
   assert.equal(detectKind('x.txt', new TextEncoder().encode('solid a\nfacet normal 0 0 1\n')), 'stl');
   assert.equal(detectKind('x', new TextEncoder().encode('// note\nes3d version=1')), 'es3d');
+  assert.equal(detectKind('scene.json', new TextEncoder().encode(' ["es3d", {"version": "1"}, ["box"]]')), 'es3d');
+  assert.equal(detectKind('model.json', new TextEncoder().encode('{"asset": {"version": "2.0"}}')), 'gltf');
   assert.equal(detectKind('x', new TextEncoder().encode('<?xml version="1.0"?><svg/>')), 'svg');
   assert.equal(detectKind('notes.md', new TextEncoder().encode('# hello')), null);
   await assert.rejects(importFiles([{ name: 'notes.md', bytes: new TextEncoder().encode('# hello') }]), /unknown file type/);

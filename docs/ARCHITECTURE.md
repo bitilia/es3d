@@ -1,6 +1,6 @@
 # ES3D reference implementation: architecture
 
-The repository is a single dependency-free codebase of plain ES modules (Vite is the dev server and bundler; Playwright and three.js are development dependencies). The same modules run in the browser (the website, its converter and ES3D Studio) and in Node (tests, CLI, benchmark): nothing below `src/ui`, `src/modeller/app.js`, `docs/site` and `src/render` touches the DOM.
+The repository is a single dependency-free codebase of plain ES modules (Vite is the dev server and bundler; Playwright, three.js, and meshoptimizer and sharp for the packed castle glTF (`es3d glb --pack`, `src/io/gltf-pack.js`) are development dependencies). The same modules run in the browser (the website, its converter and ES3D Studio) and in Node (tests, CLI, benchmark): nothing below `src/ui`, `src/modeller/app.js`, `docs/site` and `src/render` touches the DOM.
 
 ```
                 ┌──────────────────────────── src/format ────────────────────────────┐
